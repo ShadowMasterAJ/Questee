@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "220573854904",
+    "project_id": "ugrab-17ad6",
+    "storage_bucket": "ugrab-17ad6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:220573854904:android:133e91053f57714d4b584d",
+        "android_client_info": {
+          "package_name": "com.mycompany.ugrab"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "220573854904-t44jk85s7pnerrqffdjeuvfgv2jq94fq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mycompany.ugrab",
+            "certificate_hash": "9bbb3186b2189ef16d8f272bdab59362c395cbb4"
+          }
+        },
+        {
+          "client_id": "220573854904-0np78at579g0m9go17n0b58p99su86p5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADptSnd8qIqNV5oxLGTdNJVvltX8C1YKw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "220573854904-0np78at579g0m9go17n0b58p99su86p5.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "220573854904-5drnn5kf4dbfjpqjo9k785fvl0loeq5a.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mycompany.ugrab"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
