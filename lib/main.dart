@@ -10,7 +10,6 @@ import 'flutter_flow/flutter_flow_util.dart';
 import 'flutter_flow/internationalization.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.dart';
 import 'flutter_flow/nav/nav.dart';
 import 'index.dart';
 
@@ -122,65 +121,50 @@ class _NavBarPageState extends State<NavBarPage> {
     final currentIndex = tabs.keys.toList().indexOf(_currentPageName);
     return Scaffold(
       body: _currentPage ?? tabs[_currentPageName],
-      extendBody: true,
-      bottomNavigationBar: FloatingNavbar(
+      bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,
         onTap: (i) => setState(() {
           _currentPage = null;
           _currentPageName = tabs.keys.toList()[i];
         }),
         backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
-        selectedItemColor: Color(0x00000000),
-        unselectedItemColor: FlutterFlowTheme.of(context).primaryColor,
-        selectedBackgroundColor: Colors.transparent,
-        borderRadius: 15,
-        itemBorderRadius: 8,
-        margin: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
-        padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
-        width: double.infinity,
-        elevation: 0,
-        items: [
-          FloatingNavbarItem(
-            customWidget: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  currentIndex == 0 ? Icons.home : FontAwesomeIcons.home,
-                  color: currentIndex == 0
-                      ? Color(0x00000000)
-                      : FlutterFlowTheme.of(context).primaryColor,
-                  size: 24,
-                ),
-              ],
+        selectedItemColor: FlutterFlowTheme.of(context).primaryColor,
+        unselectedItemColor: Color(0xFF96669E),
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
+        type: BottomNavigationBarType.fixed,
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: FaIcon(
+              FontAwesomeIcons.home,
+              size: 30,
             ),
+            activeIcon: Icon(
+              Icons.home,
+              size: 24,
+            ),
+            label: '',
+            tooltip: '',
           ),
-          FloatingNavbarItem(
-            customWidget: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.add_box,
-                  color: currentIndex == 1
-                      ? Color(0x00000000)
-                      : FlutterFlowTheme.of(context).primaryColor,
-                  size: 30,
-                ),
-              ],
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.add_box,
+              size: 30,
             ),
+            label: '',
+            tooltip: '',
           ),
-          FloatingNavbarItem(
-            customWidget: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  currentIndex == 2 ? Icons.person : Icons.person,
-                  color: currentIndex == 2
-                      ? Color(0x00000000)
-                      : FlutterFlowTheme.of(context).primaryColor,
-                  size: 30,
-                ),
-              ],
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.person,
+              size: 30,
             ),
+            activeIcon: Icon(
+              Icons.person,
+              size: 30,
+            ),
+            label: '',
+            tooltip: '',
           )
         ],
       ),

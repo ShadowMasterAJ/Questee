@@ -10,3 +10,5 @@ export 'job_detail_screen_poster/job_detail_screen_poster_widget.dart'
     show JobDetailScreenPosterWidget;
 export 'job_detail_screen_grabber/job_detail_screen_grabber_widget.dart'
     show JobDetailScreenGrabberWidget;
+export 'forgot_password_screen/forgot_password_screen_widget.dart'
+    show ForgotPasswordScreenWidget;

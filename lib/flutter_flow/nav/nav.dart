@@ -116,6 +116,11 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               name: 'JobDetailScreenGrabber',
               path: 'jobDetailScreenGrabber',
               builder: (context, params) => JobDetailScreenGrabberWidget(),
+            ),
+            FFRoute(
+              name: 'forgotPasswordScreen',
+              path: 'forgotPasswordScreen',
+              builder: (context, params) => ForgotPasswordScreenWidget(),
             )
           ].map((r) => r.toRoute(appStateNotifier)).toList(),
         ).toRoute(appStateNotifier),
