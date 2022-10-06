@@ -145,7 +145,7 @@ class _NavBarPageState extends State<NavBarPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
-                  FontAwesomeIcons.home,
+                  currentIndex == 0 ? Icons.home : FontAwesomeIcons.home,
                   color: currentIndex == 0
                       ? Color(0x00000000)
                       : FlutterFlowTheme.of(context).primaryColor,
@@ -173,7 +173,7 @@ class _NavBarPageState extends State<NavBarPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
-                  Icons.person,
+                  currentIndex == 2 ? Icons.person : Icons.person,
                   color: currentIndex == 2
                       ? Color(0x00000000)
                       : FlutterFlowTheme.of(context).primaryColor,

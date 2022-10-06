@@ -18,7 +18,9 @@ class ProfileScreenWidget extends StatefulWidget {
 }
 
 class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
+  bool isMediaUploading = false;
   String uploadedFileUrl = '';
+
   TextEditingController? yourNameController;
   TextEditingController? useEmailController;
   TextEditingController? genderController;
@@ -126,29 +128,33 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
                       if (selectedMedia != null &&
                           selectedMedia.every((m) =>
                               validateFileFormat(m.storagePath, context))) {
-                        showUploadMessage(
-                          context,
-                          'Uploading file...',
-                          showLoading: true,
-                        );
-                        final downloadUrls = (await Future.wait(
-                                selectedMedia.map((m) async =>
-                                    await uploadData(m.storagePath, m.bytes))))
-                            .where((u) => u != null)
-                            .map((u) => u!)
-                            .toList();
-                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                        setState(() => isMediaUploading = true);
+                        var downloadUrls = <String>[];
+                        try {
+                          showUploadMessage(
+                            context,
+                            'Uploading file...',
+                            showLoading: true,
+                          );
+                          downloadUrls = (await Future.wait(
+                            selectedMedia.map(
+                              (m) async =>
+                                  await uploadData(m.storagePath, m.bytes),
+                            ),
+                          ))
+                              .where((u) => u != null)
+                              .map((u) => u!)
+                              .toList();
+                        } finally {
+                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                          isMediaUploading = false;
+                        }
                         if (downloadUrls.length == selectedMedia.length) {
                           setState(() => uploadedFileUrl = downloadUrls.first);
-                          showUploadMessage(
-                            context,
-                            'Success!',
-                          );
+                          showUploadMessage(context, 'Success!');
                         } else {
-                          showUploadMessage(
-                            context,
-                            'Failed to upload media',
-                          );
+                          setState(() {});
+                          showUploadMessage(context, 'Failed to upload media');
                           return;
                         }
                       }
@@ -165,8 +171,6 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
                             color: FlutterFlowTheme.of(context).primaryColor,
                             fontSize: 14,
                             fontWeight: FontWeight.normal,
-                            useGoogleFonts: GoogleFonts.asMap().containsKey(
-                                FlutterFlowTheme.of(context).bodyText1Family),
                           ),
                       elevation: 1,
                       borderSide: BorderSide(
@@ -346,8 +350,6 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
                           color: Colors.white,
                           fontSize: 16,
                           fontWeight: FontWeight.normal,
-                          useGoogleFonts: GoogleFonts.asMap().containsKey(
-                              FlutterFlowTheme.of(context).subtitle2Family),
                         ),
                     elevation: 2,
                     borderSide: BorderSide(
@@ -355,6 +357,32 @@ class _ProfileScreenWidgetState extends State<ProfileScreenWidget> {
                       width: 1,
                     ),
                   ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
+              child: FFButtonWidget(
+                onPressed: () async {
+                  GoRouter.of(context).prepareAuthEvent();
+                  await signOut();
+
+                  context.goNamedAuth('AuthScreen', mounted);
+                },
+                text: 'logout',
+                options: FFButtonOptions(
+                  width: 130,
+                  height: 40,
+                  color: FlutterFlowTheme.of(context).primaryColor,
+                  textStyle: FlutterFlowTheme.of(context).subtitle2.override(
+                        fontFamily: 'Poppins',
+                        color: Colors.white,
+                      ),
+                  borderSide: BorderSide(
+                    color: Colors.transparent,
+                    width: 1,
+                  ),
+                  borderRadius: BorderRadius.circular(8),
                 ),
               ),
             ),

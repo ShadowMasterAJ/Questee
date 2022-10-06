@@ -1,5 +1,4 @@
 import '../auth/auth_util.dart';
-import '../flutter_flow/flutter_flow_icon_button.dart';
 import '../flutter_flow/flutter_flow_theme.dart';
 import '../flutter_flow/flutter_flow_util.dart';
 import '../flutter_flow/flutter_flow_widgets.dart';
@@ -57,43 +56,20 @@ class _SignupScreenWidgetState extends State<SignupScreenWidget> {
             padding: EdgeInsetsDirectional.fromSTEB(0, 100, 0, 8),
             child: Row(
               mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(12, 0, 0, 0),
-                  child: FlutterFlowIconButton(
-                    borderColor: Colors.transparent,
-                    borderRadius: 30,
-                    borderWidth: 1,
-                    buttonSize: 50,
-                    icon: Icon(
-                      Icons.arrow_back_rounded,
-                      color: FlutterFlowTheme.of(context).primaryColor,
-                      size: 30,
-                    ),
-                    onPressed: () async {
-                      context.pop();
-                    },
-                  ),
-                ),
                 Expanded(
                   child: Align(
-                    alignment: AlignmentDirectional(-0.5, 0),
-                    child: Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(24, 0, 0, 0),
-                      child: Text(
-                        'Sign up.',
-                        textAlign: TextAlign.center,
-                        style: FlutterFlowTheme.of(context).title1.override(
-                              fontFamily:
-                                  FlutterFlowTheme.of(context).title1Family,
-                              color: FlutterFlowTheme.of(context).primaryColor,
-                              fontSize: 40,
-                              fontWeight: FontWeight.bold,
-                              useGoogleFonts: GoogleFonts.asMap().containsKey(
-                                  FlutterFlowTheme.of(context).title1Family),
-                            ),
-                      ),
+                    alignment: AlignmentDirectional(0, 0),
+                    child: Text(
+                      'Sign up.',
+                      textAlign: TextAlign.center,
+                      style: FlutterFlowTheme.of(context).title1.override(
+                            fontFamily: 'Poppins',
+                            color: FlutterFlowTheme.of(context).primaryColor,
+                            fontSize: 40,
+                            fontWeight: FontWeight.bold,
+                          ),
                     ),
                   ),
                 ),
@@ -119,16 +95,12 @@ class _SignupScreenWidgetState extends State<SignupScreenWidget> {
                       color: FlutterFlowTheme.of(context).secondaryText,
                       fontSize: 14,
                       fontWeight: FontWeight.normal,
-                      useGoogleFonts: GoogleFonts.asMap().containsKey(
-                          FlutterFlowTheme.of(context).bodyText2Family),
                     ),
                 hintStyle: FlutterFlowTheme.of(context).bodyText2.override(
                       fontFamily: 'Outfit',
                       color: Color(0xFF57636C),
                       fontSize: 14,
                       fontWeight: FontWeight.normal,
-                      useGoogleFonts: GoogleFonts.asMap().containsKey(
-                          FlutterFlowTheme.of(context).bodyText2Family),
                     ),
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(
@@ -167,8 +139,6 @@ class _SignupScreenWidgetState extends State<SignupScreenWidget> {
                     color: FlutterFlowTheme.of(context).primaryText,
                     fontSize: 14,
                     fontWeight: FontWeight.normal,
-                    useGoogleFonts: GoogleFonts.asMap().containsKey(
-                        FlutterFlowTheme.of(context).bodyText1Family),
                   ),
             ),
           ),
@@ -186,16 +156,12 @@ class _SignupScreenWidgetState extends State<SignupScreenWidget> {
                         color: FlutterFlowTheme.of(context).secondaryText,
                         fontSize: 14,
                         fontWeight: FontWeight.normal,
-                        useGoogleFonts: GoogleFonts.asMap().containsKey(
-                            FlutterFlowTheme.of(context).bodyText2Family),
                       ),
                   hintStyle: FlutterFlowTheme.of(context).bodyText2.override(
                         fontFamily: 'Outfit',
                         color: Color(0xFF57636C),
                         fontSize: 14,
                         fontWeight: FontWeight.normal,
-                        useGoogleFonts: GoogleFonts.asMap().containsKey(
-                            FlutterFlowTheme.of(context).bodyText2Family),
                       ),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(
@@ -234,8 +200,6 @@ class _SignupScreenWidgetState extends State<SignupScreenWidget> {
                       color: FlutterFlowTheme.of(context).primaryText,
                       fontSize: 14,
                       fontWeight: FontWeight.normal,
-                      useGoogleFonts: GoogleFonts.asMap().containsKey(
-                          FlutterFlowTheme.of(context).bodyText1Family),
                     ),
               ),
             ),
@@ -254,16 +218,12 @@ class _SignupScreenWidgetState extends State<SignupScreenWidget> {
                         color: FlutterFlowTheme.of(context).secondaryText,
                         fontSize: 14,
                         fontWeight: FontWeight.normal,
-                        useGoogleFonts: GoogleFonts.asMap().containsKey(
-                            FlutterFlowTheme.of(context).bodyText2Family),
                       ),
                   hintStyle: FlutterFlowTheme.of(context).bodyText2.override(
                         fontFamily: 'Outfit',
                         color: Color(0xFF57636C),
                         fontSize: 14,
                         fontWeight: FontWeight.normal,
-                        useGoogleFonts: GoogleFonts.asMap().containsKey(
-                            FlutterFlowTheme.of(context).bodyText2Family),
                       ),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(
@@ -315,8 +275,6 @@ class _SignupScreenWidgetState extends State<SignupScreenWidget> {
                       color: FlutterFlowTheme.of(context).primaryText,
                       fontSize: 14,
                       fontWeight: FontWeight.normal,
-                      useGoogleFonts: GoogleFonts.asMap().containsKey(
-                          FlutterFlowTheme.of(context).bodyText1Family),
                     ),
               ),
             ),
@@ -336,16 +294,12 @@ class _SignupScreenWidgetState extends State<SignupScreenWidget> {
                         color: FlutterFlowTheme.of(context).secondaryText,
                         fontSize: 14,
                         fontWeight: FontWeight.normal,
-                        useGoogleFonts: GoogleFonts.asMap().containsKey(
-                            FlutterFlowTheme.of(context).bodyText2Family),
                       ),
                   hintStyle: FlutterFlowTheme.of(context).bodyText2.override(
                         fontFamily: 'Outfit',
                         color: Color(0xFF57636C),
                         fontSize: 14,
                         fontWeight: FontWeight.normal,
-                        useGoogleFonts: GoogleFonts.asMap().containsKey(
-                            FlutterFlowTheme.of(context).bodyText2Family),
                       ),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(
@@ -398,8 +352,6 @@ class _SignupScreenWidgetState extends State<SignupScreenWidget> {
                       color: FlutterFlowTheme.of(context).primaryText,
                       fontSize: 14,
                       fontWeight: FontWeight.normal,
-                      useGoogleFonts: GoogleFonts.asMap().containsKey(
-                          FlutterFlowTheme.of(context).bodyText1Family),
                     ),
               ),
             ),
@@ -445,8 +397,6 @@ class _SignupScreenWidgetState extends State<SignupScreenWidget> {
                         color: Colors.white,
                         fontSize: 18,
                         fontWeight: FontWeight.normal,
-                        useGoogleFonts: GoogleFonts.asMap().containsKey(
-                            FlutterFlowTheme.of(context).subtitle1Family),
                       ),
                   elevation: 2,
                   borderSide: BorderSide(
@@ -487,12 +437,9 @@ class _SignupScreenWidgetState extends State<SignupScreenWidget> {
                     height: 30,
                     color: Color(0x0096669E),
                     textStyle: FlutterFlowTheme.of(context).subtitle2.override(
-                          fontFamily:
-                              FlutterFlowTheme.of(context).subtitle2Family,
+                          fontFamily: 'Poppins',
                           color: FlutterFlowTheme.of(context).secondaryColor,
                           fontSize: 14,
-                          useGoogleFonts: GoogleFonts.asMap().containsKey(
-                              FlutterFlowTheme.of(context).subtitle2Family),
                         ),
                     borderSide: BorderSide(
                       color: Colors.transparent,

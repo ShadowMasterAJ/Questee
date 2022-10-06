@@ -108,9 +108,14 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
                   : CreateJobScreenWidget(),
             ),
             FFRoute(
-              name: 'JobDetailScreen',
-              path: 'jobDetailScreen',
-              builder: (context, params) => JobDetailScreenWidget(),
+              name: 'JobDetailScreenPoster',
+              path: 'jobDetailScreenPoster',
+              builder: (context, params) => JobDetailScreenPosterWidget(),
+            ),
+            FFRoute(
+              name: 'JobDetailScreenGrabber',
+              path: 'jobDetailScreenGrabber',
+              builder: (context, params) => JobDetailScreenGrabberWidget(),
             )
           ].map((r) => r.toRoute(appStateNotifier)).toList(),
         ).toRoute(appStateNotifier),

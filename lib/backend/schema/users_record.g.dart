@@ -78,6 +78,14 @@ class _$UsersRecordSerializer implements StructuredSerializer<UsersRecord> {
         ..add(serializers.serialize(value,
             specifiedType: const FullType(String)));
     }
+    value = object.posterID;
+    if (value != null) {
+      result
+        ..add('posterID')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(
+                DocumentReference, const [const FullType.nullable(Object)])));
+    }
     value = object.ffRef;
     if (value != null) {
       result
@@ -135,6 +143,12 @@ class _$UsersRecordSerializer implements StructuredSerializer<UsersRecord> {
           result.gender = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String?;
           break;
+        case 'posterID':
+          result.posterID = serializers.deserialize(value,
+              specifiedType: const FullType(DocumentReference, const [
+                const FullType.nullable(Object)
+              ])) as DocumentReference<Object?>?;
+          break;
         case 'Document__Reference__Field':
           result.ffRef = serializers.deserialize(value,
               specifiedType: const FullType(DocumentReference, const [
@@ -166,6 +180,8 @@ class _$UsersRecord extends UsersRecord {
   @override
   final String? gender;
   @override
+  final DocumentReference<Object?>? posterID;
+  @override
   final DocumentReference<Object?>? ffRef;
 
   factory _$UsersRecord([void Function(UsersRecordBuilder)? updates]) =>
@@ -180,6 +196,7 @@ class _$UsersRecord extends UsersRecord {
       this.phoneNumber,
       this.pastJobs,
       this.gender,
+      this.posterID,
       this.ffRef})
       : super._();
 
@@ -202,6 +219,7 @@ class _$UsersRecord extends UsersRecord {
         phoneNumber == other.phoneNumber &&
         pastJobs == other.pastJobs &&
         gender == other.gender &&
+        posterID == other.posterID &&
         ffRef == other.ffRef;
   }
 
@@ -214,14 +232,16 @@ class _$UsersRecord extends UsersRecord {
                     $jc(
                         $jc(
                             $jc(
-                                $jc($jc(0, email.hashCode),
-                                    displayName.hashCode),
-                                photoUrl.hashCode),
-                            uid.hashCode),
-                        createdTime.hashCode),
-                    phoneNumber.hashCode),
-                pastJobs.hashCode),
-            gender.hashCode),
+                                $jc(
+                                    $jc($jc(0, email.hashCode),
+                                        displayName.hashCode),
+                                    photoUrl.hashCode),
+                                uid.hashCode),
+                            createdTime.hashCode),
+                        phoneNumber.hashCode),
+                    pastJobs.hashCode),
+                gender.hashCode),
+            posterID.hashCode),
         ffRef.hashCode));
   }
 
@@ -236,6 +256,7 @@ class _$UsersRecord extends UsersRecord {
           ..add('phoneNumber', phoneNumber)
           ..add('pastJobs', pastJobs)
           ..add('gender', gender)
+          ..add('posterID', posterID)
           ..add('ffRef', ffRef))
         .toString();
   }
@@ -278,6 +299,11 @@ class UsersRecordBuilder implements Builder<UsersRecord, UsersRecordBuilder> {
   String? get gender => _$this._gender;
   set gender(String? gender) => _$this._gender = gender;
 
+  DocumentReference<Object?>? _posterID;
+  DocumentReference<Object?>? get posterID => _$this._posterID;
+  set posterID(DocumentReference<Object?>? posterID) =>
+      _$this._posterID = posterID;
+
   DocumentReference<Object?>? _ffRef;
   DocumentReference<Object?>? get ffRef => _$this._ffRef;
   set ffRef(DocumentReference<Object?>? ffRef) => _$this._ffRef = ffRef;
@@ -297,6 +323,7 @@ class UsersRecordBuilder implements Builder<UsersRecord, UsersRecordBuilder> {
       _phoneNumber = $v.phoneNumber;
       _pastJobs = $v.pastJobs?.toBuilder();
       _gender = $v.gender;
+      _posterID = $v.posterID;
       _ffRef = $v.ffRef;
       _$v = null;
     }
@@ -330,6 +357,7 @@ class UsersRecordBuilder implements Builder<UsersRecord, UsersRecordBuilder> {
               phoneNumber: phoneNumber,
               pastJobs: _pastJobs?.build(),
               gender: gender,
+              posterID: posterID,
               ffRef: ffRef);
     } catch (_) {
       late String _$failedField;

@@ -30,6 +30,8 @@ abstract class UsersRecord implements Built<UsersRecord, UsersRecordBuilder> {
 
   String? get gender;
 
+  DocumentReference? get posterID;
+
   @BuiltValueField(wireName: kDocumentReferenceField)
   DocumentReference? get ffRef;
   DocumentReference get reference => ffRef!;
@@ -72,6 +74,7 @@ Map<String, dynamic> createUsersRecordData({
   DateTime? createdTime,
   String? phoneNumber,
   String? gender,
+  DocumentReference? posterID,
 }) {
   final firestoreData = serializers.toFirestore(
     UsersRecord.serializer,
@@ -84,7 +87,8 @@ Map<String, dynamic> createUsersRecordData({
         ..createdTime = createdTime
         ..phoneNumber = phoneNumber
         ..pastJobs = null
-        ..gender = gender,
+        ..gender = gender
+        ..posterID = posterID,
     ),
   );
 
