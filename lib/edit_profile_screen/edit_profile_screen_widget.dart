@@ -264,7 +264,6 @@ class _EditProfileScreenWidgetState extends State<EditProfileScreenWidget> {
                         padding: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 12),
                         child: TextFormField(
                           controller: useEmailController,
-                          autofocus: true,
                           obscureText: false,
                           decoration: InputDecoration(
                             labelStyle: FlutterFlowTheme.of(context).bodyText2,
@@ -364,10 +363,9 @@ class _EditProfileScreenWidgetState extends State<EditProfileScreenWidget> {
                           ),
                         ),
                       ),
-                      Align(
-                        alignment: AlignmentDirectional(0, 0.05),
+                      Center(
                         child: Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(0, 24, 0, 0),
+                          padding: EdgeInsetsDirectional.only(top: 10),
                           child: FFButtonWidget(
                             onPressed: () async {
                               final usersUpdateData = createUsersRecordData(
@@ -433,12 +431,7 @@ class _EditProfileScreenWidgetState extends State<EditProfileScreenWidget> {
                   ),
                 ),
               ),
-              Expanded(
-                child: Align(
-                  alignment: AlignmentDirectional(0, 0.05),
-                  child: NavBarWithMiddleButtonWidget(),
-                ),
-              ),
+              NavBarWithMiddleButtonWidget(),
             ],
           ),
         ),

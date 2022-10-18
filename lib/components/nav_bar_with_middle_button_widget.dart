@@ -22,7 +22,7 @@ class _NavBarWithMiddleButtonWidgetState
       children: [
         Container(
           width: double.infinity,
-          height: 90,
+          height: 80,
           decoration: BoxDecoration(
             color: Color(0x00EEEEEE),
           ),
@@ -105,7 +105,7 @@ class _NavBarWithMiddleButtonWidgetState
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 10),
+                        padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 15),
                         child: FlutterFlowIconButton(
                           borderColor: Colors.transparent,
                           borderRadius: 10,

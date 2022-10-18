@@ -64,43 +64,18 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
                           color: FlutterFlowTheme.of(context).primaryBackground,
                         ),
                         child: Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 20),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              FlutterFlowIconButton(
-                                borderColor: Colors.transparent,
-                                borderRadius: 30,
-                                borderWidth: 1,
-                                buttonSize: 60,
-                                icon: Icon(
-                                  Icons.menu_rounded,
-                                  color:
-                                      FlutterFlowTheme.of(context).primaryText,
-                                  size: 30,
-                                ),
-                                onPressed: () {
-                                  print('IconButton pressed ...');
-                                },
-                              ),
-                              Spacer(),
-                              Padding(
-                                padding: EdgeInsetsDirectional.fromSTEB(
-                                    0, 26, 30, 12),
-                                child: Text(
-                                  'Job Board.',
-                                  textAlign: TextAlign.start,
-                                  style: FlutterFlowTheme.of(context)
-                                      .title1
-                                      .override(
+                          padding:
+                              EdgeInsetsDirectional.fromSTEB(10, 20, 0, 20),
+                          child: Center(
+                            child: Text(
+                              'Job Board.',
+                              textAlign: TextAlign.start,
+                              style:
+                                  FlutterFlowTheme.of(context).title1.override(
                                         fontFamily: 'Poppins',
                                         fontSize: 36,
                                       ),
-                                ),
-                              ),
-                              Spacer(flex: 2),
-                            ],
+                            ),
                           ),
                         ),
                       ),
@@ -458,9 +433,7 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
                   ),
                 ),
               ),
-              Expanded(
-                child: NavBarWithMiddleButtonWidget(),
-              ),
+              Expanded(child: NavBarWithMiddleButtonWidget()),
             ],
           ),
         ),
