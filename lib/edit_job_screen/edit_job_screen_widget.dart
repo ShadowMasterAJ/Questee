@@ -7,26 +7,25 @@ import '../flutter_flow/flutter_flow_util.dart';
 import '../flutter_flow/flutter_flow_widgets.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class CreateJobScreenWidget extends StatefulWidget {
-  const CreateJobScreenWidget({Key? key}) : super(key: key);
+class EditJobScreenWidget extends StatefulWidget {
+  const EditJobScreenWidget({Key? key}) : super(key: key);
 
   @override
-  _CreateJobScreenWidgetState createState() => _CreateJobScreenWidgetState();
+  _EditJobScreenWidgetState createState() => _EditJobScreenWidgetState();
 }
 
-class _CreateJobScreenWidgetState extends State<CreateJobScreenWidget> {
+class _EditJobScreenWidgetState extends State<EditJobScreenWidget> {
   DateTime? datePicked;
   TextEditingController? priceController;
   String? storeValue;
   TextEditingController? delLocationController;
   TextEditingController? noteController;
-  TextEditingController? itemQuantityController;
   TextEditingController? itemController;
+  TextEditingController? itemQuantityController;
   final formKey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -36,8 +35,8 @@ class _CreateJobScreenWidgetState extends State<CreateJobScreenWidget> {
     delLocationController = TextEditingController();
     priceController = TextEditingController();
     noteController = TextEditingController();
-    itemQuantityController = TextEditingController();
     itemController = TextEditingController();
+    itemQuantityController = TextEditingController();
   }
 
   @override
@@ -45,8 +44,8 @@ class _CreateJobScreenWidgetState extends State<CreateJobScreenWidget> {
     delLocationController?.dispose();
     priceController?.dispose();
     noteController?.dispose();
-    itemQuantityController?.dispose();
     itemController?.dispose();
+    itemQuantityController?.dispose();
     super.dispose();
   }
 
@@ -189,13 +188,6 @@ class _CreateJobScreenWidgetState extends State<CreateJobScreenWidget> {
                                             10, 10, 10, 10),
                                   ),
                                   style: FlutterFlowTheme.of(context).bodyText1,
-                                  validator: (val) {
-                                    if (val == null || val.isEmpty) {
-                                      return 'Field is required';
-                                    }
-
-                                    return null;
-                                  },
                                 ),
                               ),
                               Padding(
@@ -333,18 +325,6 @@ class _CreateJobScreenWidgetState extends State<CreateJobScreenWidget> {
                                         keyboardType: const TextInputType
                                                 .numberWithOptions(
                                             signed: true, decimal: true),
-                                        validator: (val) {
-                                          if (val == null || val.isEmpty) {
-                                            return 'Field is required';
-                                          }
-
-                                          if (!RegExp(
-                                                  kTextValidatorWebsiteRegex)
-                                              .hasMatch(val)) {
-                                            return 'Has to be a valid website.';
-                                          }
-                                          return null;
-                                        },
                                       ),
                                     ),
                                   ],
@@ -398,13 +378,6 @@ class _CreateJobScreenWidgetState extends State<CreateJobScreenWidget> {
                                   ),
                                   style: FlutterFlowTheme.of(context).bodyText1,
                                   maxLines: 6,
-                                  validator: (val) {
-                                    if (val == null || val.isEmpty) {
-                                      return 'Field is required';
-                                    }
-
-                                    return null;
-                                  },
                                 ),
                               ),
                               Column(
@@ -506,23 +479,11 @@ class _CreateJobScreenWidgetState extends State<CreateJobScreenWidget> {
                                       ),
                                     ],
                                   ),
-                                ],
-                              ),
-                              ListView(
-                                padding: EdgeInsets.zero,
-                                shrinkWrap: true,
-                                scrollDirection: Axis.vertical,
-                                children: [
                                   Padding(
                                     padding: EdgeInsetsDirectional.fromSTEB(
                                         10, 10, 10, 10),
                                     child: TextFormField(
                                       controller: itemController,
-                                      onChanged: (_) => EasyDebounce.debounce(
-                                        'itemController',
-                                        Duration(milliseconds: 1000),
-                                        () => setState(() {}),
-                                      ),
                                       autofocus: true,
                                       obscureText: false,
                                       decoration: InputDecoration(
@@ -575,61 +536,58 @@ class _CreateJobScreenWidgetState extends State<CreateJobScreenWidget> {
                                       maxLines: 1,
                                     ),
                                   ),
-                                ],
-                              ),
-                              Align(
-                                alignment: AlignmentDirectional(1, 0),
-                                child: Padding(
-                                  padding: EdgeInsetsDirectional.fromSTEB(
-                                      0, 0, 0, 15),
-                                  child: Container(
-                                    width: 150,
-                                    height: 30,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: InkWell(
-                                      onTap: () async {
-                                        final jobCreateData = {
-                                          'temp_item_list': [''],
-                                        };
-                                        await JobRecord.collection
-                                            .doc()
-                                            .set(jobCreateData);
-                                      },
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.max,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Padding(
-                                            padding:
-                                                EdgeInsetsDirectional.fromSTEB(
-                                                    0, 0, 10, 0),
-                                            child: Text(
-                                              'Add Items',
-                                              textAlign: TextAlign.center,
-                                              style:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyText1
-                                                      .override(
-                                                        fontFamily: 'Poppins',
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                      ),
+                                  ListView(
+                                    padding: EdgeInsets.zero,
+                                    shrinkWrap: true,
+                                    scrollDirection: Axis.vertical,
+                                    children: [],
+                                  ),
+                                  Align(
+                                    alignment: AlignmentDirectional(1, 0),
+                                    child: Padding(
+                                      padding: EdgeInsetsDirectional.fromSTEB(
+                                          0, 0, 0, 15),
+                                      child: Container(
+                                        width: 150,
+                                        height: 30,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsetsDirectional
+                                                  .fromSTEB(0, 0, 10, 0),
+                                              child: Text(
+                                                'Add Items',
+                                                textAlign: TextAlign.center,
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .bodyText1
+                                                        .override(
+                                                          fontFamily: 'Poppins',
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                        ),
+                                              ),
                                             ),
-                                          ),
-                                          Icon(
-                                            Icons.add_box,
-                                            color: FlutterFlowTheme.of(context)
-                                                .primaryBtnText,
-                                            size: 24,
-                                          ),
-                                        ],
+                                            Icon(
+                                              Icons.add_box,
+                                              color:
+                                                  FlutterFlowTheme.of(context)
+                                                      .primaryBtnText,
+                                              size: 24,
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
+                                ],
                               ),
                             ],
                           ),

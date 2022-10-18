@@ -92,26 +92,31 @@ class _JobDetailScreenPosterWidgetState
                         ],
                       ),
                     ),
-                    FFButtonWidget(
-                      onPressed: () {
-                        print('Button pressed ...');
-                      },
-                      text: 'Your job is pending acceptance',
-                      options: FFButtonOptions(
-                        width: 300,
-                        height: 40,
-                        color: Color(0x6CD9D9D9),
-                        textStyle:
-                            FlutterFlowTheme.of(context).subtitle2.override(
-                                  fontFamily: 'Poppins',
-                                  color: Colors.white,
-                                ),
-                        borderSide: BorderSide(
-                          color: Colors.transparent,
+                    if (columnJobRecord!.acceptorID == null)
+                      FFButtonWidget(
+                        onPressed: () {
+                          print('Button pressed ...');
+                        },
+                        text: columnJobRecord!.acceptorID != null
+                            ? 'Your job has been Accepted!'
+                            : 'Your job is pending acceptance.',
+                        options: FFButtonOptions(
+                          width: 300,
+                          height: 40,
+                          color: columnJobRecord!.acceptorID != null
+                              ? Color(0xFF80D3A2)
+                              : FlutterFlowTheme.of(context).secondaryText,
+                          textStyle:
+                              FlutterFlowTheme.of(context).subtitle2.override(
+                                    fontFamily: 'Poppins',
+                                    color: Colors.white,
+                                  ),
+                          borderSide: BorderSide(
+                            color: Colors.transparent,
+                          ),
+                          borderRadius: BorderRadius.circular(8),
                         ),
-                        borderRadius: BorderRadius.circular(8),
                       ),
-                    ),
                     Align(
                       alignment: AlignmentDirectional(-0.1, 0.05),
                       child: Column(
@@ -290,61 +295,163 @@ class _JobDetailScreenPosterWidgetState
                       ),
                     ),
                     Spacer(),
-                    Align(
-                      alignment: AlignmentDirectional(0, 0.7),
-                      child: FFButtonWidget(
-                        onPressed: () {
-                          print('Button pressed ...');
-                        },
-                        text: 'Chat with Job Acceptor',
-                        options: FFButtonOptions(
-                          width: 340,
-                          height: 50,
-                          color: FlutterFlowTheme.of(context).primaryColor,
-                          textStyle:
-                              FlutterFlowTheme.of(context).subtitle2.override(
+                    Stack(
+                      children: [
+                        Align(
+                          alignment: AlignmentDirectional(0, 0.11),
+                          child: FFButtonWidget(
+                            onPressed: () {
+                              print('Button pressed ...');
+                            },
+                            text: 'Chat with Job Acceptor',
+                            options: FFButtonOptions(
+                              width: 320,
+                              height: 50,
+                              color: FlutterFlowTheme.of(context).primaryColor,
+                              textStyle: FlutterFlowTheme.of(context)
+                                  .subtitle2
+                                  .override(
                                     fontFamily: 'Poppins',
                                     color: Colors.white,
                                   ),
-                          borderSide: BorderSide(
-                            color: Colors.transparent,
-                            width: 1,
+                              borderSide: BorderSide(
+                                color: Colors.transparent,
+                                width: 1,
+                              ),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
                           ),
-                          borderRadius: BorderRadius.circular(8),
                         ),
-                      ),
+                        if (columnJobRecord!.acceptorID == null)
+                          Align(
+                            alignment: AlignmentDirectional(0, 0.7),
+                            child: StreamBuilder<List<UsersRecord>>(
+                              stream: queryUsersRecord(
+                                singleRecord: true,
+                              ),
+                              builder: (context, snapshot) {
+                                // Customize what your widget looks like when it's loading.
+                                if (!snapshot.hasData) {
+                                  return Center(
+                                    child: SizedBox(
+                                      width: 50,
+                                      height: 50,
+                                      child: CircularProgressIndicator(
+                                        color: FlutterFlowTheme.of(context)
+                                            .primaryColor,
+                                      ),
+                                    ),
+                                  );
+                                }
+                                List<UsersRecord> buttonUsersRecordList =
+                                    snapshot.data!;
+                                // Return an empty Container when the document does not exist.
+                                if (snapshot.data!.isEmpty) {
+                                  return Container();
+                                }
+                                final buttonUsersRecord =
+                                    buttonUsersRecordList.isNotEmpty
+                                        ? buttonUsersRecordList.first
+                                        : null;
+                                return FFButtonWidget(
+                                  onPressed: () async {
+                                    if (columnJobRecord!.acceptorID != null) {
+                                      context.pushNamed(
+                                        'ChatScreen',
+                                        queryParams: {
+                                          'chatUser': serializeParam(
+                                            buttonUsersRecord,
+                                            ParamType.Document,
+                                          ),
+                                        }.withoutNulls,
+                                        extra: <String, dynamic>{
+                                          'chatUser': buttonUsersRecord,
+                                          kTransitionInfoKey: TransitionInfo(
+                                            hasTransition: true,
+                                            transitionType:
+                                                PageTransitionType.scale,
+                                            alignment: Alignment.bottomCenter,
+                                            duration:
+                                                Duration(milliseconds: 400),
+                                          ),
+                                        },
+                                      );
+                                    } else {
+                                      return;
+                                    }
+                                  },
+                                  text: 'Chat with Job Acceptor',
+                                  options: FFButtonOptions(
+                                    width: 320,
+                                    height: 50,
+                                    color: FlutterFlowTheme.of(context)
+                                        .primaryColor,
+                                    textStyle: FlutterFlowTheme.of(context)
+                                        .subtitle2
+                                        .override(
+                                          fontFamily: 'Poppins',
+                                          color: FlutterFlowTheme.of(context)
+                                              .primaryText,
+                                        ),
+                                    borderSide: BorderSide(
+                                      color: Colors.transparent,
+                                      width: 1,
+                                    ),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                      ],
                     ),
                     Padding(
                       padding: EdgeInsetsDirectional.fromSTEB(5, 10, 5, 10),
                       child: Row(
                         mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Padding(
-                            padding:
-                                EdgeInsetsDirectional.fromSTEB(0, 0, 15, 0),
-                            child: FFButtonWidget(
-                              onPressed: () {
-                                print('Button pressed ...');
-                              },
-                              text: 'Verify',
-                              options: FFButtonOptions(
-                                width: 160,
-                                height: 50,
-                                color: Color(0xFF9ACDA1),
-                                textStyle: FlutterFlowTheme.of(context)
-                                    .subtitle2
-                                    .override(
-                                      fontFamily: 'Poppins',
-                                      color: Colors.white,
+                          Stack(
+                            children: [
+                              Align(
+                                alignment: AlignmentDirectional(-0.1, -0.05),
+                                child: Padding(
+                                  padding: EdgeInsetsDirectional.fromSTEB(
+                                      0, 0, 15, 0),
+                                  child: FFButtonWidget(
+                                    onPressed: () async {
+                                      if (!(columnJobRecord!.acceptorID !=
+                                          null)) {
+                                        return;
+                                      }
+                                    },
+                                    text: 'Verify',
+                                    options: FFButtonOptions(
+                                      width: 150,
+                                      height: 50,
+                                      color: valueOrDefault<Color>(
+                                        columnJobRecord!.acceptorID != null
+                                            ? Color(0xFF80D3A2)
+                                            : FlutterFlowTheme.of(context)
+                                                .secondaryText,
+                                        Color(0xFFC0C0C0),
+                                      ),
+                                      textStyle: FlutterFlowTheme.of(context)
+                                          .subtitle2
+                                          .override(
+                                            fontFamily: 'Poppins',
+                                            color: Colors.white,
+                                          ),
+                                      borderSide: BorderSide(
+                                        color: Colors.transparent,
+                                        width: 1,
+                                      ),
+                                      borderRadius: BorderRadius.circular(8),
                                     ),
-                                borderSide: BorderSide(
-                                  color: Colors.transparent,
-                                  width: 1,
+                                  ),
                                 ),
-                                borderRadius: BorderRadius.circular(8),
                               ),
-                            ),
+                            ],
                           ),
                           FFButtonWidget(
                             onPressed: () {
@@ -352,7 +459,7 @@ class _JobDetailScreenPosterWidgetState
                             },
                             text: 'Delete',
                             options: FFButtonOptions(
-                              width: 170,
+                              width: 150,
                               height: 50,
                               color: Color(0xFFC9685D),
                               textStyle: FlutterFlowTheme.of(context)
