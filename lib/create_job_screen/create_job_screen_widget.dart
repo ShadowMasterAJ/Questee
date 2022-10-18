@@ -590,12 +590,13 @@ class _CreateJobScreenWidgetState extends State<CreateJobScreenWidget> {
                                     ),
                                     child: InkWell(
                                       onTap: () async {
-                                        final jobCreateData = {
-                                          'temp_item_list': [''],
-                                        };
-                                        await JobRecord.collection
-                                            .doc()
-                                            .set(jobCreateData);
+                                        // do the loop here
+                                        // final jobCreateData = {
+                                        //   'temp_item_list': [''],
+                                        // };
+                                        // await JobRecord.collection
+                                        //     .doc()
+                                        //     .set(jobCreateData);
                                       },
                                       child: Row(
                                         mainAxisSize: MainAxisSize.max,

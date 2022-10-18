@@ -384,8 +384,13 @@ class _JobDetailScreenPosterWidgetState
                                   options: FFButtonOptions(
                                     width: 320,
                                     height: 50,
-                                    color: FlutterFlowTheme.of(context)
-                                        .primaryColor,
+                                    color: valueOrDefault<Color>(
+                                      columnJobRecord!.acceptorID != null
+                                          ? Color(0xFF80D3A2)
+                                          : FlutterFlowTheme.of(context)
+                                              .secondaryText,
+                                      Color(0xFFC0C0C0),
+                                    ),
                                     textStyle: FlutterFlowTheme.of(context)
                                         .subtitle2
                                         .override(
