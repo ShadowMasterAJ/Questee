@@ -301,8 +301,13 @@ class _JobDetailScreenGrabberWidgetState
                                 options: FFButtonOptions(
                                   width: 340,
                                   height: 50,
-                                  color:
-                                      FlutterFlowTheme.of(context).primaryColor,
+                                  color: valueOrDefault<Color>(
+                                    columnJobRecord!.acceptorID != null
+                                        ? Color(0xFF80D3A2)
+                                        : FlutterFlowTheme.of(context)
+                                            .secondaryText,
+                                    Color(0xFFC0C0C0),
+                                  ),
                                   textStyle: FlutterFlowTheme.of(context)
                                       .subtitle2
                                       .override(
@@ -321,66 +326,65 @@ class _JobDetailScreenGrabberWidgetState
                           ),
                         ),
                       ),
-                    if (!accepted!)
-                      Align(
-                        alignment: AlignmentDirectional(0, 0),
-                        child: Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 20),
-                          child: FFButtonWidget(
-                            onPressed: () async {
-                              final jobUpdateData = createJobRecordData(
-                                acceptorID: currentUserReference,
-                              );
-                              await columnJobRecord!.reference
-                                  .update(jobUpdateData);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    'Job Accepted!',
-                                    style: TextStyle(
-                                      color: FlutterFlowTheme.of(context)
-                                          .primaryText,
-                                    ),
+                    // if (accepted != null && accepted == false)
+                    Align(
+                      alignment: AlignmentDirectional(0, 0),
+                      child: Padding(
+                        padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 20),
+                        child: FFButtonWidget(
+                          onPressed: () async {
+                            final jobUpdateData = createJobRecordData(
+                              acceptorID: currentUserReference,
+                            );
+                            await columnJobRecord!.reference
+                                .update(jobUpdateData);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'Job Accepted!',
+                                  style: TextStyle(
+                                    color: FlutterFlowTheme.of(context)
+                                        .primaryText,
                                   ),
-                                  duration: Duration(milliseconds: 2000),
-                                  backgroundColor: Color(0x00000000),
                                 ),
-                              );
-                              accepted = await actions.onPressAccept(
-                                context,
-                              );
-
-                              setState(() {});
-                            },
-                            text: 'Accept This Job ',
-                            options: FFButtonOptions(
-                              width: 340,
-                              height: 50,
-                              color: Color(0xFF9ACDA1),
-                              textStyle: FlutterFlowTheme.of(context)
-                                  .subtitle2
-                                  .override(
-                                    fontFamily: 'Poppins',
-                                    color: Colors.white,
-                                  ),
-                              borderSide: BorderSide(
-                                color: Colors.transparent,
-                                width: 1,
+                                duration: Duration(milliseconds: 2000),
+                                backgroundColor: Color(0x00000000),
                               ),
-                              borderRadius: BorderRadius.circular(10),
+                            );
+                            accepted = await actions.onPressAccept(
+                              context,
+                            );
+
+                            setState(() {});
+                          },
+                          text: 'Accept This Job ',
+                          options: FFButtonOptions(
+                            width: 340,
+                            height: 50,
+                            color: Color(0xFF9ACDA1),
+                            textStyle:
+                                FlutterFlowTheme.of(context).subtitle2.override(
+                                      fontFamily: 'Poppins',
+                                      color: Colors.white,
+                                    ),
+                            borderSide: BorderSide(
+                              color: Colors.transparent,
+                              width: 1,
                             ),
+                            borderRadius: BorderRadius.circular(10),
                           ),
                         ),
                       ),
-                    if (accepted ?? true)
-                      Text(
-                        'Job Accepted!',
-                        style: FlutterFlowTheme.of(context).title2.override(
-                              fontFamily: 'Poppins',
-                              color: Color(0xFF80D3A2),
-                              fontSize: 30,
-                            ),
-                      ),
+                    ),
+                    // if (accepted ?? true)
+                    //   Text(
+                    //     'Job Accepted!',
+                    //     style: FlutterFlowTheme.of(context).title2.override(
+                    //           fontFamily: 'Poppins',
+                    //           color: Color(0xFF80D3A2),
+                    //           fontSize: 30,
+                    //         ),
+                    //   ),
                   ],
                 );
               },
