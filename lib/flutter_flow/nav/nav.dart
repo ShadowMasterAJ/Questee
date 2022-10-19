@@ -114,14 +114,24 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               builder: (context, params) => EditJobScreenWidget(),
             ),
             FFRoute(
-              name: 'JobDetailScreenPoster',
-              path: 'jobDetailScreenPoster',
-              builder: (context, params) => JobDetailScreenPosterWidget(
-                store: params.getParam("store", ParamType.String),
-                time: params.getParam("time", ParamType.String),
-                note: params.getParam("note", ParamType.String),
-              ),
-            ),
+                name: 'JobDetailScreenPoster',
+                path: 'jobDetailScreenPoster',
+                asyncParams: {
+                  'jobDoc': getDoc('job', JobRecord.serializer),
+                },
+                builder: (context, params) {
+                  // List<String> temp =
+                  //     params.getParam("checklist", ParamType.String, true);
+                  return JobDetailScreenPosterWidget(
+                    job: params.getParam(
+                        'job', ParamType.DocumentReference, false, 'job'),
+                    store: params.getParam("store", ParamType.String),
+                    time: params.getParam("time", ParamType.String),
+                    note: params.getParam("note", ParamType.String),
+                    // fuck: params.getParam("fuck", ParamType.int)
+                    jobDoc: params.getParam("jobDoc", ParamType.Document),
+                  );
+                }),
             FFRoute(
               name: 'JobDetailScreenGrabber',
               path: 'jobDetailScreenGrabber',
@@ -282,6 +292,7 @@ class FFParameters {
     if (param is! String) {
       return param;
     }
+    print("FUCK");
     // Return serialized value.
     return deserializeParam<T>(param, type, isList, collectionName);
   }

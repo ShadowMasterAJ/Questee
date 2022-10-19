@@ -34,8 +34,6 @@ abstract class JobRecord implements Built<JobRecord, JobRecordBuilder> {
 
   DocumentReference? get acceptorID;
 
-  @BuiltValueField(wireName: 'temp_item_list')
-  BuiltList<String>? get tempItemList;
 
   @BuiltValueField(wireName: kDocumentReferenceField)
   DocumentReference? get ffRef;
@@ -49,8 +47,7 @@ abstract class JobRecord implements Built<JobRecord, JobRecordBuilder> {
     ..price = 0.0
     ..status = ''
     ..items = ListBuilder()
-    ..itemQuantity = 0
-    ..tempItemList = ListBuilder();
+    ..itemQuantity = 0;
 
   static CollectionReference get collection =>
       FirebaseFirestore.instance.collection('job');
@@ -98,13 +95,8 @@ Map<String, dynamic> createJobRecordData({
         ..delTime = delTime
         ..itemQuantity = itemQuantity
         ..posterID = posterID
-        ..acceptorID = acceptorID
-        ..tempItemList = null;
-
-      for (int i = 0; i < items!.length; i++) {
-        j.items.add(items[i]);
-      }
-    }),
+        ..acceptorID = acceptorID,
+    ),
   );
 
   return firestoreData;

@@ -70,6 +70,9 @@ dependencies:
   sign_in_with_apple_web: 1.0.1
   timeago: 3.2.2
   url_launcher: 6.1.5
+  text_search: ^0.0.2
+  device_apps: ^2.1.1
+  uri: ^1.0.0
 
 
   # The following adds the Cupertino Icons font to your application.

@@ -199,6 +199,7 @@ class _JobHistoryScreenWidgetState extends State<JobHistoryScreenWidget> {
                                                                   listViewJobRecordList =
                                                                   snapshot
                                                                       .data!;
+
                                                               if (listViewJobRecordList
                                                                   .isEmpty) {
                                                                 return Center(
@@ -237,131 +238,144 @@ class _JobHistoryScreenWidgetState extends State<JobHistoryScreenWidget> {
                                                                   final listViewJobRecord =
                                                                       listViewJobRecordList[
                                                                           listViewIndex];
-                                                                  return Padding(
-                                                                    padding: EdgeInsetsDirectional
-                                                                        .fromSTEB(
+
+                                                                  if (listViewJobRecord
+                                                                          .status ==
+                                                                      'ongoing') {
+                                                                    if (listViewJobRecord
+                                                                            .acceptorID!
+                                                                            .id ==
+                                                                        currentUserUid) {
+                                                                      return Padding(
+                                                                        padding: EdgeInsetsDirectional.fromSTEB(
                                                                             10,
                                                                             5,
                                                                             10,
                                                                             5),
-                                                                    child:
-                                                                        InkWell(
-                                                                      onTap:
-                                                                          () async {
-                                                                        if (listViewJobRecord.posterID ==
-                                                                            currentUserReference) {
-                                                                          context
-                                                                              .pushNamed('JobDetailScreenPoster');
-                                                                        } else {
-                                                                          context
-                                                                              .pushNamed('JobDetailScreenGrabber');
-                                                                        }
-                                                                      },
-                                                                      child:
-                                                                          Card(
-                                                                        clipBehavior:
-                                                                            Clip.antiAliasWithSaveLayer,
-                                                                        color: FlutterFlowTheme.of(context)
-                                                                            .primaryColor,
-                                                                        shape:
-                                                                            RoundedRectangleBorder(
-                                                                          borderRadius:
-                                                                              BorderRadius.circular(10),
-                                                                        ),
                                                                         child:
-                                                                            Row(
-                                                                          mainAxisSize:
-                                                                              MainAxisSize.max,
-                                                                          children: [
-                                                                            Padding(
-                                                                              padding: EdgeInsetsDirectional.fromSTEB(7, 7, 7, 7),
-                                                                              child: ClipRRect(
-                                                                                borderRadius: BorderRadius.circular(10),
-                                                                                child: Image.network(
-                                                                                  'https://picsum.photos/seed/689/600',
-                                                                                  width: 100,
-                                                                                  height: 100,
-                                                                                  fit: BoxFit.cover,
-                                                                                ),
-                                                                              ),
+                                                                            InkWell(
+                                                                          onTap:
+                                                                              () async {
+                                                                            if (listViewJobRecord.posterID ==
+                                                                                currentUserReference) {
+                                                                                  print("hello1");
+                                                                              context.pushNamed('JobDetailScreenPoster');
+                                                                            } else {
+                                                                              print("hello2");
+                                                                              context.pushNamed('JobDetailScreenGrabber');
+                                                                            }
+                                                                          },
+                                                                          child:
+                                                                              Card(
+                                                                            clipBehavior:
+                                                                                Clip.antiAliasWithSaveLayer,
+                                                                            color:
+                                                                                FlutterFlowTheme.of(context).primaryColor,
+                                                                            shape:
+                                                                                RoundedRectangleBorder(
+                                                                              borderRadius: BorderRadius.circular(10),
                                                                             ),
-                                                                            Column(
+                                                                            child:
+                                                                                Row(
                                                                               mainAxisSize: MainAxisSize.max,
-                                                                              crossAxisAlignment: CrossAxisAlignment.start,
                                                                               children: [
                                                                                 Padding(
-                                                                                  padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
-                                                                                  child: Row(
-                                                                                    mainAxisSize: MainAxisSize.max,
-                                                                                    children: [
-                                                                                      Padding(
-                                                                                        padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
-                                                                                        child: Icon(
-                                                                                          Icons.shopping_cart,
-                                                                                          color: FlutterFlowTheme.of(context).secondaryBackground,
-                                                                                          size: 24,
-                                                                                        ),
-                                                                                      ),
-                                                                                      Text(
-                                                                                        listViewJobRecord.store!,
-                                                                                        style: FlutterFlowTheme.of(context).bodyText1,
-                                                                                      ),
-                                                                                    ],
+                                                                                  padding: EdgeInsetsDirectional.fromSTEB(7, 7, 7, 7),
+                                                                                  child: ClipRRect(
+                                                                                    borderRadius: BorderRadius.circular(10),
+                                                                                    child: Image.network(
+                                                                                      'https://picsum.photos/seed/689/600',
+                                                                                      width: 100,
+                                                                                      height: 100,
+                                                                                      fit: BoxFit.cover,
+                                                                                    ),
                                                                                   ),
                                                                                 ),
-                                                                                Padding(
-                                                                                  padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
-                                                                                  child: Row(
-                                                                                    mainAxisSize: MainAxisSize.max,
-                                                                                    mainAxisAlignment: MainAxisAlignment.start,
-                                                                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                                                                    children: [
-                                                                                      Padding(
-                                                                                        padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
-                                                                                        child: Icon(
-                                                                                          Icons.access_time,
-                                                                                          color: FlutterFlowTheme.of(context).secondaryBackground,
-                                                                                          size: 24,
-                                                                                        ),
+                                                                                Column(
+                                                                                  mainAxisSize: MainAxisSize.max,
+                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                  children: [
+                                                                                    Padding(
+                                                                                      padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
+                                                                                      child: Row(
+                                                                                        mainAxisSize: MainAxisSize.max,
+                                                                                        children: [
+                                                                                          Padding(
+                                                                                            padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
+                                                                                            child: Icon(
+                                                                                              Icons.shopping_cart,
+                                                                                              color: FlutterFlowTheme.of(context).secondaryBackground,
+                                                                                              size: 24,
+                                                                                            ),
+                                                                                          ),
+                                                                                          Text(
+                                                                                            listViewJobRecord.store!,
+                                                                                            style: FlutterFlowTheme.of(context).bodyText1,
+                                                                                          ),
+                                                                                        ],
                                                                                       ),
-                                                                                      Text(
-                                                                                        valueOrDefault<String>(
-                                                                                          dateTimeFormat('jm', listViewJobRecord.delTime),
-                                                                                          'ASAP',
-                                                                                        ),
-                                                                                        style: FlutterFlowTheme.of(context).bodyText1,
+                                                                                    ),
+                                                                                    Padding(
+                                                                                      padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
+                                                                                      child: Row(
+                                                                                        mainAxisSize: MainAxisSize.max,
+                                                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                        children: [
+                                                                                          Padding(
+                                                                                            padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
+                                                                                            child: Icon(
+                                                                                              Icons.access_time,
+                                                                                              color: FlutterFlowTheme.of(context).secondaryBackground,
+                                                                                              size: 24,
+                                                                                            ),
+                                                                                          ),
+                                                                                          Text(
+                                                                                            valueOrDefault<String>(
+                                                                                              dateTimeFormat('jm', listViewJobRecord.delTime),
+                                                                                              'ASAP',
+                                                                                            ),
+                                                                                            style: FlutterFlowTheme.of(context).bodyText1,
+                                                                                          ),
+                                                                                        ],
                                                                                       ),
-                                                                                    ],
-                                                                                  ),
-                                                                                ),
-                                                                                Padding(
-                                                                                  padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
-                                                                                  child: Row(
-                                                                                    mainAxisSize: MainAxisSize.max,
-                                                                                    mainAxisAlignment: MainAxisAlignment.start,
-                                                                                    children: [
-                                                                                      Padding(
-                                                                                        padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
-                                                                                        child: FaIcon(
-                                                                                          FontAwesomeIcons.moneyCheckAlt,
-                                                                                          color: FlutterFlowTheme.of(context).secondaryBackground,
-                                                                                          size: 22,
-                                                                                        ),
+                                                                                    ),
+                                                                                    Padding(
+                                                                                      padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
+                                                                                      child: Row(
+                                                                                        mainAxisSize: MainAxisSize.max,
+                                                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                                                        children: [
+                                                                                          Padding(
+                                                                                            padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
+                                                                                            child: FaIcon(
+                                                                                              FontAwesomeIcons.moneyCheckAlt,
+                                                                                              color: FlutterFlowTheme.of(context).secondaryBackground,
+                                                                                              size: 22,
+                                                                                            ),
+                                                                                          ),
+                                                                                          Text(
+                                                                                            listViewJobRecord.delLocation!,
+                                                                                            style: FlutterFlowTheme.of(context).bodyText1,
+                                                                                          ),
+                                                                                        ],
                                                                                       ),
-                                                                                      Text(
-                                                                                        listViewJobRecord.delLocation!,
-                                                                                        style: FlutterFlowTheme.of(context).bodyText1,
-                                                                                      ),
-                                                                                    ],
-                                                                                  ),
+                                                                                    ),
+                                                                                  ],
                                                                                 ),
                                                                               ],
                                                                             ),
-                                                                          ],
+                                                                          ),
                                                                         ),
-                                                                      ),
-                                                                    ),
-                                                                  );
+                                                                      );
+                                                                    } else {
+                                                                      return Text(
+                                                                          '.');
+                                                                    }
+                                                                  } else {
+                                                                    return Text(
+                                                                        '.');
+                                                                  }
                                                                 },
                                                               );
                                                             },
@@ -451,6 +465,7 @@ class _JobHistoryScreenWidgetState extends State<JobHistoryScreenWidget> {
                                                                   ),
                                                                 );
                                                               }
+
                                                               return ListView
                                                                   .builder(
                                                                 padding:
@@ -470,131 +485,143 @@ class _JobHistoryScreenWidgetState extends State<JobHistoryScreenWidget> {
                                                                   final historicalListViewJobRecord =
                                                                       historicalListViewJobRecordList[
                                                                           historicalListViewIndex];
-                                                                  return Padding(
-                                                                    padding: EdgeInsetsDirectional
-                                                                        .fromSTEB(
+
+                                                                  if (historicalListViewJobRecord
+                                                                          .status ==
+                                                                      'completed') {
+                                                                    if (historicalListViewJobRecord
+                                                                            .acceptorID!
+                                                                            .id ==
+                                                                        currentUserUid) {
+                                                                      return Padding(
+                                                                        padding: EdgeInsetsDirectional.fromSTEB(
                                                                             10,
                                                                             5,
                                                                             10,
                                                                             5),
-                                                                    child:
-                                                                        InkWell(
-                                                                      onTap:
-                                                                          () async {
-                                                                        if (historicalListViewJobRecord.posterID ==
-                                                                            currentUserReference) {
-                                                                          context
-                                                                              .pushNamed('JobDetailScreenPoster');
-                                                                        } else {
-                                                                          context
-                                                                              .pushNamed('JobDetailScreenGrabber');
-                                                                        }
-                                                                      },
-                                                                      child:
-                                                                          Card(
-                                                                        clipBehavior:
-                                                                            Clip.antiAliasWithSaveLayer,
-                                                                        color: Color(
-                                                                            0xFF6C686C),
-                                                                        shape:
-                                                                            RoundedRectangleBorder(
-                                                                          borderRadius:
-                                                                              BorderRadius.circular(10),
-                                                                        ),
                                                                         child:
-                                                                            Row(
-                                                                          mainAxisSize:
-                                                                              MainAxisSize.max,
-                                                                          children: [
-                                                                            Padding(
-                                                                              padding: EdgeInsetsDirectional.fromSTEB(7, 7, 7, 7),
-                                                                              child: ClipRRect(
-                                                                                borderRadius: BorderRadius.circular(10),
-                                                                                child: Image.network(
-                                                                                  'https://picsum.photos/seed/689/600',
-                                                                                  width: 100,
-                                                                                  height: 100,
-                                                                                  fit: BoxFit.cover,
-                                                                                ),
-                                                                              ),
+                                                                            InkWell(
+                                                                          onTap:
+                                                                              () async {
+                                                                            if (historicalListViewJobRecord.posterID ==
+                                                                                currentUserReference) {
+                                                                                  print("hello3");
+                                                                              context.pushNamed('JobDetailScreenPoster');
+                                                                            } else {
+                                                                              print("hello4");
+                                                                              context.pushNamed('JobDetailScreenGrabber');
+                                                                            }
+                                                                          },
+                                                                          child:
+                                                                              Card(
+                                                                            clipBehavior:
+                                                                                Clip.antiAliasWithSaveLayer,
+                                                                            color:
+                                                                                Color(0xFF6C686C),
+                                                                            shape:
+                                                                                RoundedRectangleBorder(
+                                                                              borderRadius: BorderRadius.circular(10),
                                                                             ),
-                                                                            Column(
+                                                                            child:
+                                                                                Row(
                                                                               mainAxisSize: MainAxisSize.max,
-                                                                              crossAxisAlignment: CrossAxisAlignment.start,
                                                                               children: [
                                                                                 Padding(
-                                                                                  padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
-                                                                                  child: Row(
-                                                                                    mainAxisSize: MainAxisSize.max,
-                                                                                    children: [
-                                                                                      Padding(
-                                                                                        padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
-                                                                                        child: Icon(
-                                                                                          Icons.shopping_cart,
-                                                                                          color: FlutterFlowTheme.of(context).secondaryBackground,
-                                                                                          size: 24,
-                                                                                        ),
-                                                                                      ),
-                                                                                      Text(
-                                                                                        historicalListViewJobRecord.store!,
-                                                                                        style: FlutterFlowTheme.of(context).bodyText1,
-                                                                                      ),
-                                                                                    ],
+                                                                                  padding: EdgeInsetsDirectional.fromSTEB(7, 7, 7, 7),
+                                                                                  child: ClipRRect(
+                                                                                    borderRadius: BorderRadius.circular(10),
+                                                                                    child: Image.network(
+                                                                                      'https://picsum.photos/seed/689/600',
+                                                                                      width: 100,
+                                                                                      height: 100,
+                                                                                      fit: BoxFit.cover,
+                                                                                    ),
                                                                                   ),
                                                                                 ),
-                                                                                Padding(
-                                                                                  padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
-                                                                                  child: Row(
-                                                                                    mainAxisSize: MainAxisSize.max,
-                                                                                    mainAxisAlignment: MainAxisAlignment.start,
-                                                                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                                                                    children: [
-                                                                                      Padding(
-                                                                                        padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
-                                                                                        child: Icon(
-                                                                                          Icons.access_time,
-                                                                                          color: FlutterFlowTheme.of(context).secondaryBackground,
-                                                                                          size: 24,
-                                                                                        ),
+                                                                                Column(
+                                                                                  mainAxisSize: MainAxisSize.max,
+                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                  children: [
+                                                                                    Padding(
+                                                                                      padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
+                                                                                      child: Row(
+                                                                                        mainAxisSize: MainAxisSize.max,
+                                                                                        children: [
+                                                                                          Padding(
+                                                                                            padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
+                                                                                            child: Icon(
+                                                                                              Icons.shopping_cart,
+                                                                                              color: FlutterFlowTheme.of(context).secondaryBackground,
+                                                                                              size: 24,
+                                                                                            ),
+                                                                                          ),
+                                                                                          Text(
+                                                                                            historicalListViewJobRecord.store!,
+                                                                                            style: FlutterFlowTheme.of(context).bodyText1,
+                                                                                          ),
+                                                                                        ],
                                                                                       ),
-                                                                                      Text(
-                                                                                        valueOrDefault<String>(
-                                                                                          dateTimeFormat('jm', historicalListViewJobRecord.delTime),
-                                                                                          'ASAP',
-                                                                                        ),
-                                                                                        style: FlutterFlowTheme.of(context).bodyText1,
+                                                                                    ),
+                                                                                    Padding(
+                                                                                      padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
+                                                                                      child: Row(
+                                                                                        mainAxisSize: MainAxisSize.max,
+                                                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                        children: [
+                                                                                          Padding(
+                                                                                            padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
+                                                                                            child: Icon(
+                                                                                              Icons.access_time,
+                                                                                              color: FlutterFlowTheme.of(context).secondaryBackground,
+                                                                                              size: 24,
+                                                                                            ),
+                                                                                          ),
+                                                                                          Text(
+                                                                                            valueOrDefault<String>(
+                                                                                              dateTimeFormat('jm', historicalListViewJobRecord.delTime),
+                                                                                              'ASAP',
+                                                                                            ),
+                                                                                            style: FlutterFlowTheme.of(context).bodyText1,
+                                                                                          ),
+                                                                                        ],
                                                                                       ),
-                                                                                    ],
-                                                                                  ),
-                                                                                ),
-                                                                                Padding(
-                                                                                  padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
-                                                                                  child: Row(
-                                                                                    mainAxisSize: MainAxisSize.max,
-                                                                                    mainAxisAlignment: MainAxisAlignment.start,
-                                                                                    children: [
-                                                                                      Padding(
-                                                                                        padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
-                                                                                        child: FaIcon(
-                                                                                          FontAwesomeIcons.moneyCheckAlt,
-                                                                                          color: FlutterFlowTheme.of(context).secondaryBackground,
-                                                                                          size: 22,
-                                                                                        ),
+                                                                                    ),
+                                                                                    Padding(
+                                                                                      padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
+                                                                                      child: Row(
+                                                                                        mainAxisSize: MainAxisSize.max,
+                                                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                                                        children: [
+                                                                                          Padding(
+                                                                                            padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
+                                                                                            child: FaIcon(
+                                                                                              FontAwesomeIcons.moneyCheckAlt,
+                                                                                              color: FlutterFlowTheme.of(context).secondaryBackground,
+                                                                                              size: 22,
+                                                                                            ),
+                                                                                          ),
+                                                                                          Text(
+                                                                                            historicalListViewJobRecord.delLocation!,
+                                                                                            style: FlutterFlowTheme.of(context).bodyText1,
+                                                                                          ),
+                                                                                        ],
                                                                                       ),
-                                                                                      Text(
-                                                                                        historicalListViewJobRecord.delLocation!,
-                                                                                        style: FlutterFlowTheme.of(context).bodyText1,
-                                                                                      ),
-                                                                                    ],
-                                                                                  ),
+                                                                                    ),
+                                                                                  ],
                                                                                 ),
                                                                               ],
                                                                             ),
-                                                                          ],
+                                                                          ),
                                                                         ),
-                                                                      ),
-                                                                    ),
-                                                                  );
+                                                                      );
+                                                                    } else {
+                                                                      return Text(
+                                                                          ".");
+                                                                    }
+                                                                  }
+                                                                  return Text(
+                                                                      ".");
                                                                 },
                                                               );
                                                             },
@@ -652,12 +679,11 @@ class _JobHistoryScreenWidgetState extends State<JobHistoryScreenWidget> {
                                                         child: StreamBuilder<
                                                             List<JobRecord>>(
                                                           stream:
-                                                              queryJobRecord(
-                                                            limit: 3,
-                                                          ),
+                                                              queryJobRecord(),
                                                           builder: (context,
                                                               snapshot) {
                                                             // Customize what your widget looks like when it's loading.
+
                                                             if (!snapshot
                                                                 .hasData) {
                                                               return Center(
@@ -678,23 +704,21 @@ class _JobHistoryScreenWidgetState extends State<JobHistoryScreenWidget> {
                                                                 snapshot.data!;
                                                             if (listViewJobRecordList
                                                                 .isEmpty) {
-                                                              return Center(
+                                                              return ClipRRect(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            10),
                                                                 child:
-                                                                    ClipRRect(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              10),
-                                                                  child: Image
-                                                                      .asset(
-                                                                    'assets/images/not_stonks.jpg',
-                                                                    width: double
-                                                                        .infinity,
-                                                                    height: 600,
-                                                                  ),
+                                                                    Image.asset(
+                                                                  'assets/images/not_stonks.jpg',
+                                                                  width: double
+                                                                      .infinity,
+                                                                  height: 100,
                                                                 ),
                                                               );
                                                             }
+
                                                             return ListView
                                                                 .builder(
                                                               padding:
@@ -712,139 +736,213 @@ class _JobHistoryScreenWidgetState extends State<JobHistoryScreenWidget> {
                                                                 final listViewJobRecord =
                                                                     listViewJobRecordList[
                                                                         listViewIndex];
-                                                                return Padding(
-                                                                  padding: EdgeInsetsDirectional
-                                                                      .fromSTEB(
-                                                                          10,
-                                                                          5,
-                                                                          10,
-                                                                          5),
-                                                                  child:
-                                                                      InkWell(
-                                                                    onTap:
-                                                                        () async {
-                                                                      if (listViewJobRecord
-                                                                              .posterID ==
-                                                                          currentUserReference) {
-                                                                        context.pushNamed(
-                                                                            'JobDetailScreenPoster');
-                                                                      } else {
-                                                                        context.pushNamed(
-                                                                            'JobDetailScreenGrabber');
-                                                                      }
-                                                                    },
-                                                                    child: Card(
-                                                                      clipBehavior:
-                                                                          Clip.antiAliasWithSaveLayer,
-                                                                      color: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .primaryColor,
-                                                                      shape:
-                                                                          RoundedRectangleBorder(
-                                                                        borderRadius:
-                                                                            BorderRadius.circular(10),
-                                                                      ),
+                                                                if (listViewJobRecord
+                                                                            .status ==
+                                                                        'ongoing' ||
+                                                                    listViewJobRecord
+                                                                            .status ==
+                                                                        'untaken') {
+                                                                  print(
+                                                                      "first condition passed la cb");
+                                                                  print(listViewJobRecord
+                                                                      .posterID);
+                                                                  print(
+                                                                      currentUserUid);
+                                                                  if (listViewJobRecord
+                                                                          .posterID!
+                                                                          .id ==
+                                                                      currentUserUid) {
+                                                                    return Padding(
+                                                                      padding: EdgeInsetsDirectional
+                                                                          .fromSTEB(
+                                                                              10,
+                                                                              5,
+                                                                              10,
+                                                                              5),
                                                                       child:
-                                                                          Row(
-                                                                        mainAxisSize:
-                                                                            MainAxisSize.max,
-                                                                        children: [
-                                                                          Padding(
-                                                                            padding: EdgeInsetsDirectional.fromSTEB(
-                                                                                7,
-                                                                                7,
-                                                                                7,
-                                                                                7),
-                                                                            child:
-                                                                                ClipRRect(
-                                                                              borderRadius: BorderRadius.circular(10),
-                                                                              child: Image.network(
-                                                                                'https://picsum.photos/seed/689/600',
-                                                                                width: 100,
-                                                                                height: 100,
-                                                                                fit: BoxFit.cover,
-                                                                              ),
-                                                                            ),
+                                                                          InkWell(
+                                                                        onTap:
+                                                                            () async {
+                                                                              String STORE = listViewJobRecord.store!;
+                                                                              String TIME = valueOrDefault<String>(
+                                                                                dateTimeFormat(
+                                                                                    'jm', listViewJobRecord.delTime),
+                                                                                'ASAP',
+                                                                              );
+                                                                              String NOTE =
+                                                                                  listViewJobRecord.delLocation!;
+
+                                                                              print(serializeParam(
+                                                                                STORE,
+                                                                                ParamType.String,
+                                                                              ));
+                                                                              print(TIME);
+                                                                              print(NOTE);
+                                                                              if ((listViewJobRecord.posterID!.id) ==
+                                                                                  (currentUserReference!.id)) {
+                                                                                print("THIS IS THE POSTER IF STATEMENT");
+
+                                                                                context.pushNamed(
+                                                                                  'JobDetailScreenPoster',
+                                                                                  queryParams: {
+                                                                                    'store': serializeParam(
+                                                                                      STORE,
+                                                                                      ParamType.String,
+                                                                                    )!,
+                                                                                    'time': serializeParam(
+                                                                                      TIME,
+                                                                                      ParamType.String,
+                                                                                    )!,
+                                                                                    'note': serializeParam(
+                                                                                      NOTE,
+                                                                                      ParamType.String,
+                                                                                    )!,
+                                                                                  },
+                                                                                  // extra: {
+                                                                                  //   'store': listViewJobRecord.store!,
+                                                                                  //   'time': valueOrDefault<String>(
+                                                                                  //     dateTimeFormat('jm',
+                                                                                  //         listViewJobRecord.delTime),
+                                                                                  //     'ASAP',
+                                                                                  //   ),
+                                                                                  //   'note': listViewJobRecord.delLocation!
+                                                                                  // },
+                                                                                );
+                                                                              } else {
+                                                                                print(
+                                                                                    "THIS IS THE GRABBER ELSE STATEMENT");
+                                                                                context.pushNamed(
+                                                                                    'JobDetailScreenGrabber',
+                                                                                    queryParams: {
+                                                                                      'store': serializeParam(
+                                                                                        STORE,
+                                                                                        ParamType.String,
+                                                                                      )!,
+                                                                                      'time': serializeParam(
+                                                                                        TIME,
+                                                                                        ParamType.String,
+                                                                                      )!,
+                                                                                      'note': serializeParam(
+                                                                                        NOTE,
+                                                                                        ParamType.String,
+                                                                                      )!,
+                                                                                    });
+                                                                              }
+                                                                          
+                                        
+                                                                        },
+                                                                        child:
+                                                                            Card(
+                                                                          clipBehavior:
+                                                                              Clip.antiAliasWithSaveLayer,
+                                                                          color:
+                                                                              FlutterFlowTheme.of(context).primaryColor,
+                                                                          shape:
+                                                                              RoundedRectangleBorder(
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(10),
                                                                           ),
-                                                                          Column(
+                                                                          child:
+                                                                              Row(
                                                                             mainAxisSize:
                                                                                 MainAxisSize.max,
-                                                                            crossAxisAlignment:
-                                                                                CrossAxisAlignment.start,
                                                                             children: [
                                                                               Padding(
-                                                                                padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
-                                                                                child: Row(
-                                                                                  mainAxisSize: MainAxisSize.max,
-                                                                                  children: [
-                                                                                    Padding(
-                                                                                      padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
-                                                                                      child: Icon(
-                                                                                        Icons.shopping_cart,
-                                                                                        color: FlutterFlowTheme.of(context).secondaryBackground,
-                                                                                        size: 24,
-                                                                                      ),
-                                                                                    ),
-                                                                                    Text(
-                                                                                      listViewJobRecord.store!,
-                                                                                      style: FlutterFlowTheme.of(context).bodyText1,
-                                                                                    ),
-                                                                                  ],
+                                                                                padding: EdgeInsetsDirectional.fromSTEB(7, 7, 7, 7),
+                                                                                child: ClipRRect(
+                                                                                  borderRadius: BorderRadius.circular(10),
+                                                                                  child: Image.network(
+                                                                                    'https://picsum.photos/seed/689/600',
+                                                                                    width: 100,
+                                                                                    height: 100,
+                                                                                    fit: BoxFit.cover,
+                                                                                  ),
                                                                                 ),
                                                                               ),
-                                                                              Padding(
-                                                                                padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
-                                                                                child: Row(
-                                                                                  mainAxisSize: MainAxisSize.max,
-                                                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                                                  children: [
-                                                                                    Padding(
-                                                                                      padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
-                                                                                      child: Icon(
-                                                                                        Icons.access_time,
-                                                                                        color: FlutterFlowTheme.of(context).secondaryBackground,
-                                                                                        size: 24,
-                                                                                      ),
+                                                                              Column(
+                                                                                mainAxisSize: MainAxisSize.max,
+                                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                children: [
+                                                                                  Padding(
+                                                                                    padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
+                                                                                    child: Row(
+                                                                                      mainAxisSize: MainAxisSize.max,
+                                                                                      children: [
+                                                                                        Padding(
+                                                                                          padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
+                                                                                          child: Icon(
+                                                                                            Icons.shopping_cart,
+                                                                                            color: FlutterFlowTheme.of(context).secondaryBackground,
+                                                                                            size: 24,
+                                                                                          ),
+                                                                                        ),
+                                                                                        Text(
+                                                                                          listViewJobRecord.store!,
+                                                                                          style: FlutterFlowTheme.of(context).bodyText1,
+                                                                                        ),
+                                                                                      ],
                                                                                     ),
-                                                                                    Text(
-                                                                                      valueOrDefault<String>(
-                                                                                        dateTimeFormat('jm', listViewJobRecord.delTime),
-                                                                                        'ASAP',
-                                                                                      ),
-                                                                                      style: FlutterFlowTheme.of(context).bodyText1,
+                                                                                  ),
+                                                                                  Padding(
+                                                                                    padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
+                                                                                    child: Row(
+                                                                                      mainAxisSize: MainAxisSize.max,
+                                                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                      children: [
+                                                                                        Padding(
+                                                                                          padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
+                                                                                          child: Icon(
+                                                                                            Icons.access_time,
+                                                                                            color: FlutterFlowTheme.of(context).secondaryBackground,
+                                                                                            size: 24,
+                                                                                          ),
+                                                                                        ),
+                                                                                        Text(
+                                                                                          valueOrDefault<String>(
+                                                                                            dateTimeFormat('jm', listViewJobRecord.delTime),
+                                                                                            'ASAP',
+                                                                                          ),
+                                                                                          style: FlutterFlowTheme.of(context).bodyText1,
+                                                                                        ),
+                                                                                      ],
                                                                                     ),
-                                                                                  ],
-                                                                                ),
-                                                                              ),
-                                                                              Padding(
-                                                                                padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
-                                                                                child: Row(
-                                                                                  mainAxisSize: MainAxisSize.max,
-                                                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                                                  children: [
-                                                                                    Padding(
-                                                                                      padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
-                                                                                      child: FaIcon(
-                                                                                        FontAwesomeIcons.moneyCheckAlt,
-                                                                                        color: FlutterFlowTheme.of(context).secondaryBackground,
-                                                                                        size: 22,
-                                                                                      ),
+                                                                                  ),
+                                                                                  Padding(
+                                                                                    padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
+                                                                                    child: Row(
+                                                                                      mainAxisSize: MainAxisSize.max,
+                                                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                                                      children: [
+                                                                                        Padding(
+                                                                                          padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
+                                                                                          child: FaIcon(
+                                                                                            FontAwesomeIcons.moneyCheckAlt,
+                                                                                            color: FlutterFlowTheme.of(context).secondaryBackground,
+                                                                                            size: 22,
+                                                                                          ),
+                                                                                        ),
+                                                                                        Text(
+                                                                                          listViewJobRecord.delLocation!,
+                                                                                          style: FlutterFlowTheme.of(context).bodyText1,
+                                                                                        ),
+                                                                                      ],
                                                                                     ),
-                                                                                    Text(
-                                                                                      listViewJobRecord.delLocation!,
-                                                                                      style: FlutterFlowTheme.of(context).bodyText1,
-                                                                                    ),
-                                                                                  ],
-                                                                                ),
+                                                                                  ),
+                                                                                ],
                                                                               ),
                                                                             ],
                                                                           ),
-                                                                        ],
+                                                                        ),
                                                                       ),
-                                                                    ),
-                                                                  ),
-                                                                );
+                                                                    );
+                                                                  } else {
+                                                                    return Text(
+                                                                        ".");
+                                                                  }
+                                                                }
+                                                                return Text(
+                                                                    ".");
                                                               },
                                                             );
                                                           },
@@ -1043,141 +1141,146 @@ class _JobHistoryScreenWidgetState extends State<JobHistoryScreenWidget> {
                                                                   _pagingController!
                                                                           .itemList![
                                                                       historicalListViewIndex];
-                                                              return Padding(
-                                                                padding:
-                                                                    EdgeInsetsDirectional
+                                                              if (historicalListViewJobRecord
+                                                                      .status ==
+                                                                  'completed') {
+                                                                if (historicalListViewJobRecord
+                                                                        .posterID!
+                                                                        .id ==
+                                                                    currentUserUid) {
+                                                                  return Padding(
+                                                                    padding: EdgeInsetsDirectional
                                                                         .fromSTEB(
                                                                             10,
                                                                             5,
                                                                             10,
                                                                             5),
-                                                                child: InkWell(
-                                                                  onTap:
-                                                                      () async {
-                                                                    if (historicalListViewJobRecord
-                                                                            .posterID ==
-                                                                        currentUserReference) {
-                                                                      context.pushNamed(
-                                                                          'JobDetailScreenPoster');
-                                                                    } else {
-                                                                      context.pushNamed(
-                                                                          'JobDetailScreenGrabber');
-                                                                    }
-                                                                  },
-                                                                  child: Card(
-                                                                    clipBehavior:
-                                                                        Clip.antiAliasWithSaveLayer,
-                                                                    color: Color(
-                                                                        0xFF6C686C),
-                                                                    shape:
-                                                                        RoundedRectangleBorder(
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              10),
-                                                                    ),
-                                                                    child: Row(
-                                                                      mainAxisSize:
-                                                                          MainAxisSize
-                                                                              .max,
-                                                                      children: [
-                                                                        Padding(
-                                                                          padding: EdgeInsetsDirectional.fromSTEB(
-                                                                              7,
-                                                                              7,
-                                                                              7,
-                                                                              7),
-                                                                          child:
-                                                                              ClipRRect(
-                                                                            borderRadius:
-                                                                                BorderRadius.circular(10),
-                                                                            child:
-                                                                                Image.network(
-                                                                              'https://picsum.photos/seed/689/600',
-                                                                              width: 100,
-                                                                              height: 100,
-                                                                              fit: BoxFit.cover,
-                                                                            ),
-                                                                          ),
+                                                                    child:
+                                                                        InkWell(
+                                                                      onTap:
+                                                                          () async {
+                                                                        if (historicalListViewJobRecord.posterID ==
+                                                                            currentUserReference) {
+                                                                              print("hello7");
+                                                                          context
+                                                                              .pushNamed('JobDetailScreenPoster');
+                                                                        } else {
+                                                                          print("hello8");
+                                                                          context
+                                                                              .pushNamed('JobDetailScreenGrabber');
+                                                                        }
+                                                                      },
+                                                                      child:
+                                                                          Card(
+                                                                        clipBehavior:
+                                                                            Clip.antiAliasWithSaveLayer,
+                                                                        color: Color(
+                                                                            0xFF6C686C),
+                                                                        shape:
+                                                                            RoundedRectangleBorder(
+                                                                          borderRadius:
+                                                                              BorderRadius.circular(10),
                                                                         ),
-                                                                        Column(
+                                                                        child:
+                                                                            Row(
                                                                           mainAxisSize:
                                                                               MainAxisSize.max,
-                                                                          crossAxisAlignment:
-                                                                              CrossAxisAlignment.start,
                                                                           children: [
                                                                             Padding(
-                                                                              padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
-                                                                              child: Row(
-                                                                                mainAxisSize: MainAxisSize.max,
-                                                                                children: [
-                                                                                  Padding(
-                                                                                    padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
-                                                                                    child: Icon(
-                                                                                      Icons.shopping_cart,
-                                                                                      color: FlutterFlowTheme.of(context).secondaryBackground,
-                                                                                      size: 24,
-                                                                                    ),
-                                                                                  ),
-                                                                                  Text(
-                                                                                    historicalListViewJobRecord.store!,
-                                                                                    style: FlutterFlowTheme.of(context).bodyText1,
-                                                                                  ),
-                                                                                ],
+                                                                              padding: EdgeInsetsDirectional.fromSTEB(7, 7, 7, 7),
+                                                                              child: ClipRRect(
+                                                                                borderRadius: BorderRadius.circular(10),
+                                                                                child: Image.network(
+                                                                                  'https://picsum.photos/seed/689/600',
+                                                                                  width: 100,
+                                                                                  height: 100,
+                                                                                  fit: BoxFit.cover,
+                                                                                ),
                                                                               ),
                                                                             ),
-                                                                            Padding(
-                                                                              padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
-                                                                              child: Row(
-                                                                                mainAxisSize: MainAxisSize.max,
-                                                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                                                crossAxisAlignment: CrossAxisAlignment.center,
-                                                                                children: [
-                                                                                  Padding(
-                                                                                    padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
-                                                                                    child: Icon(
-                                                                                      Icons.access_time,
-                                                                                      color: FlutterFlowTheme.of(context).secondaryBackground,
-                                                                                      size: 24,
-                                                                                    ),
+                                                                            Column(
+                                                                              mainAxisSize: MainAxisSize.max,
+                                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                                              children: [
+                                                                                Padding(
+                                                                                  padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
+                                                                                  child: Row(
+                                                                                    mainAxisSize: MainAxisSize.max,
+                                                                                    children: [
+                                                                                      Padding(
+                                                                                        padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
+                                                                                        child: Icon(
+                                                                                          Icons.shopping_cart,
+                                                                                          color: FlutterFlowTheme.of(context).secondaryBackground,
+                                                                                          size: 24,
+                                                                                        ),
+                                                                                      ),
+                                                                                      Text(
+                                                                                        historicalListViewJobRecord.store!,
+                                                                                        style: FlutterFlowTheme.of(context).bodyText1,
+                                                                                      ),
+                                                                                    ],
                                                                                   ),
-                                                                                  Text(
-                                                                                    valueOrDefault<String>(
-                                                                                      dateTimeFormat('jm', historicalListViewJobRecord.delTime),
-                                                                                      'ASAP',
-                                                                                    ),
-                                                                                    style: FlutterFlowTheme.of(context).bodyText1,
+                                                                                ),
+                                                                                Padding(
+                                                                                  padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
+                                                                                  child: Row(
+                                                                                    mainAxisSize: MainAxisSize.max,
+                                                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                    children: [
+                                                                                      Padding(
+                                                                                        padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
+                                                                                        child: Icon(
+                                                                                          Icons.access_time,
+                                                                                          color: FlutterFlowTheme.of(context).secondaryBackground,
+                                                                                          size: 24,
+                                                                                        ),
+                                                                                      ),
+                                                                                      Text(
+                                                                                        valueOrDefault<String>(
+                                                                                          dateTimeFormat('jm', historicalListViewJobRecord.delTime),
+                                                                                          'ASAP',
+                                                                                        ),
+                                                                                        style: FlutterFlowTheme.of(context).bodyText1,
+                                                                                      ),
+                                                                                    ],
                                                                                   ),
-                                                                                ],
-                                                                              ),
-                                                                            ),
-                                                                            Padding(
-                                                                              padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
-                                                                              child: Row(
-                                                                                mainAxisSize: MainAxisSize.max,
-                                                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                                                children: [
-                                                                                  Padding(
-                                                                                    padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
-                                                                                    child: FaIcon(
-                                                                                      FontAwesomeIcons.moneyCheckAlt,
-                                                                                      color: FlutterFlowTheme.of(context).secondaryBackground,
-                                                                                      size: 22,
-                                                                                    ),
+                                                                                ),
+                                                                                Padding(
+                                                                                  padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
+                                                                                  child: Row(
+                                                                                    mainAxisSize: MainAxisSize.max,
+                                                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                                                    children: [
+                                                                                      Padding(
+                                                                                        padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
+                                                                                        child: FaIcon(
+                                                                                          FontAwesomeIcons.moneyCheckAlt,
+                                                                                          color: FlutterFlowTheme.of(context).secondaryBackground,
+                                                                                          size: 22,
+                                                                                        ),
+                                                                                      ),
+                                                                                      Text(
+                                                                                        historicalListViewJobRecord.delLocation!,
+                                                                                        style: FlutterFlowTheme.of(context).bodyText1,
+                                                                                      ),
+                                                                                    ],
                                                                                   ),
-                                                                                  Text(
-                                                                                    historicalListViewJobRecord.delLocation!,
-                                                                                    style: FlutterFlowTheme.of(context).bodyText1,
-                                                                                  ),
-                                                                                ],
-                                                                              ),
+                                                                                ),
+                                                                              ],
                                                                             ),
                                                                           ],
                                                                         ),
-                                                                      ],
+                                                                      ),
                                                                     ),
-                                                                  ),
-                                                                ),
-                                                              );
+                                                                  );
+                                                                } else {
+                                                                  return Text(
+                                                                      ".");
+                                                                }
+                                                              }
+                                                              return Text(".");
                                                             },
                                                           ),
                                                         ),
