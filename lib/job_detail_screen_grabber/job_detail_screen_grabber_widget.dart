@@ -11,7 +11,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class JobDetailScreenGrabberWidget extends StatefulWidget {
-  const JobDetailScreenGrabberWidget({Key? key}) : super(key: key);
+  final String store;
+  final String time;
+  final String note;
+  const JobDetailScreenGrabberWidget(
+      {Key? key, required this.store, required this.time, required this.note})
+      : super(key: key);
 
   @override
   _JobDetailScreenGrabberWidgetState createState() =>
@@ -26,9 +31,9 @@ class _JobDetailScreenGrabberWidgetState
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments;
-    print("FUCK FUCK FUCK FUCK");
-    print(args);
+    String STORE = widget.store;
+    String TIME = widget.time;
+    String NOTE = widget.note;
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -181,7 +186,7 @@ class _JobDetailScreenGrabberWidgetState
                                     ),
                                     Text(
                                       // "cocococock",
-                                      columnJobRecord!.store!,
+                                      STORE,
                                       style: FlutterFlowTheme.of(context)
                                           .bodyText1,
                                     ),
@@ -207,11 +212,7 @@ class _JobDetailScreenGrabberWidgetState
                                     Text(
                                       // "cock",
                                       // columnJobRecord!.delTime.toString(),
-                                      valueOrDefault<String>(
-                                        dateTimeFormat(
-                                            'jm', columnJobRecord.delTime),
-                                        'ASAP',
-                                      ),
+                                      TIME,
                                       style: FlutterFlowTheme.of(context)
                                           .bodyText1,
                                     ),
@@ -236,7 +237,7 @@ class _JobDetailScreenGrabberWidgetState
                                     ),
                                     Text(
                                       // "FUCKFUCKFUCK",
-                                      columnJobRecord!.note!,
+                                      NOTE,
                                       style: FlutterFlowTheme.of(context)
                                           .bodyText1,
                                     ),
