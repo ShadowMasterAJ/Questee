@@ -1,4 +1,5 @@
 import '../backend/backend.dart';
+import '../components/AmountBottomSheet.dart';
 import '../flutter_flow/flutter_flow_checkbox_group.dart';
 import '../flutter_flow/flutter_flow_icon_button.dart';
 import '../flutter_flow/flutter_flow_theme.dart';
@@ -435,8 +436,21 @@ class _JobDetailScreenPosterWidgetState
                                       0, 0, 15, 0),
                                   child: FFButtonWidget(
                                     onPressed: () async {
-                                      if (!(columnJobRecord!.acceptorID !=
-                                          null)) {
+                                      if(true){
+                                      //if (columnJobRecord!.acceptorID != null) {
+                                        await showModalBottomSheet(
+                                          isScrollControlled: true,
+                                          backgroundColor: Colors.transparent,
+                                          context: context,
+                                          builder: (context) {
+                                            return Padding(
+                                              padding: MediaQuery.of(context)
+                                                  .viewInsets,
+                                              child: AmountBottomSheetWidget(),
+                                            );
+                                          },
+                                        ).then((value) => setState(() {}));
+                                      } else {
                                         return;
                                       }
                                     },
