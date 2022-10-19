@@ -98,14 +98,7 @@ class _$JobRecordSerializer implements StructuredSerializer<JobRecord> {
             specifiedType: const FullType(
                 DocumentReference, const [const FullType.nullable(Object)])));
     }
-    value = object.tempItemList;
-    if (value != null) {
-      result
-        ..add('temp_item_list')
-        ..add(serializers.serialize(value,
-            specifiedType:
-                const FullType(BuiltList, const [const FullType(String)])));
-    }
+   
     value = object.ffRef;
     if (value != null) {
       result
@@ -178,12 +171,7 @@ class _$JobRecordSerializer implements StructuredSerializer<JobRecord> {
                 const FullType.nullable(Object)
               ])) as DocumentReference<Object?>?;
           break;
-        case 'temp_item_list':
-          result.tempItemList.replace(serializers.deserialize(value,
-                  specifiedType: const FullType(
-                      BuiltList, const [const FullType(String)]))!
-              as BuiltList<Object?>);
-          break;
+       
         case 'Document__Reference__Field':
           result.ffRef = serializers.deserialize(value,
               specifiedType: const FullType(DocumentReference, const [
@@ -221,8 +209,6 @@ class _$JobRecord extends JobRecord {
   @override
   final DocumentReference<Object?>? acceptorID;
   @override
-  final BuiltList<String>? tempItemList;
-  @override
   final DocumentReference<Object?>? ffRef;
 
   factory _$JobRecord([void Function(JobRecordBuilder)? updates]) =>
@@ -240,7 +226,6 @@ class _$JobRecord extends JobRecord {
       this.itemQuantity,
       this.posterID,
       this.acceptorID,
-      this.tempItemList,
       this.ffRef})
       : super._();
 
@@ -266,7 +251,6 @@ class _$JobRecord extends JobRecord {
         itemQuantity == other.itemQuantity &&
         posterID == other.posterID &&
         acceptorID == other.acceptorID &&
-        tempItemList == other.tempItemList &&
         ffRef == other.ffRef;
   }
 
@@ -294,7 +278,6 @@ class _$JobRecord extends JobRecord {
                         itemQuantity.hashCode),
                     posterID.hashCode),
                 acceptorID.hashCode),
-            tempItemList.hashCode),
         ffRef.hashCode));
   }
 
@@ -312,7 +295,6 @@ class _$JobRecord extends JobRecord {
           ..add('itemQuantity', itemQuantity)
           ..add('posterID', posterID)
           ..add('acceptorID', acceptorID)
-          ..add('tempItemList', tempItemList)
           ..add('ffRef', ffRef))
         .toString();
   }
@@ -367,12 +349,6 @@ class JobRecordBuilder implements Builder<JobRecord, JobRecordBuilder> {
   set acceptorID(DocumentReference<Object?>? acceptorID) =>
       _$this._acceptorID = acceptorID;
 
-  ListBuilder<String>? _tempItemList;
-  ListBuilder<String> get tempItemList =>
-      _$this._tempItemList ??= new ListBuilder<String>();
-  set tempItemList(ListBuilder<String>? tempItemList) =>
-      _$this._tempItemList = tempItemList;
-
   DocumentReference<Object?>? _ffRef;
   DocumentReference<Object?>? get ffRef => _$this._ffRef;
   set ffRef(DocumentReference<Object?>? ffRef) => _$this._ffRef = ffRef;
@@ -395,7 +371,6 @@ class JobRecordBuilder implements Builder<JobRecord, JobRecordBuilder> {
       _itemQuantity = $v.itemQuantity;
       _posterID = $v.posterID;
       _acceptorID = $v.acceptorID;
-      _tempItemList = $v.tempItemList?.toBuilder();
       _ffRef = $v.ffRef;
       _$v = null;
     }
@@ -432,16 +407,12 @@ class JobRecordBuilder implements Builder<JobRecord, JobRecordBuilder> {
               itemQuantity: itemQuantity,
               posterID: posterID,
               acceptorID: acceptorID,
-              tempItemList: _tempItemList?.build(),
               ffRef: ffRef);
     } catch (_) {
       late String _$failedField;
       try {
         _$failedField = 'items';
         _items?.build();
-
-        _$failedField = 'tempItemList';
-        _tempItemList?.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             r'JobRecord', _$failedField, e.toString());

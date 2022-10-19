@@ -281,8 +281,6 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
                                     10, 5, 10, 5),
                                 child: InkWell(
                                   onTap: () async {
-                                    // print("FUCKFUCKFUCKFUCKFUKFUCK");
-                                    // context.pushNamed('JobDetailScreenPoster');
                                     if ((listViewJobRecord.posterID!.id) ==
                                         (currentUserReference!.id)) {
                                       context.pushNamed(
