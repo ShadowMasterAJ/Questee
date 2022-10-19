@@ -281,15 +281,12 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
                                     10, 5, 10, 5),
                                 child: InkWell(
                                   onTap: () async {
-                                    // context.pushNamed('JobDetailScreenPoster');
-                                    if ((listViewJobRecord.posterID!.id) ==
-                                        (currentUserReference!.id)) {
-                                      context
-                                          .pushNamed('JobDetailScreenPoster');
-                                    } else {
-                                      context
-                                          .pushNamed('JobDetailScreenGrabber');
-                                    }
+                                    listViewJobRecord.posterID!.id ==
+                                            currentUserReference!.id
+                                        ? context
+                                            .pushNamed('JobDetailScreenPoster')
+                                        : context.pushNamed(
+                                            'JobDetailScreenGrabber');
                                   },
                                   child: Card(
                                     clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -434,7 +431,7 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
                   ),
                 ),
               ),
-              Expanded(child: NavBarWithMiddleButtonWidget()),
+              NavBarWithMiddleButtonWidget()
             ],
           ),
         ),
