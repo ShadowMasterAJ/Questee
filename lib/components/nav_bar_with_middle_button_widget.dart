@@ -22,9 +22,15 @@ class _NavBarWithMiddleButtonWidgetState
       children: [
         Container(
           width: double.infinity,
-          height: 80,
+          height: 90,
           decoration: BoxDecoration(
-            color: Color(0x00EEEEEE),
+            color: FlutterFlowTheme.of(context).primaryBackground,
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(0),
+              bottomRight: Radius.circular(0),
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
           ),
           child: Stack(
             children: [
@@ -32,36 +38,25 @@ class _NavBarWithMiddleButtonWidgetState
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Material(
-                    color: Colors.transparent,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
+                  Container(
+                    width: double.infinity,
+                    height: 70,
+                    decoration: BoxDecoration(
+                      color: FlutterFlowTheme.of(context).secondaryBackground,
+                      boxShadow: [
+                        BoxShadow(
+                          blurRadius: 10,
+                          color:
+                              FlutterFlowTheme.of(context).secondaryBackground,
+                          offset: Offset(0, 0),
+                          spreadRadius: 0.1,
+                        )
+                      ],
                       borderRadius: BorderRadius.only(
                         bottomLeft: Radius.circular(0),
                         bottomRight: Radius.circular(0),
                         topLeft: Radius.circular(20),
                         topRight: Radius.circular(20),
-                      ),
-                    ),
-                    child: Container(
-                      width: double.infinity,
-                      height: 70,
-                      decoration: BoxDecoration(
-                        color: FlutterFlowTheme.of(context).primaryBackground,
-                        boxShadow: [
-                          BoxShadow(
-                            blurRadius: 10,
-                            color: Color(0x1A57636C),
-                            offset: Offset(0, -10),
-                            spreadRadius: 0.1,
-                          )
-                        ],
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(0),
-                          bottomRight: Radius.circular(0),
-                          topLeft: Radius.circular(20),
-                          topRight: Radius.circular(20),
-                        ),
                       ),
                     ),
                   ),
@@ -94,7 +89,7 @@ class _NavBarWithMiddleButtonWidgetState
                     icon: Icon(
                       Icons.chat_bubble_rounded,
                       color: FlutterFlowTheme.of(context).grayIcon,
-                      size: 24,
+                      size: 30,
                     ),
                     onPressed: () async {
                       context.pushNamed('ChatWithUserScreen');
@@ -105,12 +100,12 @@ class _NavBarWithMiddleButtonWidgetState
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 15),
+                        padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 10),
                         child: FlutterFlowIconButton(
-                          borderColor: Colors.transparent,
+                          borderColor: Colors.black,
                           borderRadius: 10,
                           borderWidth: 1,
-                          buttonSize: 60,
+                          buttonSize: 70,
                           fillColor: FlutterFlowTheme.of(context).primaryColor,
                           icon: FaIcon(
                             FontAwesomeIcons.plus,
@@ -132,7 +127,7 @@ class _NavBarWithMiddleButtonWidgetState
                     icon: Icon(
                       Icons.history,
                       color: FlutterFlowTheme.of(context).grayIcon,
-                      size: 24,
+                      size: 30,
                     ),
                     onPressed: () async {
                       context.pushNamed('JobHistoryScreen');
@@ -146,7 +141,7 @@ class _NavBarWithMiddleButtonWidgetState
                     icon: Icon(
                       Icons.face,
                       color: FlutterFlowTheme.of(context).grayIcon,
-                      size: 26,
+                      size: 30,
                     ),
                     onPressed: () async {
                       context.pushNamed('editProfileScreen');

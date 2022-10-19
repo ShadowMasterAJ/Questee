@@ -437,7 +437,7 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
                   ),
                 ),
               ),
-              Expanded(child: NavBarWithMiddleButtonWidget()),
+              NavBarWithMiddleButtonWidget()
             ],
           ),
         ),

@@ -148,7 +148,6 @@ class _CreateJobScreenWidgetState extends State<CreateJobScreenWidget> {
                                       10, 10, 10, 10),
                                   child: TextFormField(
                                     controller: delLocationController,
-                                    autofocus: true,
                                     obscureText: false,
                                     decoration: InputDecoration(
                                       hintText: 'Enter Delivery Location',
@@ -360,7 +359,6 @@ class _CreateJobScreenWidgetState extends State<CreateJobScreenWidget> {
                                       10, 10, 10, 10),
                                   child: TextFormField(
                                     controller: noteController,
-                                    autofocus: true,
                                     obscureText: false,
                                     decoration: InputDecoration(
                                       hintText: 'Note',
@@ -537,7 +535,6 @@ class _CreateJobScreenWidgetState extends State<CreateJobScreenWidget> {
                                           Duration(milliseconds: 1000),
                                           () => setState(() {}),
                                         ),
-                                        autofocus: true,
                                         obscureText: false,
                                         decoration: InputDecoration(
                                           hintText:
