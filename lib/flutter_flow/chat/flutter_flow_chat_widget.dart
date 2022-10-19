@@ -100,7 +100,7 @@ class FFChatWidget extends StatelessWidget {
                     inputTextStyle: inputTextStyle ??
                         GoogleFonts.getFont(
                           'DM Sans',
-                          color: Colors.black,
+                          color: Color.fromARGB(255, 255, 255, 255),
                           fontSize: 14,
                         ),
                     inputToolbarMargin: const EdgeInsets.only(
@@ -180,13 +180,15 @@ class _FFChatMessageState extends State<FFChatMessage> {
                   : widget.otherUsersBoxDecoration) ??
               BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
-                color: widget.isMe ? Colors.white : const Color(0xFF4B39EF),
+                color: widget.isMe
+                    ? Colors.white
+                    : Color.fromARGB(255, 216, 55, 218),
               ))
           .copyWith(
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.15),
-            offset: const Offset(0, 1),
+            color: Color.fromARGB(255, 251, 230, 255).withOpacity(0.15),
+            // offset: const Offset(0, 1),
             blurRadius: 3.0,
           ),
         ],
@@ -197,7 +199,8 @@ class _FFChatMessageState extends State<FFChatMessage> {
               : widget.otherUsersTextStyle) ??
           GoogleFonts.getFont(
             'DM Sans',
-            color: widget.isMe ? const Color(0xFF1E2429) : Colors.white,
+            color:
+                widget.isMe ? Color.fromARGB(255, 255, 255, 255) : Colors.white,
             fontWeight: FontWeight.w500,
             fontSize: 14,
           ))
@@ -217,12 +220,12 @@ class _FFChatMessageState extends State<FFChatMessage> {
             const SizedBox(height: 6.0),
             InkWell(
               onTap: () => setState(() => _showTime = !showTime),
-              splashColor: Colors.transparent,
+              splashColor: Color.fromARGB(255, 119, 41, 135),
               child: Container(
                 constraints: BoxConstraints(
                     maxWidth: MediaQuery.of(context).size.width * 0.65),
                 decoration: boxDecoration.copyWith(
-                    color: hasImage ? Colors.transparent : null),
+                    color: hasImage ? Color.fromARGB(255, 119, 41, 135) : null),
                 child: hasImage
                     ? ClipRRect(
                         borderRadius: BorderRadius.circular(16),
@@ -252,7 +255,7 @@ class _FFChatMessageState extends State<FFChatMessage> {
                       ? timeago.format(widget.chatMessage.createdAt)
                       : DateFormat.jm().format(widget.chatMessage.createdAt),
                   style: TextStyle(
-                    color: Colors.grey[500],
+                    color: Colors.white,
                     fontSize: 12,
                   ),
                 ),

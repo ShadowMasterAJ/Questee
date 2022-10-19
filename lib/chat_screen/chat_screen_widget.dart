@@ -80,7 +80,7 @@ class _ChatScreenWidgetState extends State<ChatScreenWidget> {
         return Scaffold(
           key: scaffoldKey,
           appBar: AppBar(
-            backgroundColor: Colors.white,
+            backgroundColor: FlutterFlowTheme.of(context).primaryColor,
             automaticallyImplyLeading: false,
             leading: FlutterFlowIconButton(
               borderColor: Colors.transparent,
@@ -89,7 +89,7 @@ class _ChatScreenWidgetState extends State<ChatScreenWidget> {
               buttonSize: 60,
               icon: Icon(
                 Icons.arrow_back_rounded,
-                color: Colors.black,
+                color: Color.fromARGB(255, 255, 255, 255),
                 size: 24,
               ),
               onPressed: () async {
@@ -102,7 +102,7 @@ class _ChatScreenWidgetState extends State<ChatScreenWidget> {
                   widget.chatUser!.displayName!,
                   style: FlutterFlowTheme.of(context).bodyText1.override(
                         fontFamily: 'Lexend Deca',
-                        color: Colors.black,
+                        color: Color.fromARGB(255, 255, 255, 255),
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
@@ -123,25 +123,32 @@ class _ChatScreenWidgetState extends State<ChatScreenWidget> {
                   ? FFChatPage(
                       chatInfo: snapshot.data!,
                       allowImages: true,
-                      backgroundColor: Color(0xFFF2F4F8),
+                      backgroundColor:
+                          FlutterFlowTheme.of(context).primaryBackground,
                       timeDisplaySetting: TimeDisplaySetting.visibleOnTap,
                       currentUserBoxDecoration: BoxDecoration(
-                        color: Colors.white,
+                        color: FlutterFlowTheme.of(context).primaryColor,
                         border: Border.all(
-                          color: Colors.transparent,
+                          color: FlutterFlowTheme.of(context).primaryColor,
                         ),
-                        borderRadius: BorderRadius.circular(15),
+                        borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(15),
+                            topLeft: Radius.circular(15),
+                            topRight: Radius.circular(15)),
                       ),
                       otherUsersBoxDecoration: BoxDecoration(
-                        color: Color(0xFF4B39EF),
+                        color: FlutterFlowTheme.of(context).secondaryColor,
                         border: Border.all(
-                          color: Colors.transparent,
+                          color: Color.fromARGB(0, 255, 255, 255),
                         ),
-                        borderRadius: BorderRadius.circular(15),
+                        borderRadius: BorderRadius.only(
+                            bottomRight: Radius.circular(15),
+                            topLeft: Radius.circular(15),
+                            topRight: Radius.circular(15)),
                       ),
                       currentUserTextStyle: GoogleFonts.getFont(
                         'DM Sans',
-                        color: Color(0xFF1E2429),
+                        color: Color.fromARGB(255, 255, 255, 255),
                         fontWeight: FontWeight.w500,
                         fontSize: 14,
                         fontStyle: FontStyle.normal,
@@ -160,7 +167,7 @@ class _ChatScreenWidgetState extends State<ChatScreenWidget> {
                       ),
                       inputTextStyle: GoogleFonts.getFont(
                         'DM Sans',
-                        color: Colors.black,
+                        color: Color.fromARGB(255, 0, 0, 0),
                         fontWeight: FontWeight.normal,
                         fontSize: 14,
                       ),
