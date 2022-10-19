@@ -26,6 +26,9 @@ class _JobDetailScreenGrabberWidgetState
 
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)!.settings.arguments;
+    print("FUCK FUCK FUCK FUCK");
+    print(args);
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -40,7 +43,7 @@ class _JobDetailScreenGrabberWidgetState
               ),
               builder: (context, snapshot) {
                 // Customize what your widget looks like when it's loading.
-                if (snapshot.hasData) {
+                if (!snapshot.hasData) {
                   return Center(
                     child: SizedBox(
                       width: 50,
@@ -52,6 +55,7 @@ class _JobDetailScreenGrabberWidgetState
                   );
                 }
                 List<JobRecord> columnJobRecordList = snapshot.data!;
+
                 // Return an empty Container when the document does not exist.
                 if (snapshot.data!.isEmpty) {
                   return Container();
@@ -176,6 +180,7 @@ class _JobDetailScreenGrabberWidgetState
                                       ),
                                     ),
                                     Text(
+                                      // "cocococock",
                                       columnJobRecord!.store!,
                                       style: FlutterFlowTheme.of(context)
                                           .bodyText1,
@@ -200,7 +205,13 @@ class _JobDetailScreenGrabberWidgetState
                                       ),
                                     ),
                                     Text(
-                                      columnJobRecord!.delTime!.toString(),
+                                      // "cock",
+                                      // columnJobRecord!.delTime.toString(),
+                                      valueOrDefault<String>(
+                                        dateTimeFormat(
+                                            'jm', columnJobRecord.delTime),
+                                        'ASAP',
+                                      ),
                                       style: FlutterFlowTheme.of(context)
                                           .bodyText1,
                                     ),
@@ -224,6 +235,7 @@ class _JobDetailScreenGrabberWidgetState
                                       ),
                                     ),
                                     Text(
+                                      // "FUCKFUCKFUCK",
                                       columnJobRecord!.note!,
                                       style: FlutterFlowTheme.of(context)
                                           .bodyText1,
@@ -326,65 +338,57 @@ class _JobDetailScreenGrabberWidgetState
                           ),
                         ),
                       ),
-                    // if (accepted != null && accepted == false)
-                    Align(
-                      alignment: AlignmentDirectional(0, 0),
-                      child: Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 20),
-                        child: FFButtonWidget(
-                          onPressed: () async {
-                            final jobUpdateData = createJobRecordData(
-                              acceptorID: currentUserReference,
-                            );
-                            await columnJobRecord!.reference
-                                .update(jobUpdateData);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  'Job Accepted!',
-                                  style: TextStyle(
-                                    color: FlutterFlowTheme.of(context)
-                                        .primaryText,
-                                  ),
-                                ),
-                                duration: Duration(milliseconds: 2000),
-                                backgroundColor: Color(0x00000000),
-                              ),
-                            );
-                            accepted = await actions.onPressAccept(
-                              context,
-                            );
-
-                            setState(() {});
-                          },
-                          text: 'Accept This Job ',
-                          options: FFButtonOptions(
-                            width: 340,
-                            height: 50,
-                            color: Color(0xFF9ACDA1),
-                            textStyle:
-                                FlutterFlowTheme.of(context).subtitle2.override(
-                                      fontFamily: 'Poppins',
-                                      color: Colors.white,
+                    if (accepted != null && accepted == false)
+                      Align(
+                        alignment: AlignmentDirectional(0, 0),
+                        child: Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 20),
+                          child: FFButtonWidget(
+                            onPressed: () async {
+                              final jobUpdateData = createJobRecordData(
+                                acceptorID: currentUserReference,
+                              );
+                              await columnJobRecord!.reference
+                                  .update(jobUpdateData);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    'Job Accepted!',
+                                    style: TextStyle(
+                                      color: FlutterFlowTheme.of(context)
+                                          .primaryText,
                                     ),
-                            borderSide: BorderSide(
-                              color: Colors.transparent,
-                              width: 1,
+                                  ),
+                                  duration: Duration(milliseconds: 2000),
+                                  backgroundColor: Color(0x00000000),
+                                ),
+                              );
+                              accepted = await actions.onPressAccept(
+                                context,
+                              );
+
+                              setState(() {});
+                            },
+                            text: 'Accept This Job ',
+                            options: FFButtonOptions(
+                              width: 340,
+                              height: 50,
+                              color: Color(0xFF9ACDA1),
+                              textStyle: FlutterFlowTheme.of(context)
+                                  .subtitle2
+                                  .override(
+                                    fontFamily: 'Poppins',
+                                    color: Colors.white,
+                                  ),
+                              borderSide: BorderSide(
+                                color: Colors.transparent,
+                                width: 1,
+                              ),
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                            borderRadius: BorderRadius.circular(10),
                           ),
                         ),
                       ),
-                    ),
-                    // if (accepted ?? true)
-                    //   Text(
-                    //     'Job Accepted!',
-                    //     style: FlutterFlowTheme.of(context).title2.override(
-                    //           fontFamily: 'Poppins',
-                    //           color: Color(0xFF80D3A2),
-                    //           fontSize: 30,
-                    //         ),
-                    //   ),
                   ],
                 );
               },
