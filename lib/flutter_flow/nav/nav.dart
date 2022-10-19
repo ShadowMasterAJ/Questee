@@ -163,11 +163,6 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
                 chatUser: params.getParam('chatUser', ParamType.Document),
               ),
             ),
-            FFRoute(
-              name: 'ChatWithUserScreen',
-              path: 'chatWithUserScreen',
-              builder: (context, params) => ChatWithUserScreenWidget(),
-            )
           ].map((r) => r.toRoute(appStateNotifier)).toList(),
         ).toRoute(appStateNotifier),
       ],

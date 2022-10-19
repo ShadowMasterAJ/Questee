@@ -19,5 +19,3 @@ export 'forgot_password_screen/forgot_password_screen_widget.dart'
 export 'poster_payment_screen/poster_payment_screen_widget.dart'
     show PosterPaymentScreenWidget;
 export 'chat_screen/chat_screen_widget.dart' show ChatScreenWidget;
-export 'chat_with_user_screen/chat_with_user_screen_widget.dart'
-    show ChatWithUserScreenWidget;
