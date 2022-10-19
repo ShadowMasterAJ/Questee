@@ -81,13 +81,14 @@ Map<String, dynamic> createJobRecordData({
   String? status,
   DateTime? delTime,
   int? itemQuantity,
+  List<String>? items,
   DocumentReference? posterID,
   DocumentReference? acceptorID,
 }) {
   final firestoreData = serializers.toFirestore(
     JobRecord.serializer,
-    JobRecord(
-      (j) => j
+    JobRecord((j) {
+      j
         ..type = type
         ..note = note
         ..store = store
@@ -95,12 +96,15 @@ Map<String, dynamic> createJobRecordData({
         ..price = price
         ..status = status
         ..delTime = delTime
-        ..items = null
         ..itemQuantity = itemQuantity
         ..posterID = posterID
         ..acceptorID = acceptorID
-        ..tempItemList = null,
-    ),
+        ..tempItemList = null;
+
+      for (int i = 0; i < items!.length; i++) {
+        j.items.add(items[i]);
+      }
+    }),
   );
 
   return firestoreData;

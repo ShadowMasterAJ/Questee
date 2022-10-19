@@ -281,6 +281,15 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
                                     10, 5, 10, 5),
                                 child: InkWell(
                                   onTap: () async {
+                                    int FUCK = listViewIndex;
+                                    // JobRecord CHECKLIST =
+                                    //     listViewJobRecord; // DC POTENTIAL ERROR HERE
+                                    // print("HI I AM HERE");
+                                    // print(CHECKLIST);
+                                    JobRecord jobDoc = listViewJobRecord;
+                                    // print(RECORD.
+                                    print("JUST PRITNED CHECKLIST");
+                                    // print("BYE I AM GONE");
                                     String STORE = listViewJobRecord.store!;
                                     String TIME = valueOrDefault<String>(
                                       dateTimeFormat(
@@ -289,45 +298,37 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
                                     );
                                     String NOTE =
                                         listViewJobRecord.delLocation!;
+                                    // List<String> CHECKLIST =
+                                    //     listViewJobRecord.items!.toList();
 
-                                    print(serializeParam(
-                                      STORE,
-                                      ParamType.String,
-                                    ));
-                                    print(TIME);
-                                    print(NOTE);
-                                    // print("FUCKFUCKFUCKFUCKFUKFUCK");
-                                    // context.pushNamed('JobDetailScreenPoster');
                                     if ((listViewJobRecord.posterID!.id) ==
                                         (currentUserReference!.id)) {
                                       print("THIS IS THE POSTER IF STATEMENT");
 
-                                      context.pushNamed(
-                                        'JobDetailScreenPoster',
-                                        queryParams: {
-                                          'store': serializeParam(
-                                            STORE,
-                                            ParamType.String,
-                                          )!,
-                                          'time': serializeParam(
-                                            TIME,
-                                            ParamType.String,
-                                          )!,
-                                          'note': serializeParam(
-                                            NOTE,
-                                            ParamType.String,
-                                          )!,
-                                        },
-                                        // extra: {
-                                        //   'store': listViewJobRecord.store!,
-                                        //   'time': valueOrDefault<String>(
-                                        //     dateTimeFormat('jm',
-                                        //         listViewJobRecord.delTime),
-                                        //     'ASAP',
-                                        //   ),
-                                        //   'note': listViewJobRecord.delLocation!
-                                        // },
-                                      );
+                                      context.pushNamed('JobDetailScreenPoster',
+                                          queryParams: {
+                                            'store': serializeParam(
+                                              STORE,
+                                              ParamType.String,
+                                            )!,
+                                            'time': serializeParam(
+                                              TIME,
+                                              ParamType.String,
+                                            )!,
+                                            'note': serializeParam(
+                                              NOTE,
+                                              ParamType.String,
+                                            )!,
+                                            'jobDoc': serializeParam(
+                                                jobDoc, ParamType.Document)!,
+                                            // 'fuck': serializeParam(
+                                            //     FUCK, ParamType.int)!,
+                                            // 'checklist': serializeParam(CHECKLIST,
+                                            //     ParamType.String, true)!,
+                                          }.withoutNulls,
+                                          extra: <String, dynamic>{
+                                            'jobDoc': jobDoc,
+                                          });
                                     } else {
                                       print(
                                           "THIS IS THE GRABBER ELSE STATEMENT");
