@@ -296,8 +296,6 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
                                     ));
                                     print(TIME);
                                     print(NOTE);
-                                    // print("FUCKFUCKFUCKFUCKFUKFUCK");
-                                    // context.pushNamed('JobDetailScreenPoster');
                                     if ((listViewJobRecord.posterID!.id) ==
                                         (currentUserReference!.id)) {
                                       print("THIS IS THE POSTER IF STATEMENT");
