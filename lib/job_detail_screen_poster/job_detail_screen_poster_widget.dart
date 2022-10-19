@@ -304,38 +304,6 @@ class _JobDetailScreenPosterWidgetState
                       thickness: 1,
                       color: FlutterFlowTheme.of(context).grayIcon,
                     ),
-                    Align(
-                      alignment: AlignmentDirectional(0.8, 0),
-                      child: Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(0, 20, 0, 0),
-                        child: FFButtonWidget(
-                          onPressed: () {
-                            print('Button pressed ...');
-                          },
-                          text: 'Edit',
-                          icon: Icon(
-                            Icons.edit,
-                            size: 15,
-                          ),
-                          options: FFButtonOptions(
-                            width: 80,
-                            height: 30,
-                            color: FlutterFlowTheme.of(context).primaryColor,
-                            textStyle:
-                                FlutterFlowTheme.of(context).subtitle2.override(
-                                      fontFamily: 'Poppins',
-                                      color: Colors.white,
-                                      fontSize: 12,
-                                    ),
-                            borderSide: BorderSide(
-                              color: Colors.transparent,
-                              width: 1,
-                            ),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                      ),
-                    ),
                     Spacer(),
                     Stack(
                       children: [

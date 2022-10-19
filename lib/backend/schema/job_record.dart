@@ -84,8 +84,8 @@ Map<String, dynamic> createJobRecordData({
 }) {
   final firestoreData = serializers.toFirestore(
     JobRecord.serializer,
-    JobRecord((j) {
-      j
+    JobRecord((j) => j
+      
         ..type = type
         ..note = note
         ..store = store
@@ -96,7 +96,7 @@ Map<String, dynamic> createJobRecordData({
         ..itemQuantity = itemQuantity
         ..posterID = posterID
         ..acceptorID = acceptorID,
-    ),
+    )
   );
 
   return firestoreData;

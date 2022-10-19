@@ -361,107 +361,104 @@ class _SignupScreenWidgetState extends State<SignupScreenWidget> {
                               ),
                             ),
                           ),
-                          Align(
-                            alignment: AlignmentDirectional(0, 0),
-                            child: Padding(
-                              padding:
-                                  EdgeInsetsDirectional.fromSTEB(20, 0, 20, 16),
-                              child: TextFormField(
-                                controller: userCfmPasswordController,
-                                obscureText: !userCfmPasswordVisibility,
-                                decoration: InputDecoration(
-                                  labelText: 'Retype Password',
-                                  labelStyle: FlutterFlowTheme.of(context)
-                                      .bodyText2
-                                      .override(
-                                        fontFamily: 'Outfit',
-                                        color: FlutterFlowTheme.of(context)
-                                            .secondaryText,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.normal,
-                                      ),
-                                  hintStyle: FlutterFlowTheme.of(context)
-                                      .bodyText2
-                                      .override(
-                                        fontFamily: 'Outfit',
-                                        color: Color(0xFF57636C),
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.normal,
-                                      ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: FlutterFlowTheme.of(context)
-                                          .secondaryText,
-                                      width: 0.5,
-                                    ),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: FlutterFlowTheme.of(context)
-                                          .secondaryText,
-                                      width: 0.5,
-                                    ),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  errorBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: FlutterFlowTheme.of(context)
-                                          .alternate,
-                                      width: 0.5,
-                                    ),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  focusedErrorBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: FlutterFlowTheme.of(context)
-                                          .alternate,
-                                      width: 0.5,
-                                    ),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  filled: true,
-                                  fillColor: FlutterFlowTheme.of(context)
-                                      .secondaryBackground,
-                                  contentPadding:
-                                      EdgeInsetsDirectional.fromSTEB(
-                                          20, 24, 0, 24),
-                                  suffixIcon: InkWell(
-                                    onTap: () => setState(
-                                      () => userCfmPasswordVisibility =
-                                          !userCfmPasswordVisibility,
-                                    ),
-                                    focusNode: FocusNode(skipTraversal: true),
-                                    child: Icon(
-                                      userCfmPasswordVisibility
-                                          ? Icons.visibility_outlined
-                                          : Icons.visibility_off_outlined,
-                                      color: Color(0xFF757575),
-                                      size: 22,
-                                    ),
-                                  ),
-                                ),
-                                style: FlutterFlowTheme.of(context)
-                                    .bodyText1
+                          Padding(
+                            padding:
+                                EdgeInsetsDirectional.fromSTEB(20, 0, 20, 16),
+                            child: TextFormField(
+                              controller: userCfmPasswordController,
+                              obscureText: !userCfmPasswordVisibility,
+                              decoration: InputDecoration(
+                                labelText: 'Retype Password',
+                                labelStyle: FlutterFlowTheme.of(context)
+                                    .bodyText2
                                     .override(
                                       fontFamily: 'Outfit',
                                       color: FlutterFlowTheme.of(context)
-                                          .primaryText,
+                                          .secondaryText,
                                       fontSize: 14,
                                       fontWeight: FontWeight.normal,
                                     ),
-                                validator: (val) {
-                                  if (val == null || val.isEmpty) {
-                                    return 'Field is required';
-                                  }
-
-                                  if (val.length < 6) {
-                                    return 'Requires at least 6 characters.';
-                                  }
-
-                                  return null;
-                                },
+                                hintStyle: FlutterFlowTheme.of(context)
+                                    .bodyText2
+                                    .override(
+                                      fontFamily: 'Outfit',
+                                      color: Color(0xFF57636C),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.normal,
+                                    ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: FlutterFlowTheme.of(context)
+                                        .secondaryText,
+                                    width: 0.5,
+                                  ),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: FlutterFlowTheme.of(context)
+                                        .secondaryText,
+                                    width: 0.5,
+                                  ),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                errorBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: FlutterFlowTheme.of(context)
+                                        .alternate,
+                                    width: 0.5,
+                                  ),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                focusedErrorBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: FlutterFlowTheme.of(context)
+                                        .alternate,
+                                    width: 0.5,
+                                  ),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                filled: true,
+                                fillColor: FlutterFlowTheme.of(context)
+                                    .secondaryBackground,
+                                contentPadding:
+                                    EdgeInsetsDirectional.fromSTEB(
+                                        20, 24, 0, 24),
+                                suffixIcon: InkWell(
+                                  onTap: () => setState(
+                                    () => userCfmPasswordVisibility =
+                                        !userCfmPasswordVisibility,
+                                  ),
+                                  focusNode: FocusNode(skipTraversal: true),
+                                  child: Icon(
+                                    userCfmPasswordVisibility
+                                        ? Icons.visibility_outlined
+                                        : Icons.visibility_off_outlined,
+                                    color: Color(0xFF757575),
+                                    size: 22,
+                                  ),
+                                ),
                               ),
+                              style: FlutterFlowTheme.of(context)
+                                  .bodyText1
+                                  .override(
+                                    fontFamily: 'Outfit',
+                                    color: FlutterFlowTheme.of(context)
+                                        .primaryText,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.normal,
+                                  ),
+                              validator: (val) {
+                                if (val == null || val.isEmpty) {
+                                  return 'Field is required';
+                                }
+
+                                if (val.length < 6) {
+                                  return 'Requires at least 6 characters.';
+                                }
+
+                                return null;
+                              },
                             ),
                           ),
                         ],

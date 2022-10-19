@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+
 import '../auth/auth_util.dart';
 import '../backend/backend.dart';
 import '../flutter_flow/flutter_flow_checkbox_group.dart';
@@ -26,7 +28,7 @@ class JobDetailScreenGrabberWidget extends StatefulWidget {
 class _JobDetailScreenGrabberWidgetState
     extends State<JobDetailScreenGrabberWidget> {
   List<String>? checkboxGroupValues;
-  bool? accepted;
+  bool accepted = false;
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -66,7 +68,7 @@ class _JobDetailScreenGrabberWidgetState
                   return Container();
                 }
                 final columnJobRecord = columnJobRecordList.isNotEmpty
-                    ? columnJobRecordList.first
+                    ? columnJobRecordList[0]
                     : null;
                 return Column(
                   mainAxisSize: MainAxisSize.max,
@@ -255,139 +257,126 @@ class _JobDetailScreenGrabberWidgetState
                       color: FlutterFlowTheme.of(context).grayIcon,
                     ),
                     Spacer(),
-                    if (accepted ?? true)
-                      Align(
-                        alignment: AlignmentDirectional(0, 0),
-                        child: Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 10),
-                          child: StreamBuilder<List<UsersRecord>>(
-                            stream: queryUsersRecord(
-                              singleRecord: true,
-                            ),
-                            builder: (context, snapshot) {
-                              // Customize what your widget looks like when it's loading.
-                              if (!snapshot.hasData) {
-                                return Center(
-                                  child: SizedBox(
-                                    width: 50,
-                                    height: 50,
-                                    child: CircularProgressIndicator(
-                                      color: FlutterFlowTheme.of(context)
-                                          .primaryColor,
-                                    ),
-                                  ),
-                                );
-                              }
-                              List<UsersRecord> buttonUsersRecordList =
-                                  snapshot.data!;
-                              // Return an empty Container when the document does not exist.
-                              if (snapshot.data!.isEmpty) {
-                                return Container();
-                              }
-                              final buttonUsersRecord =
-                                  buttonUsersRecordList.isNotEmpty
-                                      ? buttonUsersRecordList.first
-                                      : null;
-                              return FFButtonWidget(
-                                onPressed: () async {
-                                  context.pushNamed(
-                                    'ChatScreen',
-                                    queryParams: {
-                                      'chatUser': serializeParam(
-                                        buttonUsersRecord,
-                                        ParamType.Document,
-                                      ),
-                                    }.withoutNulls,
-                                    extra: <String, dynamic>{
-                                      'chatUser': buttonUsersRecord,
-                                      kTransitionInfoKey: TransitionInfo(
-                                        hasTransition: true,
-                                        transitionType:
-                                            PageTransitionType.scale,
-                                        alignment: Alignment.bottomCenter,
-                                        duration: Duration(milliseconds: 400),
-                                      ),
-                                    },
-                                  );
-                                },
-                                text: 'Chat with Job Poster',
-                                options: FFButtonOptions(
-                                  width: 340,
+                    if (accepted)
+                      Padding(
+                        padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 10),
+                        child: StreamBuilder<List<UsersRecord>>(
+                          stream: queryUsersRecord(
+                            singleRecord: true,
+                          ),
+                          builder: (context, snapshot) {
+                            // Customize what your widget looks like when it's loading.
+                            if (!snapshot.hasData) {
+                              return Center(
+                                child: SizedBox(
+                                  width: 50,
                                   height: 50,
-                                  color: valueOrDefault<Color>(
-                                    columnJobRecord!.acceptorID != null
-                                        ? Color(0xFF80D3A2)
-                                        : FlutterFlowTheme.of(context)
-                                            .secondaryText,
-                                    Color(0xFFC0C0C0),
+                                  child: CircularProgressIndicator(
+                                    color: FlutterFlowTheme.of(context)
+                                        .primaryColor,
                                   ),
-                                  textStyle: FlutterFlowTheme.of(context)
-                                      .subtitle2
-                                      .override(
-                                        fontFamily: 'Poppins',
-                                        color: FlutterFlowTheme.of(context)
-                                            .primaryText,
-                                      ),
-                                  borderSide: BorderSide(
-                                    color: Colors.transparent,
-                                    width: 1,
-                                  ),
-                                  borderRadius: BorderRadius.circular(10),
                                 ),
                               );
-                            },
-                          ),
-                        ),
-                      ),
-                    if (accepted != null && accepted == false)
-                      Align(
-                        alignment: AlignmentDirectional(0, 0),
-                        child: Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 20),
-                          child: FFButtonWidget(
-                            onPressed: () async {
-                              final jobUpdateData = createJobRecordData(
-                                acceptorID: currentUserReference,
-                              );
-                              await columnJobRecord!.reference
-                                  .update(jobUpdateData);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    'Job Accepted!',
-                                    style: TextStyle(
+                            }
+                            List<UsersRecord> buttonUsersRecordList =
+                                snapshot.data!;
+                            // Return an empty Container when the document does not exist.
+                            if (snapshot.data!.isEmpty) {
+                              return Container();
+                            }
+                            final buttonUsersRecord =
+                                buttonUsersRecordList.isNotEmpty
+                                    ? buttonUsersRecordList[0]
+                                    : null;
+                            print(buttonUsersRecordList);
+
+                            return FFButtonWidget(
+                              onPressed: () async {
+                                context.pushNamed(
+                                  'ChatScreen',
+                                  queryParams: {
+                                    'chatUser': serializeParam(
+                                      buttonUsersRecord,
+                                      ParamType.Document,
+                                    ),
+                                  }.withoutNulls,
+                                  extra: <String, dynamic>{
+                                    'chatUser': buttonUsersRecord,
+                                    kTransitionInfoKey: TransitionInfo(
+                                      hasTransition: true,
+                                      transitionType: PageTransitionType.scale,
+                                      alignment: Alignment.bottomCenter,
+                                      duration: Duration(milliseconds: 400),
+                                    ),
+                                  },
+                                );
+                              },
+                              text: 'Chat with Job Poster',
+                              options: FFButtonOptions(
+                                width: 340,
+                                height: 50,
+                                color:
+                                    FlutterFlowTheme.of(context).primaryColor,
+                                textStyle: FlutterFlowTheme.of(context)
+                                    .subtitle2
+                                    .override(
+                                      fontFamily: 'Poppins',
                                       color: FlutterFlowTheme.of(context)
                                           .primaryText,
                                     ),
-                                  ),
-                                  duration: Duration(milliseconds: 2000),
-                                  backgroundColor: Color(0x00000000),
+                                borderSide: BorderSide(
+                                  color: Colors.transparent,
+                                  width: 1,
                                 ),
-                              );
-                              accepted = await actions.onPressAccept(
-                                context,
-                              );
-
-                              setState(() {});
-                            },
-                            text: 'Accept This Job ',
-                            options: FFButtonOptions(
-                              width: 340,
-                              height: 50,
-                              color: Color(0xFF9ACDA1),
-                              textStyle: FlutterFlowTheme.of(context)
-                                  .subtitle2
-                                  .override(
-                                    fontFamily: 'Poppins',
-                                    color: Colors.white,
-                                  ),
-                              borderSide: BorderSide(
-                                color: Colors.transparent,
-                                width: 1,
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                              borderRadius: BorderRadius.circular(10),
+                            );
+                          },
+                        ),
+                      ),
+                    if (!accepted)
+                      Padding(
+                        padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 20),
+                        child: FFButtonWidget(
+                          onPressed: () async {
+                            final usersUpdateData = createJobRecordData(
+                                );
+                            if (columnJobRecord.acceptorID != null) {
+                              await columnJobRecord.acceptorID!
+                                  .set(currentUserUid);
+                              // .update(usersUpdateData);
+                            }
+
+                            setState(() => accepted = true);
+                          },
+                          text: 'Accept This Job ',
+                          options: FFButtonOptions(
+                            width: 340,
+                            height: 50,
+                            color: Color(0xFF9ACDA1),
+                            textStyle:
+                                FlutterFlowTheme.of(context).subtitle2.override(
+                                      fontFamily: 'Poppins',
+                                      color: Colors.white,
+                                    ),
+                            borderSide: BorderSide(
+                              color: Colors.transparent,
+                              width: 1,
                             ),
+                            borderRadius: BorderRadius.circular(10),
                           ),
+                        ),
+                      ),
+                    if (accepted)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: Text(
+                          'Job Accepted!',
+                          style: FlutterFlowTheme.of(context).title2.override(
+                                fontFamily: 'Poppins',
+                                color: Color(0xFF80D3A2),
+                                fontSize: 30,
+                              ),
                         ),
                       ),
                   ],
