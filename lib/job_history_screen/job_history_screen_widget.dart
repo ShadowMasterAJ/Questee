@@ -258,8 +258,10 @@ class _JobHistoryScreenWidgetState extends State<JobHistoryScreenWidget> {
                                                                               () async {
                                                                             if (listViewJobRecord.posterID ==
                                                                                 currentUserReference) {
+                                                                                  print("hello1");
                                                                               context.pushNamed('JobDetailScreenPoster');
                                                                             } else {
+                                                                              print("hello2");
                                                                               context.pushNamed('JobDetailScreenGrabber');
                                                                             }
                                                                           },
@@ -503,8 +505,10 @@ class _JobHistoryScreenWidgetState extends State<JobHistoryScreenWidget> {
                                                                               () async {
                                                                             if (historicalListViewJobRecord.posterID ==
                                                                                 currentUserReference) {
+                                                                                  print("hello3");
                                                                               context.pushNamed('JobDetailScreenPoster');
                                                                             } else {
+                                                                              print("hello4");
                                                                               context.pushNamed('JobDetailScreenGrabber');
                                                                             }
                                                                           },
@@ -759,12 +763,73 @@ class _JobHistoryScreenWidgetState extends State<JobHistoryScreenWidget> {
                                                                           InkWell(
                                                                         onTap:
                                                                             () async {
-                                                                          if (listViewJobRecord.posterID ==
-                                                                              currentUserReference) {
-                                                                            context.pushNamed('JobDetailScreenPoster');
-                                                                          } else {
-                                                                            context.pushNamed('JobDetailScreenGrabber');
-                                                                          }
+                                                                              String STORE = listViewJobRecord.store!;
+                                                                              String TIME = valueOrDefault<String>(
+                                                                                dateTimeFormat(
+                                                                                    'jm', listViewJobRecord.delTime),
+                                                                                'ASAP',
+                                                                              );
+                                                                              String NOTE =
+                                                                                  listViewJobRecord.delLocation!;
+
+                                                                              print(serializeParam(
+                                                                                STORE,
+                                                                                ParamType.String,
+                                                                              ));
+                                                                              print(TIME);
+                                                                              print(NOTE);
+                                                                              if ((listViewJobRecord.posterID!.id) ==
+                                                                                  (currentUserReference!.id)) {
+                                                                                print("THIS IS THE POSTER IF STATEMENT");
+
+                                                                                context.pushNamed(
+                                                                                  'JobDetailScreenPoster',
+                                                                                  queryParams: {
+                                                                                    'store': serializeParam(
+                                                                                      STORE,
+                                                                                      ParamType.String,
+                                                                                    )!,
+                                                                                    'time': serializeParam(
+                                                                                      TIME,
+                                                                                      ParamType.String,
+                                                                                    )!,
+                                                                                    'note': serializeParam(
+                                                                                      NOTE,
+                                                                                      ParamType.String,
+                                                                                    )!,
+                                                                                  },
+                                                                                  // extra: {
+                                                                                  //   'store': listViewJobRecord.store!,
+                                                                                  //   'time': valueOrDefault<String>(
+                                                                                  //     dateTimeFormat('jm',
+                                                                                  //         listViewJobRecord.delTime),
+                                                                                  //     'ASAP',
+                                                                                  //   ),
+                                                                                  //   'note': listViewJobRecord.delLocation!
+                                                                                  // },
+                                                                                );
+                                                                              } else {
+                                                                                print(
+                                                                                    "THIS IS THE GRABBER ELSE STATEMENT");
+                                                                                context.pushNamed(
+                                                                                    'JobDetailScreenGrabber',
+                                                                                    queryParams: {
+                                                                                      'store': serializeParam(
+                                                                                        STORE,
+                                                                                        ParamType.String,
+                                                                                      )!,
+                                                                                      'time': serializeParam(
+                                                                                        TIME,
+                                                                                        ParamType.String,
+                                                                                      )!,
+                                                                                      'note': serializeParam(
+                                                                                        NOTE,
+                                                                                        ParamType.String,
+                                                                                      )!,
+                                                                                    });
+                                                                              }
+                                                                          
+                                        
                                                                         },
                                                                         child:
                                                                             Card(
@@ -1096,9 +1161,11 @@ class _JobHistoryScreenWidgetState extends State<JobHistoryScreenWidget> {
                                                                           () async {
                                                                         if (historicalListViewJobRecord.posterID ==
                                                                             currentUserReference) {
+                                                                              print("hello7");
                                                                           context
                                                                               .pushNamed('JobDetailScreenPoster');
                                                                         } else {
+                                                                          print("hello8");
                                                                           context
                                                                               .pushNamed('JobDetailScreenGrabber');
                                                                         }

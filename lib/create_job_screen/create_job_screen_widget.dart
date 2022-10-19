@@ -27,6 +27,9 @@ class _CreateJobScreenWidgetState extends State<CreateJobScreenWidget> {
   TextEditingController? noteController;
   TextEditingController? itemQuantityController;
   TextEditingController? itemController;
+  List<TextFormField> _fields = [];
+  List<TextEditingController> _controllers = [];
+  final List<String> _items = [];
   final formKey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -48,6 +51,112 @@ class _CreateJobScreenWidgetState extends State<CreateJobScreenWidget> {
     itemQuantityController?.dispose();
     itemController?.dispose();
     super.dispose();
+  }
+
+  Widget addItem() {
+    return Container(
+      width: 150,
+      height: 30,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: InkWell(
+        onTap: () {
+          final controller = TextEditingController();
+          final field = TextFormField(
+            controller: controller,
+            onChanged: (_) => EasyDebounce.debounce(
+              'itemController',
+              Duration(milliseconds: 1000),
+              () => setState(() {}),
+            ),
+            obscureText: false,
+            decoration: InputDecoration(
+              hintText: '(Eg. Meiji Milk Original 300ml x3)',
+              hintStyle: FlutterFlowTheme.of(context).bodyText2,
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: Color(0x00000000),
+                  width: 1,
+                ),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: Color(0x00000000),
+                  width: 1,
+                ),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              errorBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: Color(0x00000000),
+                  width: 1,
+                ),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              focusedErrorBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: Color(0x00000000),
+                  width: 1,
+                ),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              filled: true,
+              fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+              contentPadding: EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
+            ),
+            style: FlutterFlowTheme.of(context).bodyText1,
+            maxLines: 1,
+          );
+          setState(() {
+            _controllers.add(controller);
+            _fields.add(field);
+          });
+        },
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
+              child: Text(
+                'Add Items',
+                textAlign: TextAlign.center,
+                style: FlutterFlowTheme.of(context).bodyText1.override(
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w500,
+                    ),
+              ),
+            ),
+            Icon(
+              Icons.add_box,
+              color: FlutterFlowTheme.of(context).primaryBtnText,
+              size: 24,
+            ),
+          ],
+        ),
+      ),
+    );
+
+    // ListTile(
+    //   title: Icon(Icons.add),
+    //   onTap: () {
+    //     final controller = TextEditingController();
+    //     final field = TextField(
+    //       controller: controller,
+    //       decoration: InputDecoration(
+    //         border: OutlineInputBorder(),
+    //         labelText: "name${_controllers.length + 1}",
+    //       ),
+    //     );
+
+    //     setState(() {
+    //       _controllers.add(controller);
+    //       _fields.add(field);
+    //     });
+    //   },
+    // );
   }
 
   @override
@@ -411,237 +520,26 @@ class _CreateJobScreenWidgetState extends State<CreateJobScreenWidget> {
                                     },
                                   ),
                                 ),
-                                Column(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: [
-                                        Align(
-                                          alignment:
-                                              AlignmentDirectional(-1, 0),
-                                          child: Padding(
+                                ListView.builder(
+                                    itemCount: _fields.length,
+                                    padding: EdgeInsets.zero,
+                                    shrinkWrap: true,
+                                    scrollDirection: Axis.vertical,
+                                    itemBuilder: (context, index) {
+                                      return Container(
+                                        child: Padding(
                                             padding:
                                                 EdgeInsetsDirectional.fromSTEB(
-                                                    10, 0, 0, 15),
-                                            child: Text(
-                                              'Items',
-                                              textAlign: TextAlign.start,
-                                              style:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyText1
-                                                      .override(
-                                                        fontFamily: 'Poppins',
-                                                        fontWeight:
-                                                            FontWeight.normal,
-                                                      ),
-                                            ),
-                                          ),
-                                        ),
-                                        Container(
-                                          width: 80,
-                                          height: 50,
-                                          decoration: BoxDecoration(),
-                                        ),
-                                        Expanded(
-                                          child: Padding(
-                                            padding:
-                                                EdgeInsetsDirectional.fromSTEB(
-                                                    0, 0, 10, 0),
-                                            child: TextFormField(
-                                              controller:
-                                                  itemQuantityController,
-                                              obscureText: false,
-                                              decoration: InputDecoration(
-                                                hintText:
-                                                    'Number of Distinct Items',
-                                                hintStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyText2
-                                                        .override(
-                                                          fontFamily: 'Poppins',
-                                                          fontSize: 13,
-                                                        ),
-                                                enabledBorder:
-                                                    UnderlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                    color: Color(0x00000000),
-                                                    width: 1,
-                                                  ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                ),
-                                                focusedBorder:
-                                                    UnderlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                    color: Color(0x00000000),
-                                                    width: 1,
-                                                  ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                ),
-                                                errorBorder:
-                                                    UnderlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                    color: Color(0x00000000),
-                                                    width: 1,
-                                                  ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                ),
-                                                focusedErrorBorder:
-                                                    UnderlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                    color: Color(0x00000000),
-                                                    width: 1,
-                                                  ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                ),
-                                                filled: true,
-                                                fillColor:
-                                                    FlutterFlowTheme.of(context)
-                                                        .secondaryBackground,
-                                                contentPadding:
-                                                    EdgeInsetsDirectional
-                                                        .fromSTEB(
-                                                            10, 10, 10, 10),
-                                              ),
-                                              style:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyText1,
-                                              textAlign: TextAlign.start,
-                                              keyboardType:
-                                                  TextInputType.number,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                ListView(
-                                  padding: EdgeInsets.zero,
-                                  shrinkWrap: true,
-                                  scrollDirection: Axis.vertical,
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsetsDirectional.fromSTEB(
-                                          10, 10, 10, 10),
-                                      child: TextFormField(
-                                        controller: itemController,
-                                        onChanged: (_) => EasyDebounce.debounce(
-                                          'itemController',
-                                          Duration(milliseconds: 1000),
-                                          () => setState(() {}),
-                                        ),
-                                        obscureText: false,
-                                        decoration: InputDecoration(
-                                          hintText:
-                                              '(Eg. Meiji Milk Original 300ml x3)',
-                                          hintStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .bodyText2,
-                                          enabledBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                              color: Color(0x00000000),
-                                              width: 1,
-                                            ),
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                          ),
-                                          focusedBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                              color: Color(0x00000000),
-                                              width: 1,
-                                            ),
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                          ),
-                                          errorBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                              color: Color(0x00000000),
-                                              width: 1,
-                                            ),
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                          ),
-                                          focusedErrorBorder:
-                                              UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                              color: Color(0x00000000),
-                                              width: 1,
-                                            ),
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                          ),
-                                          filled: true,
-                                          fillColor:
-                                              FlutterFlowTheme.of(context)
-                                                  .secondaryBackground,
-                                          contentPadding:
-                                              EdgeInsetsDirectional.fromSTEB(
-                                                  10, 10, 10, 10),
-                                        ),
-                                        style: FlutterFlowTheme.of(context)
-                                            .bodyText1,
-                                        maxLines: 1,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                                    10, 10, 10, 10),
+                                            child: _fields[index]),
+                                      );
+                                    }),
                                 Align(
                                   alignment: AlignmentDirectional(1, 0),
                                   child: Padding(
                                     padding: EdgeInsetsDirectional.fromSTEB(
                                         0, 0, 0, 15),
-                                    child: Container(
-                                      width: 150,
-                                      height: 30,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: InkWell(
-                                        onTap: () async {
-                                          final jobCreateData = {
-                                            'temp_item_list': [''],
-                                          };
-                                          await JobRecord.collection
-                                              .doc()
-                                              .set(jobCreateData);
-                                        },
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Padding(
-                                              padding: EdgeInsetsDirectional
-                                                  .fromSTEB(0, 0, 10, 0),
-                                              child: Text(
-                                                'Add Items',
-                                                textAlign: TextAlign.center,
-                                                style:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyText1
-                                                        .override(
-                                                          fontFamily: 'Poppins',
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                        ),
-                                              ),
-                                            ),
-                                            Icon(
-                                              Icons.add_box,
-                                              color:
-                                                  FlutterFlowTheme.of(context)
-                                                      .primaryBtnText,
-                                              size: 24,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
+                                    child: addItem(),
                                   ),
                                 ),
                               ],
@@ -661,6 +559,7 @@ class _CreateJobScreenWidgetState extends State<CreateJobScreenWidget> {
                                     double.parse(priceController!.text),
                                     3.00,
                                   ),
+                                  items: _items,
                                   status: 'untaken',
                                   delTime: datePicked,
                                   posterID: currentUserReference,
@@ -669,7 +568,7 @@ class _CreateJobScreenWidgetState extends State<CreateJobScreenWidget> {
                                     .doc()
                                     .set(jobCreateData);
 
-                                context.goNamed('JobBoardScreen');
+                                context.pushNamed('JobBoardScreen');
                               },
                               text: 'Create Task',
                               options: FFButtonOptions(
