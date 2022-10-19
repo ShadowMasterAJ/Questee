@@ -281,15 +281,70 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
                                     10, 5, 10, 5),
                                 child: InkWell(
                                   onTap: () async {
+                                    String STORE = listViewJobRecord.store!;
+                                    String TIME = valueOrDefault<String>(
+                                      dateTimeFormat(
+                                          'jm', listViewJobRecord.delTime),
+                                      'ASAP',
+                                    );
+                                    String NOTE =
+                                        listViewJobRecord.delLocation!;
+
+                                    print(serializeParam(
+                                      STORE,
+                                      ParamType.String,
+                                    ));
+                                    print(TIME);
+                                    print(NOTE);
                                     if ((listViewJobRecord.posterID!.id) ==
                                         (currentUserReference!.id)) {
+                                      print("THIS IS THE POSTER IF STATEMENT");
+
                                       context.pushNamed(
                                         'JobDetailScreenPoster',
+                                        queryParams: {
+                                          'store': serializeParam(
+                                            STORE,
+                                            ParamType.String,
+                                          )!,
+                                          'time': serializeParam(
+                                            TIME,
+                                            ParamType.String,
+                                          )!,
+                                          'note': serializeParam(
+                                            NOTE,
+                                            ParamType.String,
+                                          )!,
+                                        },
+                                        // extra: {
+                                        //   'store': listViewJobRecord.store!,
+                                        //   'time': valueOrDefault<String>(
+                                        //     dateTimeFormat('jm',
+                                        //         listViewJobRecord.delTime),
+                                        //     'ASAP',
+                                        //   ),
+                                        //   'note': listViewJobRecord.delLocation!
+                                        // },
                                       );
                                     } else {
-                                      print("fuck");
-                                      context
-                                          .pushNamed('JobDetailScreenGrabber');
+                                      print(
+                                          "THIS IS THE GRABBER ELSE STATEMENT");
+                                      context.pushNamed(
+                                          'JobDetailScreenGrabber',
+                                          queryParams: {
+                                            'store': serializeParam(
+                                              STORE,
+                                              ParamType.String,
+                                            )!,
+                                            'time': serializeParam(
+                                              TIME,
+                                              ParamType.String,
+                                            )!,
+                                            'note': serializeParam(
+                                              NOTE,
+                                              ParamType.String,
+                                            )!,
+                                          });
                                     }
                                   },
                                   child: Card(

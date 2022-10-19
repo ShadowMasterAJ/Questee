@@ -70,7 +70,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
       errorBuilder: (context, _) => appStateNotifier.loggedIn
           ? JobBoardScreenWidget()
           : AuthScreenWidget(),
-      routes: [
+      routes: <GoRoute>[
         FFRoute(
           name: '_initialize',
           path: '/',
@@ -116,12 +116,20 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
             FFRoute(
               name: 'JobDetailScreenPoster',
               path: 'jobDetailScreenPoster',
-              builder: (context, params) => JobDetailScreenPosterWidget(),
+              builder: (context, params) => JobDetailScreenPosterWidget(
+                store: params.getParam("store", ParamType.String),
+                time: params.getParam("time", ParamType.String),
+                note: params.getParam("note", ParamType.String),
+              ),
             ),
             FFRoute(
               name: 'JobDetailScreenGrabber',
               path: 'jobDetailScreenGrabber',
-              builder: (context, params) => JobDetailScreenGrabberWidget(),
+              builder: (context, params) => JobDetailScreenGrabberWidget(
+                store: params.getParam("store", ParamType.String),
+                time: params.getParam("time", ParamType.String),
+                note: params.getParam("note", ParamType.String),
+              ),
             ),
             FFRoute(
               name: 'forgotPasswordScreen',

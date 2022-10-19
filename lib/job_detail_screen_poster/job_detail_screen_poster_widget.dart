@@ -8,7 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class JobDetailScreenPosterWidget extends StatefulWidget {
-  const JobDetailScreenPosterWidget({Key? key}) : super(key: key);
+  final String store;
+  final String time;
+  final String note;
+  JobDetailScreenPosterWidget(
+      {Key? key, required this.store, required this.time, required this.note})
+      : super(key: key);
 
   @override
   _JobDetailScreenPosterWidgetState createState() =>
@@ -22,6 +27,10 @@ class _JobDetailScreenPosterWidgetState
 
   @override
   Widget build(BuildContext context) {
+    String STORE = widget.store;
+    String TIME = widget.time;
+    String NOTE = widget.note;
+    print("FUCK ME IN THE ASS");
     final args = ModalRoute.of(context)!.settings.arguments;
     return Scaffold(
       key: scaffoldKey,
@@ -198,7 +207,7 @@ class _JobDetailScreenPosterWidgetState
                                       ),
                                     ),
                                     Text(
-                                      columnJobRecord!.store!,
+                                      STORE,
                                       style: FlutterFlowTheme.of(context)
                                           .bodyText1,
                                     ),
@@ -222,7 +231,7 @@ class _JobDetailScreenPosterWidgetState
                                       ),
                                     ),
                                     Text(
-                                      columnJobRecord!.delTime!.toString(),
+                                      TIME,
                                       style: FlutterFlowTheme.of(context)
                                           .bodyText1,
                                     ),
@@ -246,7 +255,7 @@ class _JobDetailScreenPosterWidgetState
                                       ),
                                     ),
                                     Text(
-                                      columnJobRecord!.note!,
+                                      NOTE,
                                       style: FlutterFlowTheme.of(context)
                                           .bodyText1,
                                     ),
