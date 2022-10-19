@@ -89,10 +89,10 @@ class _NavBarWithMiddleButtonWidgetState
                     icon: Icon(
                       Icons.chat_bubble_rounded,
                       color: FlutterFlowTheme.of(context).grayIcon,
-                      size: 30,
+                      size: 24,
                     ),
                     onPressed: () async {
-                      context.pushNamed('ChatWithUserScreen');
+                      context.pushNamed('ChatScreen');
                     },
                   ),
                   Column(

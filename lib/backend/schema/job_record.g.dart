@@ -256,7 +256,7 @@ class _$JobRecord extends JobRecord {
 
   @override
   int get hashCode {
-    return $jf($jc(
+    return $jf(
         $jc(
             $jc(
                 $jc(
