@@ -7,12 +7,24 @@ import '../flutter_flow/flutter_flow_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+
 class JobDetailScreenPosterWidget extends StatefulWidget {
   final String store;
   final String time;
   final String note;
-  JobDetailScreenPosterWidget(
-      {Key? key, required this.store, required this.time, required this.note})
+  final DocumentReference? job;
+  final JobRecord? jobDoc;
+  // final int fuck;
+  const JobDetailScreenPosterWidget(
+      {Key? key,
+      required this.store,
+      required this.time,
+      required this.note,
+      this.job,
+      this.jobDoc
+      // required this.fuck,
+      })
       : super(key: key);
 
   @override
@@ -22,16 +34,36 @@ class JobDetailScreenPosterWidget extends StatefulWidget {
 
 class _JobDetailScreenPosterWidgetState
     extends State<JobDetailScreenPosterWidget> {
-  List<String>? checkboxGroupValues;
+  // List<String>? checkboxGroupValues;
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
+    // PagingController<DocumentSnapshot?, JobRecord>? _pagingController;
+
     String STORE = widget.store;
     String TIME = widget.time;
+    print("fuck");
+    print(widget.jobDoc);
     String NOTE = widget.note;
-    print("FUCK ME IN THE ASS");
-    final args = ModalRoute.of(context)!.settings.arguments;
+    // int fuck = widget.fuck;
+    // final listViewJobRecord = _pagingController!.itemList![fuck];
+    // print(listViewJobRecord.store!);
+    // JobRecord record = widget.record!;
+    // print(record.items![0]);
+    // if (widget.record == null) print("NULL YOU RETARD");
+    // List<String> CHECKLIST = widget.checklist;
+    print("REACHED SCREEN POSTER WIDGET 000");
+    // List CHECKLIST = widget.checklist.items!.toList();
+    // String STORE = widget.checklist.store!;
+    // String TIME = valueOrDefault<String>(
+    //   dateTimeFormat('jm', widget.checklist.delTime),
+    //   'ASAP',
+    // );
+    // String NOTE = widget.checklist.note!;
+    // print(CHECKLIST[0]);
+    print("REACHED SCREEN POSTER WIDGET 1111");
+    // final args = ModalRoute.of(context)!.settings.arguments;
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -145,27 +177,27 @@ class _JobDetailScreenPosterWidgetState
                                     shrinkWrap: true,
                                     scrollDirection: Axis.vertical,
                                     children: [
-                                      Padding(
-                                        padding: EdgeInsetsDirectional.fromSTEB(
-                                            20, 0, 0, 0),
-                                        child: FlutterFlowCheckboxGroup(
-                                          options:
-                                              columnJobRecord!.items!.toList(),
-                                          onChanged: (val) => setState(
-                                              () => checkboxGroupValues = val),
-                                          activeColor:
-                                              FlutterFlowTheme.of(context)
-                                                  .primaryColor,
-                                          checkColor: Colors.white,
-                                          checkboxBorderColor:
-                                              Color(0xFF95A1AC),
-                                          textStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .bodyText1,
-                                          initialized:
-                                              checkboxGroupValues != null,
-                                        ),
-                                      ),
+                                      // Padding(
+                                      //   padding: EdgeInsetsDirectional.fromSTEB(
+                                      //       20, 0, 0, 0),
+                                      //   child: FlutterFlowCheckboxGroup(
+                                      //     options:
+                                      //         CHECKLIST, // HI DC REFER TO HERE
+                                      //     onChanged: (val) => setState(
+                                      //         () => checkboxGroupValues = val),
+                                      //     activeColor:
+                                      //         FlutterFlowTheme.of(context)
+                                      //             .primaryColor,
+                                      //     checkColor: Colors.white,
+                                      //     checkboxBorderColor:
+                                      //         Color(0xFF95A1AC),
+                                      //     textStyle:
+                                      //         FlutterFlowTheme.of(context)
+                                      //             .bodyText1,
+                                      //     initialized:
+                                      //         checkboxGroupValues != null,
+                                      //   ),
+                                      // ),
                                     ],
                                   ),
                                 ],
@@ -271,38 +303,6 @@ class _JobDetailScreenPosterWidgetState
                       height: 1,
                       thickness: 1,
                       color: FlutterFlowTheme.of(context).grayIcon,
-                    ),
-                    Align(
-                      alignment: AlignmentDirectional(0.8, 0),
-                      child: Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(0, 20, 0, 0),
-                        child: FFButtonWidget(
-                          onPressed: () {
-                            print('Button pressed ...');
-                          },
-                          text: 'Edit',
-                          icon: Icon(
-                            Icons.edit,
-                            size: 15,
-                          ),
-                          options: FFButtonOptions(
-                            width: 80,
-                            height: 30,
-                            color: FlutterFlowTheme.of(context).primaryColor,
-                            textStyle:
-                                FlutterFlowTheme.of(context).subtitle2.override(
-                                      fontFamily: 'Poppins',
-                                      color: Colors.white,
-                                      fontSize: 12,
-                                    ),
-                            borderSide: BorderSide(
-                              color: Colors.transparent,
-                              width: 1,
-                            ),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                      ),
                     ),
                     Spacer(),
                     Stack(
