@@ -52,6 +52,7 @@ class _ChatScreenWidgetState extends State<ChatScreenWidget> {
 
   @override
   Widget build(BuildContext context) {
+    late Stream<QuerySnapshot> _stream;
     return StreamBuilder<List<UsersRecord>>(
       stream: queryUsersRecord(
         singleRecord: true,
