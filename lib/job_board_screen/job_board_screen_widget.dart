@@ -422,7 +422,7 @@ class JobCard extends StatelessWidget {
           } else {
             print("THIS IS THE GRABBER ELSE STATEMENT");
             context.pushNamed(
-              'JobDetailScreenPoster',
+              'JobDetailScreenGrabber',
               queryParams: {
                 'indexStr': serializeParam(indexStr, ParamType.String)!,
               },
