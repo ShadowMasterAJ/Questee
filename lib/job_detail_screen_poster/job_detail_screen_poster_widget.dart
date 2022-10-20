@@ -332,7 +332,7 @@ class _JobDetailScreenPosterWidgetState
                             ),
                           ),
                         ),
-                        if (columnJobRecord!.acceptorID == null)
+                        if (columnJobRecord.acceptorID == null)
                           Align(
                             alignment: AlignmentDirectional(0, 0.7),
                             child: StreamBuilder<List<UsersRecord>>(
@@ -366,7 +366,7 @@ class _JobDetailScreenPosterWidgetState
                                         : null;
                                 return FFButtonWidget(
                                   onPressed: () async {
-                                    if (columnJobRecord!.acceptorID != null) {
+                                    if (columnJobRecord.acceptorID != null) {
                                       context.pushNamed(
                                         'ChatScreen',
                                         queryParams: {
