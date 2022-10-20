@@ -1,11 +1,10 @@
-//import '../components/pay_method_bottom_sheet_widget.dart';
-// import 'package:u_grabv1/components/PayMethodBottomSheet.dart';
-
+//import '../components/checkout_widget.dart';
 import '../flutter_flow/flutter_flow_theme.dart';
 import '../flutter_flow/flutter_flow_util.dart';
 import '../flutter_flow/flutter_flow_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import 'checkout.dart';
 
 class AmountBottomSheetWidget extends StatefulWidget {
@@ -35,7 +34,7 @@ class _AmountBottomSheetWidgetState extends State<AmountBottomSheetWidget> {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: double.infinity,
+      height: 200,
       decoration: BoxDecoration(
         color: FlutterFlowTheme.of(context).secondaryBackground,
       ),
@@ -48,12 +47,13 @@ class _AmountBottomSheetWidgetState extends State<AmountBottomSheetWidget> {
             Padding(
               padding: EdgeInsetsDirectional.fromSTEB(16, 0, 0, 0),
               child: Text(
-                'Enter Amount :',
+                'Enter Amount to be Paid :',
                 textAlign: TextAlign.start,
                 style: FlutterFlowTheme.of(context).title1.override(
                       fontFamily: 'Poppins',
                       fontSize: 20,
                     ),
+                    
               ),
             ),
             TextFormField(
@@ -61,7 +61,7 @@ class _AmountBottomSheetWidgetState extends State<AmountBottomSheetWidget> {
               autofocus: true,
               obscureText: false,
               decoration: InputDecoration(
-                hintText: '[e.g.\$17.38=1738, \$20.00=2000]',
+                hintText: '     [e.g.\$17.38 = 17.38]',
                 hintStyle: FlutterFlowTheme.of(context).bodyText2,
                 enabledBorder: UnderlineInputBorder(
                   borderSide: BorderSide(
@@ -105,6 +105,8 @@ class _AmountBottomSheetWidgetState extends State<AmountBottomSheetWidget> {
                 ),
               ),
               style: FlutterFlowTheme.of(context).bodyText1,
+              keyboardType: const TextInputType.numberWithOptions(
+                  signed: true, decimal: true),
             ),
             Container(
               width: double.infinity,
@@ -129,7 +131,7 @@ class _AmountBottomSheetWidgetState extends State<AmountBottomSheetWidget> {
                 text: 'Next',
                 options: FFButtonOptions(
                   width: 130,
-                  height: 40,
+                  height: 30,
                   color: FlutterFlowTheme.of(context).primaryColor,
                   textStyle: FlutterFlowTheme.of(context).subtitle2.override(
                         fontFamily: 'Poppins',
@@ -143,48 +145,9 @@ class _AmountBottomSheetWidgetState extends State<AmountBottomSheetWidget> {
                 ),
               ),
             ),
-            Container(
-              width: double.infinity,
-              height: 10,
-              decoration: BoxDecoration(
-                color: FlutterFlowTheme.of(context).secondaryBackground,
-              ),
-            ),
-            Container(
-              width: double.infinity,
-              height: 50,
-              decoration: BoxDecoration(
-                color: FlutterFlowTheme.of(context).secondaryBackground,
-              ),
-            ),
-            Container(
-              width: double.infinity,
-              height: 10,
-              decoration: BoxDecoration(
-                color: FlutterFlowTheme.of(context).secondaryBackground,
-              ),
-            ),
-            Container(
-              width: double.infinity,
-              height: 50,
-              decoration: BoxDecoration(
-                color: FlutterFlowTheme.of(context).secondaryBackground,
-              ),
-            ),
-            Container(
-              width: double.infinity,
-              height: 10,
-              decoration: BoxDecoration(
-                color: FlutterFlowTheme.of(context).secondaryBackground,
-              ),
-            ),
-            Container(
-              width: double.infinity,
-              height: 50,
-              decoration: BoxDecoration(
-                color: FlutterFlowTheme.of(context).secondaryBackground,
-              ),
-            ),
+            
+          
+            
           ],
         ),
       ),

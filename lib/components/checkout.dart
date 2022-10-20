@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../launchApp/launchApp.dart';
 
 class CheckoutWidget extends StatefulWidget {
   const CheckoutWidget({
@@ -51,6 +52,7 @@ class _CheckoutWidgetState extends State<CheckoutWidget> {
       padding: EdgeInsetsDirectional.fromSTEB(0, 44, 0, 0),
       child: Container(
         width: double.infinity,
+        height: double.infinity,
         decoration: BoxDecoration(
           color: FlutterFlowTheme.of(context).secondaryBackground,
           boxShadow: [
@@ -119,28 +121,15 @@ class _CheckoutWidgetState extends State<CheckoutWidget> {
                               'Checkout',
                               style: FlutterFlowTheme.of(context).title3,
                             ),
-                            Padding(
-                              padding:
-                                  EdgeInsetsDirectional.fromSTEB(0, 4, 0, 0),
-                              child: Text(
-                                'Fill in the information below to place your order.',
-                                style: FlutterFlowTheme.of(context).bodyText2,
-                              ),
-                            ),
                           ],
                         ),
                       ),
                     ],
                   ),
                 ),
-                Divider(
-                  height: 24,
-                  thickness: 2,
-                  color: FlutterFlowTheme.of(context).primaryBackground,
-                ),
                 Container(
                   width: 340,
-                  height: 40,
+                  height: 30,
                   decoration: BoxDecoration(
                     color: FlutterFlowTheme.of(context).secondaryBackground,
                   ),
@@ -149,7 +138,7 @@ class _CheckoutWidgetState extends State<CheckoutWidget> {
                     autofocus: true,
                     obscureText: false,
                     decoration: InputDecoration(
-                      labelText: 'Card No.',
+                      hintText: '  Card Number: ',
                       hintStyle: FlutterFlowTheme.of(context).bodyText2,
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(
@@ -192,7 +181,10 @@ class _CheckoutWidgetState extends State<CheckoutWidget> {
                         ),
                       ),
                     ),
-                    style: FlutterFlowTheme.of(context).bodyText1,
+                    style: FlutterFlowTheme.of(context).bodyText1.override(
+                          fontFamily: 'Poppins',
+                          letterSpacing: 4,
+                        ),
                   ),
                 ),
                 SingleChildScrollView(
@@ -201,7 +193,7 @@ class _CheckoutWidgetState extends State<CheckoutWidget> {
                     children: [
                       Container(
                         width: 340,
-                        height: 40,
+                        height: 30,
                         decoration: BoxDecoration(
                           color:
                               FlutterFlowTheme.of(context).secondaryBackground,
@@ -211,7 +203,7 @@ class _CheckoutWidgetState extends State<CheckoutWidget> {
                           autofocus: true,
                           obscureText: false,
                           decoration: InputDecoration(
-                            labelText: 'Exp Time',
+                            hintText: 'Exp Time : 02/26',
                             hintStyle: FlutterFlowTheme.of(context).bodyText2,
                             enabledBorder: UnderlineInputBorder(
                               borderSide: BorderSide(
@@ -254,12 +246,16 @@ class _CheckoutWidgetState extends State<CheckoutWidget> {
                               ),
                             ),
                           ),
-                          style: FlutterFlowTheme.of(context).bodyText1,
+                          style:
+                              FlutterFlowTheme.of(context).bodyText1.override(
+                                    fontFamily: 'Poppins',
+                                    letterSpacing: 2,
+                                  ),
                         ),
                       ),
                       Container(
                         width: 340,
-                        height: 40,
+                        height: 30,
                         decoration: BoxDecoration(
                           color:
                               FlutterFlowTheme.of(context).secondaryBackground,
@@ -269,7 +265,7 @@ class _CheckoutWidgetState extends State<CheckoutWidget> {
                           autofocus: true,
                           obscureText: false,
                           decoration: InputDecoration(
-                            labelText: 'CVV',
+                            hintText: 'CVV:',
                             hintStyle: FlutterFlowTheme.of(context).bodyText2,
                             enabledBorder: UnderlineInputBorder(
                               borderSide: BorderSide(
@@ -325,7 +321,7 @@ class _CheckoutWidgetState extends State<CheckoutWidget> {
                               mainAxisSize: MainAxisSize.max,
                               children: [
                                 Text(
-                                  'Total',
+                                  'Total in \$',
                                   style: FlutterFlowTheme.of(context)
                                       .subtitle1
                                       .override(
@@ -352,8 +348,13 @@ class _CheckoutWidgetState extends State<CheckoutWidget> {
                               ],
                             ),
                             Text(
-                              '\$17.38',
-                              style: FlutterFlowTheme.of(context).title1,
+                              widget.payAmount!.toString(),
+                              style:
+                                  FlutterFlowTheme.of(context).title3.override(
+                                        fontFamily: 'Poppins',
+                                        color: FlutterFlowTheme.of(context)
+                                            .primaryColor,
+                                      ),
                             ),
                           ],
                         ),
@@ -362,15 +363,8 @@ class _CheckoutWidgetState extends State<CheckoutWidget> {
                         padding: EdgeInsetsDirectional.fromSTEB(0, 12, 0, 0),
                         child: FFButtonWidget(
                           onPressed: () async {
-                            Fluttertoast.showToast(
-                            msg: "Payment Successful!",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.CENTER,
-                            timeInSecForIosWeb: 1,
-                            backgroundColor: Color.fromARGB(255, 56, 1, 44),
-                            textColor: Colors.white,
-                            fontSize: 20.0
-                        );
+                            
+                            
                             final paymentResponse = await processStripePayment(
                               context,
                               amount: widget.payAmount!.round(),
@@ -384,6 +378,15 @@ class _CheckoutWidgetState extends State<CheckoutWidget> {
                               buttonTextColor:
                                   FlutterFlowTheme.of(context).primaryText,
                             );
+                            Fluttertoast.showToast(
+                            msg: "Payment Successful!",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.CENTER,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Color.fromARGB(255, 56, 1, 44),
+                            textColor: Colors.white,
+                            fontSize: 20.0
+                        );
                             if (paymentResponse.paymentId == null) {
                               if (paymentResponse.errorMessage != null) {
                                 showSnackbar(
@@ -394,6 +397,9 @@ class _CheckoutWidgetState extends State<CheckoutWidget> {
                               return;
                             }
                             paymentId = paymentResponse.paymentId!;
+
+
+                          
 
                             setState(() {});
                           },
@@ -430,6 +436,7 @@ class _CheckoutWidgetState extends State<CheckoutWidget> {
                         child: FFButtonWidget(
                           onPressed: () {
                             print('Button pressed ...');
+                            launchApp("com.google.android.apps.nbu.paisa.user");
                           },
                           text: 'Google Pay',
                           icon: FaIcon(
@@ -462,6 +469,7 @@ class _CheckoutWidgetState extends State<CheckoutWidget> {
                         child: FFButtonWidget(
                           onPressed: () {
                             print('Button pressed ...');
+                            launchApp("com.paypal.android.p2pmobile");
                           },
                           text: 'Pay w/Paypal',
                           icon: FaIcon(

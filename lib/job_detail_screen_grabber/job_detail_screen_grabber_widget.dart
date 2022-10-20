@@ -11,12 +11,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class JobDetailScreenGrabberWidget extends StatefulWidget {
-  final String store;
-  final String time;
-  final String note;
-  const JobDetailScreenGrabberWidget(
-      {Key? key, required this.store, required this.time, required this.note})
-      : super(key: key);
+  final String indexStr;
+  // final int fuck;
+  const JobDetailScreenGrabberWidget({
+    Key? key,
+    required this.indexStr,
+  }) : super(key: key);
 
   @override
   _JobDetailScreenGrabberWidgetState createState() =>
@@ -31,9 +31,7 @@ class _JobDetailScreenGrabberWidgetState
 
   @override
   Widget build(BuildContext context) {
-    String STORE = widget.store;
-    String TIME = widget.time;
-    String NOTE = widget.note;
+    int index = int.parse(widget.indexStr);
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -44,7 +42,7 @@ class _JobDetailScreenGrabberWidgetState
             padding: EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
             child: StreamBuilder<List<JobRecord>>(
               stream: queryJobRecord(
-                singleRecord: true,
+                singleRecord: false,
               ),
               builder: (context, snapshot) {
                 // Customize what your widget looks like when it's loading.
@@ -60,13 +58,14 @@ class _JobDetailScreenGrabberWidgetState
                   );
                 }
                 List<JobRecord> columnJobRecordList = snapshot.data!;
+                print(columnJobRecordList);
 
                 // Return an empty Container when the document does not exist.
                 if (snapshot.data!.isEmpty) {
                   return Container();
                 }
                 final columnJobRecord = columnJobRecordList.isNotEmpty
-                    ? columnJobRecordList.first
+                    ? columnJobRecordList[index]
                     : null;
                 return Column(
                   mainAxisSize: MainAxisSize.max,
@@ -184,7 +183,7 @@ class _JobDetailScreenGrabberWidgetState
                                     ),
                                     Text(
                                       // "cocococock",
-                                      STORE,
+                                      columnJobRecord.store!,
                                       style: FlutterFlowTheme.of(context)
                                           .bodyText1,
                                     ),
@@ -210,7 +209,11 @@ class _JobDetailScreenGrabberWidgetState
                                     Text(
                                       // "cock",
                                       // columnJobRecord!.delTime.toString(),
-                                      TIME,
+                                      valueOrDefault<String>(
+                                        dateTimeFormat(
+                                            'jm', columnJobRecord.delTime),
+                                        'ASAP',
+                                      ),
                                       style: FlutterFlowTheme.of(context)
                                           .bodyText1,
                                     ),
@@ -235,7 +238,7 @@ class _JobDetailScreenGrabberWidgetState
                                     ),
                                     Text(
                                       // "FUCKFUCKFUCK",
-                                      NOTE,
+                                      columnJobRecord.note!,
                                       style: FlutterFlowTheme.of(context)
                                           .bodyText1,
                                     ),

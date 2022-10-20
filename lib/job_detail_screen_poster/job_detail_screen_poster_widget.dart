@@ -1,4 +1,5 @@
 import '../backend/backend.dart';
+import '../components/AmountBottomSheet.dart';
 import '../flutter_flow/flutter_flow_checkbox_group.dart';
 import '../flutter_flow/flutter_flow_icon_button.dart';
 import '../flutter_flow/flutter_flow_theme.dart';
@@ -10,22 +11,23 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class JobDetailScreenPosterWidget extends StatefulWidget {
-  final String store;
-  final String time;
-  final String note;
-  final DocumentReference? job;
-  final JobRecord? jobDoc;
+  // final String store;
+  // final String time;
+  // final String note;
+  // final DocumentReference? job;
+  // final JobRecord? jobDoc;
+  final String indexStr;
   // final int fuck;
-  const JobDetailScreenPosterWidget(
-      {Key? key,
-      required this.store,
-      required this.time,
-      required this.note,
-      this.job,
-      this.jobDoc
-      // required this.fuck,
-      })
-      : super(key: key);
+  const JobDetailScreenPosterWidget({
+    Key? key,
+    required this.indexStr,
+    // required this.store,
+    // required this.time,
+    // required this.note,
+    // this.job,
+    // this.jobDoc
+    // required this.fuck,
+  }) : super(key: key);
 
   @override
   _JobDetailScreenPosterWidgetState createState() =>
@@ -34,18 +36,19 @@ class JobDetailScreenPosterWidget extends StatefulWidget {
 
 class _JobDetailScreenPosterWidgetState
     extends State<JobDetailScreenPosterWidget> {
-  // List<String>? checkboxGroupValues;
+  List<String>? checkboxGroupValues;
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     // PagingController<DocumentSnapshot?, JobRecord>? _pagingController;
 
-    String STORE = widget.store;
-    String TIME = widget.time;
-    print("fuck");
-    print(widget.jobDoc);
-    String NOTE = widget.note;
+    // String STORE = widget.store;
+    // String TIME = widget.time;
+    // print("fuck");
+    // print(widget.jobDoc);
+    // String NOTE = widget.note;
+    int index = int.parse(widget.indexStr);
     // int fuck = widget.fuck;
     // final listViewJobRecord = _pagingController!.itemList![fuck];
     // print(listViewJobRecord.store!);
@@ -74,7 +77,7 @@ class _JobDetailScreenPosterWidgetState
             padding: EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
             child: StreamBuilder<List<JobRecord>>(
               stream: queryJobRecord(
-                singleRecord: true,
+                singleRecord: false,
               ),
               builder: (context, snapshot) {
                 // Customize what your widget looks like when it's loading.
@@ -90,12 +93,18 @@ class _JobDetailScreenPosterWidgetState
                   );
                 }
                 List<JobRecord> columnJobRecordList = snapshot.data!;
+                print(index);
+                print(columnJobRecordList);
+                print("kokokokokokookokokokokookokokokokokok");
+                print(columnJobRecordList[index]);
+                print("hi here");
+                print("===========================================");
                 // Return an empty Container when the document does not exist.
                 if (snapshot.data!.isEmpty) {
                   return Container();
                 }
                 final columnJobRecord = columnJobRecordList.isNotEmpty
-                    ? columnJobRecordList.first
+                    ? columnJobRecordList[index]
                     : null;
                 return Column(
                   mainAxisSize: MainAxisSize.max,
@@ -177,27 +186,27 @@ class _JobDetailScreenPosterWidgetState
                                     shrinkWrap: true,
                                     scrollDirection: Axis.vertical,
                                     children: [
-                                      // Padding(
-                                      //   padding: EdgeInsetsDirectional.fromSTEB(
-                                      //       20, 0, 0, 0),
-                                      //   child: FlutterFlowCheckboxGroup(
-                                      //     options:
-                                      //         CHECKLIST, // HI DC REFER TO HERE
-                                      //     onChanged: (val) => setState(
-                                      //         () => checkboxGroupValues = val),
-                                      //     activeColor:
-                                      //         FlutterFlowTheme.of(context)
-                                      //             .primaryColor,
-                                      //     checkColor: Colors.white,
-                                      //     checkboxBorderColor:
-                                      //         Color(0xFF95A1AC),
-                                      //     textStyle:
-                                      //         FlutterFlowTheme.of(context)
-                                      //             .bodyText1,
-                                      //     initialized:
-                                      //         checkboxGroupValues != null,
-                                      //   ),
-                                      // ),
+                                      Padding(
+                                        padding: EdgeInsetsDirectional.fromSTEB(
+                                            20, 0, 0, 0),
+                                        child: FlutterFlowCheckboxGroup(
+                                          options: columnJobRecord!.items!
+                                              .toList(), // HI DC REFER TO HERE
+                                          onChanged: (val) => setState(
+                                              () => checkboxGroupValues = val),
+                                          activeColor:
+                                              FlutterFlowTheme.of(context)
+                                                  .primaryColor,
+                                          checkColor: Colors.white,
+                                          checkboxBorderColor:
+                                              Color(0xFF95A1AC),
+                                          textStyle:
+                                              FlutterFlowTheme.of(context)
+                                                  .bodyText1,
+                                          initialized:
+                                              checkboxGroupValues != null,
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ],
@@ -239,7 +248,8 @@ class _JobDetailScreenPosterWidgetState
                                       ),
                                     ),
                                     Text(
-                                      STORE,
+                                      columnJobRecord.store!,
+                                      // STORE,
                                       style: FlutterFlowTheme.of(context)
                                           .bodyText1,
                                     ),
@@ -263,7 +273,12 @@ class _JobDetailScreenPosterWidgetState
                                       ),
                                     ),
                                     Text(
-                                      TIME,
+                                      valueOrDefault<String>(
+                                        dateTimeFormat(
+                                            'jm', columnJobRecord.delTime),
+                                        'ASAP',
+                                      ),
+                                      // TIME,
                                       style: FlutterFlowTheme.of(context)
                                           .bodyText1,
                                     ),
@@ -287,7 +302,8 @@ class _JobDetailScreenPosterWidgetState
                                       ),
                                     ),
                                     Text(
-                                      NOTE,
+                                      // NOTE,
+                                      columnJobRecord.note!,
                                       style: FlutterFlowTheme.of(context)
                                           .bodyText1,
                                     ),
@@ -436,8 +452,21 @@ class _JobDetailScreenPosterWidgetState
                                       0, 0, 15, 0),
                                   child: FFButtonWidget(
                                     onPressed: () async {
-                                      if (!(columnJobRecord!.acceptorID !=
-                                          null)) {
+                                      if(true){
+                                      //if (columnJobRecord!.acceptorID != null) {
+                                        await showModalBottomSheet(
+                                          isScrollControlled: true,
+                                          backgroundColor: Colors.transparent,
+                                          context: context,
+                                          builder: (context) {
+                                            return Padding(
+                                              padding: MediaQuery.of(context)
+                                                  .viewInsets,
+                                              child: AmountBottomSheetWidget(),
+                                            );
+                                          },
+                                        ).then((value) => setState(() {}));
+                                      } else {
                                         return;
                                       }
                                     },

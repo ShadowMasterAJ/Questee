@@ -550,6 +550,10 @@ class _CreateJobScreenWidgetState extends State<CreateJobScreenWidget> {
                                 EdgeInsetsDirectional.fromSTEB(0, 24, 0, 25),
                             child: FFButtonWidget(
                               onPressed: () async {
+                                for (int i = 0; i < _controllers.length; i++) {
+                                  _items.add(_controllers[i]!.text);
+                                  print(_items[1]);
+                                }
                                 final jobCreateData = createJobRecordData(
                                   type: 'untaken',
                                   note: noteController!.text,
