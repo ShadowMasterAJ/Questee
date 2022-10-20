@@ -13,12 +13,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class JobDetailScreenGrabberWidget extends StatefulWidget {
-  final String store;
-  final String time;
-  final String note;
-  const JobDetailScreenGrabberWidget(
-      {Key? key, required this.store, required this.time, required this.note})
-      : super(key: key);
+  final String indexStr;
+  // final int fuck;
+  const JobDetailScreenGrabberWidget({
+    Key? key,
+    required this.indexStr,
+  }) : super(key: key);
 
   @override
   _JobDetailScreenGrabberWidgetState createState() =>
@@ -33,9 +33,7 @@ class _JobDetailScreenGrabberWidgetState
 
   @override
   Widget build(BuildContext context) {
-    String STORE = widget.store;
-    String TIME = widget.time;
-    String NOTE = widget.note;
+    int index = int.parse(widget.indexStr);
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -68,7 +66,7 @@ class _JobDetailScreenGrabberWidgetState
                   return Container();
                 }
                 final columnJobRecord = columnJobRecordList.isNotEmpty
-                    ? columnJobRecordList[0]
+                    ? columnJobRecordList[index]
                     : null;
                 return Column(
                   mainAxisSize: MainAxisSize.max,
@@ -188,7 +186,7 @@ class _JobDetailScreenGrabberWidgetState
                                     ),
                                     Text(
                                       // "cocococock",
-                                      STORE,
+                                      columnJobRecord.store!,
                                       style: FlutterFlowTheme.of(context)
                                           .bodyText1,
                                     ),
@@ -214,7 +212,11 @@ class _JobDetailScreenGrabberWidgetState
                                     Text(
                                       // "cock",
                                       // columnJobRecord!.delTime.toString(),
-                                      TIME,
+                                      valueOrDefault<String>(
+                                        dateTimeFormat(
+                                            'jm', columnJobRecord.delTime),
+                                        'ASAP',
+                                      ),
                                       style: FlutterFlowTheme.of(context)
                                           .bodyText1,
                                     ),
@@ -239,7 +241,7 @@ class _JobDetailScreenGrabberWidgetState
                                     ),
                                     Text(
                                       // "FUCKFUCKFUCK",
-                                      NOTE,
+                                      columnJobRecord.note!,
                                       style: FlutterFlowTheme.of(context)
                                           .bodyText1,
                                     ),
@@ -339,8 +341,7 @@ class _JobDetailScreenGrabberWidgetState
                         padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 20),
                         child: FFButtonWidget(
                           onPressed: () async {
-                            final usersUpdateData = createJobRecordData(
-                                );
+                            final usersUpdateData = createJobRecordData();
                             if (columnJobRecord.acceptorID != null) {
                               await columnJobRecord.acceptorID!
                                   .set(currentUserUid);

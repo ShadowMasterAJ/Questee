@@ -120,26 +120,15 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
                   'jobDoc': getDoc('job', JobRecord.serializer),
                 },
                 builder: (context, params) {
-                  // List<String> temp =
-                  //     params.getParam("checklist", ParamType.String, true);
                   return JobDetailScreenPosterWidget(
-                    job: params.getParam(
-                        'job', ParamType.DocumentReference, false, 'job'),
-                    store: params.getParam("store", ParamType.String),
-                    time: params.getParam("time", ParamType.String),
-                    note: params.getParam("note", ParamType.String),
-                    // fuck: params.getParam("fuck", ParamType.int)
-                    jobDoc: params.getParam("jobDoc", ParamType.Document),
+                    indexStr: params.getParam('indexStr', ParamType.String),
                   );
                 }),
             FFRoute(
               name: 'JobDetailScreenGrabber',
               path: 'jobDetailScreenGrabber',
               builder: (context, params) => JobDetailScreenGrabberWidget(
-                store: params.getParam("store", ParamType.String),
-                time: params.getParam("time", ParamType.String),
-                note: params.getParam("note", ParamType.String),
-              ),
+                  indexStr: params.getParam('indexStr', ParamType.String)),
             ),
             FFRoute(
               name: 'forgotPasswordScreen',

@@ -34,7 +34,6 @@ abstract class JobRecord implements Built<JobRecord, JobRecordBuilder> {
 
   DocumentReference? get acceptorID;
 
-
   @BuiltValueField(wireName: kDocumentReferenceField)
   DocumentReference? get ffRef;
   DocumentReference get reference => ffRef!;
@@ -82,22 +81,24 @@ Map<String, dynamic> createJobRecordData({
   DocumentReference? posterID,
   DocumentReference? acceptorID,
 }) {
-  final firestoreData = serializers.toFirestore(
-    JobRecord.serializer,
-    JobRecord((j) => j
-      
-        ..type = type
-        ..note = note
-        ..store = store
-        ..delLocation = delLocation
-        ..price = price
-        ..status = status
-        ..delTime = delTime
-        ..itemQuantity = itemQuantity
-        ..posterID = posterID
-        ..acceptorID = acceptorID,
-    )
-  );
+  final firestoreData =
+      serializers.toFirestore(JobRecord.serializer, JobRecord((j) {
+    j
+      ..type = type
+      ..note = note
+      ..store = store
+      ..delLocation = delLocation
+      ..price = price
+      ..status = status
+      ..delTime = delTime
+      ..itemQuantity = itemQuantity
+      ..posterID = posterID
+      ..acceptorID = acceptorID;
+
+    for (int i = 0; i < items!.length; i++) {
+      j.items.add(items[i]);
+    }
+  }));
 
   return firestoreData;
 }

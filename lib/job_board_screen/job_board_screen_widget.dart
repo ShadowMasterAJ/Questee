@@ -350,7 +350,8 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
                                                 .itemList![listViewIndex];
                                         return JobCard(
                                             listViewJobRecord:
-                                                listViewJobRecord);
+                                                listViewJobRecord,
+                                            index: listViewIndex);
                                       },
                                     ),
                                   ),
@@ -370,7 +371,8 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
                                               searcResults[searcResultsIndex];
                                           return JobCard(
                                               listViewJobRecord:
-                                                  searcResultsItem);
+                                                  searcResultsItem,
+                                              index: searcResultsIndex);
                                         });
                                   },
                                 ),
@@ -393,65 +395,38 @@ class JobCard extends StatelessWidget {
   const JobCard({
     Key? key,
     required this.listViewJobRecord,
+    required this.index,
   }) : super(key: key);
 
   final JobRecord listViewJobRecord;
+  final int index;
 
   @override
   Widget build(BuildContext context) {
+    int index = this.index;
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(10, 5, 10, 5),
       child: InkWell(
         onTap: () async {
-          String STORE = listViewJobRecord.store!;
-          String TIME = valueOrDefault<String>(
-            dateTimeFormat('jm', listViewJobRecord.delTime),
-            'ASAP',
-          );
-          String NOTE = listViewJobRecord.delLocation!;
+          String indexStr = index.toString();
 
-          print(serializeParam(
-            STORE,
-            ParamType.String,
-          ));
-          print(TIME);
-          print(NOTE);
           if ((listViewJobRecord.posterID!.id) == (currentUserReference!.id)) {
             print("THIS IS THE POSTER IF STATEMENT");
 
             context.pushNamed(
               'JobDetailScreenPoster',
               queryParams: {
-                'store': serializeParam(
-                  STORE,
-                  ParamType.String,
-                )!,
-                'time': serializeParam(
-                  TIME,
-                  ParamType.String,
-                )!,
-                'note': serializeParam(
-                  NOTE,
-                  ParamType.String,
-                )!,
+                'indexStr': serializeParam(indexStr, ParamType.String)!,
               },
             );
           } else {
             print("THIS IS THE GRABBER ELSE STATEMENT");
-            context.pushNamed('JobDetailScreenGrabber', queryParams: {
-              'store': serializeParam(
-                STORE,
-                ParamType.String,
-              )!,
-              'time': serializeParam(
-                TIME,
-                ParamType.String,
-              )!,
-              'note': serializeParam(
-                NOTE,
-                ParamType.String,
-              )!,
-            });
+            context.pushNamed(
+              'JobDetailScreenPoster',
+              queryParams: {
+                'indexStr': serializeParam(indexStr, ParamType.String)!,
+              },
+            );
           }
         },
         child: Card(
