@@ -92,24 +92,24 @@ class _NavBarWithMiddleButtonWidgetState
                       size: 24,
                     ),
                     onPressed: () async {
-                      context.pushNamed(
-                        'ChatScreen',
-                        queryParams: {
-                          'chatUser': serializeParam(
-                            buttonUsersRecord,
-                            ParamType.Document,
-                          ),
-                        }.withoutNulls,
-                        extra: <String, dynamic>{
-                          'chatUser': buttonUsersRecord,
-                          kTransitionInfoKey: TransitionInfo(
-                            hasTransition: true,
-                            transitionType: PageTransitionType.scale,
-                            alignment: Alignment.bottomCenter,
-                            duration: Duration(milliseconds: 400),
-                          ),
-                        },
-                      );
+                      // context.pushNamed(
+                      //   'ChatScreen',
+                      //   queryParams: {
+                      //     'chatUser': serializeParam(
+                      //       buttonUsersRecord,
+                      //       ParamType.Document,
+                      //     ),
+                      //   }.withoutNulls,
+                      //   extra: <String, dynamic>{
+                      //     'chatUser': buttonUsersRecord,
+                      //     kTransitionInfoKey: TransitionInfo(
+                      //       hasTransition: true,
+                      //       transitionType: PageTransitionType.scale,
+                      //       alignment: Alignment.bottomCenter,
+                      //       duration: Duration(milliseconds: 400),
+                      //     ),
+                      //   },
+                      // );
                     },
                   ),
                   Column(

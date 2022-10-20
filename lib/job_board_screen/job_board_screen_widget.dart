@@ -412,7 +412,7 @@ class JobCard extends StatelessWidget {
 
           if ((listViewJobRecord.posterID!.id) == (currentUserReference!.id)) {
             print("THIS IS THE POSTER IF STATEMENT");
-
+            print(indexStr);
             context.pushNamed(
               'JobDetailScreenPoster',
               queryParams: {
@@ -421,6 +421,7 @@ class JobCard extends StatelessWidget {
             );
           } else {
             print("THIS IS THE GRABBER ELSE STATEMENT");
+            print(indexStr);
             context.pushNamed(
               'JobDetailScreenGrabber',
               queryParams: {

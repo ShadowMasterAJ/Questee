@@ -44,7 +44,7 @@ class _JobDetailScreenGrabberWidgetState
             padding: EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
             child: StreamBuilder<List<JobRecord>>(
               stream: queryJobRecord(
-                singleRecord: true,
+                singleRecord: false,
               ),
               builder: (context, snapshot) {
                 // Customize what your widget looks like when it's loading.
@@ -60,6 +60,7 @@ class _JobDetailScreenGrabberWidgetState
                   );
                 }
                 List<JobRecord> columnJobRecordList = snapshot.data!;
+                print(columnJobRecordList);
 
                 // Return an empty Container when the document does not exist.
                 if (snapshot.data!.isEmpty) {
