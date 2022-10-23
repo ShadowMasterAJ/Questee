@@ -552,7 +552,7 @@ class _CreateJobScreenWidgetState extends State<CreateJobScreenWidget> {
                               onPressed: () async {
                                 for (int i = 0; i < _controllers.length; i++) {
                                   _items.add(_controllers[i]!.text);
-                                  print(_items[1]);
+                                  // print(_items[1]);
                                 }
                                 final jobCreateData = createJobRecordData(
                                   type: 'untaken',

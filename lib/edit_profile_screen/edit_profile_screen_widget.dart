@@ -376,7 +376,6 @@ class _EditProfileScreenWidgetState extends State<EditProfileScreenWidget> {
                               );
                               await currentUserReference!
                                   .update(usersUpdateData);
-                              context.pop();
                             },
                             text: 'Save Changes',
                             options: FFButtonOptions(

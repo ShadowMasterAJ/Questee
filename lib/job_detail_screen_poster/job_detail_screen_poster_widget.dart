@@ -128,16 +128,13 @@ class _JobDetailScreenPosterWidgetState
                               context.pop();
                             },
                           ),
-                          Align(
-                            alignment: AlignmentDirectional(0, 0),
-                            child: Padding(
-                              padding:
-                                  EdgeInsetsDirectional.fromSTEB(20, 0, 0, 0),
-                              child: Text(
-                                'Job Detail.',
-                                textAlign: TextAlign.center,
-                                style: FlutterFlowTheme.of(context).title1,
-                              ),
+                          Padding(
+                            padding:
+                                EdgeInsetsDirectional.fromSTEB(20, 0, 0, 0),
+                            child: Text(
+                              'Job Detail.',
+                              textAlign: TextAlign.center,
+                              style: FlutterFlowTheme.of(context).title1,
                             ),
                           ),
                         ],
