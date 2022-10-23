@@ -149,7 +149,6 @@ dynamic deserializeParam<T>(
   String? collectionName,
 ]) {
   try {
-    print("FUCK1");
     if (param == null) {
       return null;
     }
@@ -166,7 +165,6 @@ dynamic deserializeParam<T>(
           .map((p) => p! as T)
           .toList();
     }
-    print("FUCK121212");
     switch (paramType) {
       case ParamType.int:
         return int.tryParse(param);
@@ -191,10 +189,8 @@ dynamic deserializeParam<T>(
       case ParamType.FFPlace:
         return placeFromString(param);
       case ParamType.JSON:
-        print("FUCK FUCK FUCK FUCK FUCKF CUFKC FUKC");
         return json.decode(param);
       case ParamType.Document:
-        print("FUCK YOUR MOTHER");
         return FirebaseFirestore.instance.doc('$collectionName/$param');
       case ParamType.DocumentReference:
         print("referecen");

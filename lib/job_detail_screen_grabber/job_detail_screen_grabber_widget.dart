@@ -362,9 +362,11 @@ class _JobDetailScreenGrabberWidgetState
                               //   accepted: true,
                               // );
                               print("GOING TO UPDATE");
+                              // List _lst = columnJobRecord.items;
 
                               final jobUpdateData = createJobRecordData(
-                                  acceptorID: currentUserReference);
+                                  acceptorID: currentUserReference,
+                                  items: columnJobRecord.items?.toList());
                               print(columnJobRecord);
 
                               // final usersUpdateData = createUsersRecordData(
