@@ -258,10 +258,8 @@ class _JobHistoryScreenWidgetState extends State<JobHistoryScreenWidget> {
                                                                               () async {
                                                                             if (listViewJobRecord.posterID ==
                                                                                 currentUserReference) {
-                                                                              print("hello1");
                                                                               context.pushNamed('JobDetailScreenPoster');
                                                                             } else {
-                                                                              print("hello2");
                                                                               context.pushNamed('JobDetailScreenGrabber');
                                                                             }
                                                                           },
@@ -505,10 +503,8 @@ class _JobHistoryScreenWidgetState extends State<JobHistoryScreenWidget> {
                                                                               () async {
                                                                             if (historicalListViewJobRecord.posterID ==
                                                                                 currentUserReference) {
-                                                                              print("hello3");
                                                                               context.pushNamed('JobDetailScreenPoster');
                                                                             } else {
-                                                                              print("hello4");
                                                                               context.pushNamed('JobDetailScreenGrabber');
                                                                             }
                                                                           },

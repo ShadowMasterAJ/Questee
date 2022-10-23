@@ -50,7 +50,6 @@ class _JobDetailScreenPosterWidgetState
     // JobRecord record = widget.record!;
     // print(record.items![0]);
     // List<String> CHECKLIST = widget.checklist;
-    print("REACHED SCREEN POSTER WIDGET 000");
     // List CHECKLIST = widget.checklist.items!.toList();
     // String STORE = widget.checklist.store!;
     // String TIME = valueOrDefault<String>(
@@ -59,7 +58,6 @@ class _JobDetailScreenPosterWidgetState
     // );
     // String NOTE = widget.checklist.note!;
     // print(CHECKLIST[0]);
-    print("REACHED SCREEN POSTER WIDGET 1111");
     // final args = ModalRoute.of(context)!.settings.arguments;
     return Scaffold(
       key: scaffoldKey,
@@ -89,10 +87,7 @@ class _JobDetailScreenPosterWidgetState
                 List<JobRecord> columnJobRecordList = snapshot.data!;
                 print(index);
                 print(columnJobRecordList);
-                print("kokokokokokookokokokokookokokokokokok");
                 print(columnJobRecordList[index]);
-                print("hi here");
-                print("===========================================");
                 // Return an empty Container when the document does not exist.
                 if (snapshot.data!.isEmpty) {
                   return Container();

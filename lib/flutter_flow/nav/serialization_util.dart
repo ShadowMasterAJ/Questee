@@ -171,7 +171,6 @@ dynamic deserializeParam<T>(
       case ParamType.double:
         return double.tryParse(param);
       case ParamType.String:
-        print("???????????");
         return param;
       case ParamType.bool:
         return param == 'true';
@@ -193,7 +192,6 @@ dynamic deserializeParam<T>(
       case ParamType.Document:
         return FirebaseFirestore.instance.doc('$collectionName/$param');
       case ParamType.DocumentReference:
-        print("referecen");
         return FirebaseFirestore.instance.doc('$collectionName/$param');
 
       default:

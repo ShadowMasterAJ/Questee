@@ -346,7 +346,6 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
                                       ),
                                       itemBuilder: (context, _, listViewIndex) {
                                         print(listViewIndex);
-                                        print("DC IS VERY CONFUSED?????");
 
                                         final listViewJobRecord = // add if statement here
                                             _pagingController!
@@ -355,10 +354,8 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
                                         if (listViewJobRecord.acceptorID !=
                                             null) {
                                           print(listViewJobRecord.delLocation);
-                                          print("not accepted yet!!");
                                           return SizedBox.shrink();
                                         } else {
-                                          print("accepted!!!");
                                           return JobCard(
                                               listViewJobRecord:
                                                   listViewJobRecord,
@@ -423,7 +420,6 @@ class JobCard extends StatelessWidget {
           String indexStr = index.toString();
 
           if ((listViewJobRecord.posterID!.id) == (currentUserReference!.id)) {
-            print("THIS IS THE POSTER IF STATEMENT");
             print(indexStr);
             context.pushNamed(
               'JobDetailScreenPoster',
@@ -432,7 +428,6 @@ class JobCard extends StatelessWidget {
               },
             );
           } else {
-            print("THIS IS THE GRABBER ELSE STATEMENT");
             print(indexStr);
             context.pushNamed(
               'JobDetailScreenGrabber',
