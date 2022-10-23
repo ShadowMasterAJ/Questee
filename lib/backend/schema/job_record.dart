@@ -95,8 +95,15 @@ Map<String, dynamic> createJobRecordData({
       ..posterID = posterID
       ..acceptorID = acceptorID;
 
-    for (int i = 0; i < items!.length; i++) {
-      j.items.add(items[i]);
+    var s = items;
+    int len;
+    if (s != null) {
+      len = s.length; // Safe
+    } else {
+      len = 0;
+    }
+    for (int i = 0; i < len; i++) {
+      j.items.add(items![i]);
     }
   }));
 
