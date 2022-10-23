@@ -17,7 +17,6 @@ class JobDetailScreenPosterWidget extends StatefulWidget {
   // final DocumentReference? job;
   // final JobRecord? jobDoc;
   final String indexStr;
-  // final int fuck;
   const JobDetailScreenPosterWidget({
     Key? key,
     required this.indexStr,
@@ -26,7 +25,6 @@ class JobDetailScreenPosterWidget extends StatefulWidget {
     // required this.note,
     // this.job,
     // this.jobDoc
-    // required this.fuck,
   }) : super(key: key);
 
   @override
@@ -45,18 +43,13 @@ class _JobDetailScreenPosterWidgetState
 
     // String STORE = widget.store;
     // String TIME = widget.time;
-    // print("fuck");
     // print(widget.jobDoc);
     // String NOTE = widget.note;
     int index = int.parse(widget.indexStr);
-    // int fuck = widget.fuck;
-    // final listViewJobRecord = _pagingController!.itemList![fuck];
     // print(listViewJobRecord.store!);
     // JobRecord record = widget.record!;
     // print(record.items![0]);
-    // if (widget.record == null) print("NULL YOU RETARD");
     // List<String> CHECKLIST = widget.checklist;
-    print("REACHED SCREEN POSTER WIDGET 000");
     // List CHECKLIST = widget.checklist.items!.toList();
     // String STORE = widget.checklist.store!;
     // String TIME = valueOrDefault<String>(
@@ -65,7 +58,6 @@ class _JobDetailScreenPosterWidgetState
     // );
     // String NOTE = widget.checklist.note!;
     // print(CHECKLIST[0]);
-    print("REACHED SCREEN POSTER WIDGET 1111");
     // final args = ModalRoute.of(context)!.settings.arguments;
     return Scaffold(
       key: scaffoldKey,
@@ -95,10 +87,7 @@ class _JobDetailScreenPosterWidgetState
                 List<JobRecord> columnJobRecordList = snapshot.data!;
                 print(index);
                 print(columnJobRecordList);
-                print("kokokokokokookokokokokookokokokokokok");
                 print(columnJobRecordList[index]);
-                print("hi here");
-                print("===========================================");
                 // Return an empty Container when the document does not exist.
                 if (snapshot.data!.isEmpty) {
                   return Container();
@@ -128,16 +117,13 @@ class _JobDetailScreenPosterWidgetState
                               context.pop();
                             },
                           ),
-                          Align(
-                            alignment: AlignmentDirectional(0, 0),
-                            child: Padding(
-                              padding:
-                                  EdgeInsetsDirectional.fromSTEB(20, 0, 0, 0),
-                              child: Text(
-                                'Job Detail.',
-                                textAlign: TextAlign.center,
-                                style: FlutterFlowTheme.of(context).title1,
-                              ),
+                          Padding(
+                            padding:
+                                EdgeInsetsDirectional.fromSTEB(20, 0, 0, 0),
+                            child: Text(
+                              'Job Detail.',
+                              textAlign: TextAlign.center,
+                              style: FlutterFlowTheme.of(context).title1,
                             ),
                           ),
                         ],
@@ -452,8 +438,8 @@ class _JobDetailScreenPosterWidgetState
                                       0, 0, 15, 0),
                                   child: FFButtonWidget(
                                     onPressed: () async {
-                                      if(true){
-                                      //if (columnJobRecord!.acceptorID != null) {
+                                      if (true) {
+                                        //if (columnJobRecord!.acceptorID != null) {
                                         await showModalBottomSheet(
                                           isScrollControlled: true,
                                           backgroundColor: Colors.transparent,

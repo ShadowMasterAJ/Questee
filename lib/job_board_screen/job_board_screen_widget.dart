@@ -345,13 +345,22 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
                                         ),
                                       ),
                                       itemBuilder: (context, _, listViewIndex) {
-                                        final listViewJobRecord =
+                                        print(listViewIndex);
+
+                                        final listViewJobRecord = // add if statement here
                                             _pagingController!
                                                 .itemList![listViewIndex];
-                                        return JobCard(
-                                            listViewJobRecord:
-                                                listViewJobRecord,
-                                            index: listViewIndex);
+
+                                        if (listViewJobRecord.acceptorID !=
+                                            null) {
+                                          print(listViewJobRecord.delLocation);
+                                          return SizedBox.shrink();
+                                        } else {
+                                          return JobCard(
+                                              listViewJobRecord:
+                                                  listViewJobRecord,
+                                              index: listViewIndex);
+                                        }
                                       },
                                     ),
                                   ),
@@ -411,7 +420,6 @@ class JobCard extends StatelessWidget {
           String indexStr = index.toString();
 
           if ((listViewJobRecord.posterID!.id) == (currentUserReference!.id)) {
-            print("THIS IS THE POSTER IF STATEMENT");
             print(indexStr);
             context.pushNamed(
               'JobDetailScreenPoster',
@@ -420,7 +428,6 @@ class JobCard extends StatelessWidget {
               },
             );
           } else {
-            print("THIS IS THE GRABBER ELSE STATEMENT");
             print(indexStr);
             context.pushNamed(
               'JobDetailScreenGrabber',
