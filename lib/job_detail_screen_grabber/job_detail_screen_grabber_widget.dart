@@ -12,7 +12,6 @@ import 'package:google_fonts/google_fonts.dart';
 
 class JobDetailScreenGrabberWidget extends StatefulWidget {
   final String indexStr;
-  // final int fuck;
   const JobDetailScreenGrabberWidget({
     Key? key,
     required this.indexStr,
@@ -89,15 +88,14 @@ class _JobDetailScreenGrabberWidgetState
                               context.pop();
                             },
                           ),
-                         Padding(
-                              padding:
-                                  EdgeInsetsDirectional.fromSTEB(20, 0, 0, 0),
-                              child: Text(
-                                'Job Details.',
-                                textAlign: TextAlign.center,
-                                style: FlutterFlowTheme.of(context).title1,
-                              ),
-                            
+                          Padding(
+                            padding:
+                                EdgeInsetsDirectional.fromSTEB(20, 0, 0, 0),
+                            child: Text(
+                              'Job Details.',
+                              textAlign: TextAlign.center,
+                              style: FlutterFlowTheme.of(context).title1,
+                            ),
                           ),
                         ],
                       ),
@@ -182,7 +180,6 @@ class _JobDetailScreenGrabberWidgetState
                                       ),
                                     ),
                                     Text(
-                                      // "cocococock",
                                       columnJobRecord.store!,
                                       style: FlutterFlowTheme.of(context)
                                           .bodyText1,
@@ -207,7 +204,6 @@ class _JobDetailScreenGrabberWidgetState
                                       ),
                                     ),
                                     Text(
-                                      // "cock",
                                       // columnJobRecord!.delTime.toString(),
                                       valueOrDefault<String>(
                                         dateTimeFormat(
@@ -237,7 +233,6 @@ class _JobDetailScreenGrabberWidgetState
                                       ),
                                     ),
                                     Text(
-                                      // "FUCKFUCKFUCK",
                                       columnJobRecord.note!,
                                       style: FlutterFlowTheme.of(context)
                                           .bodyText1,
@@ -333,7 +328,8 @@ class _JobDetailScreenGrabberWidgetState
                                 options: FFButtonOptions(
                                   width: 340,
                                   height: 50,
-                                  color: FlutterFlowTheme.of(context).primaryColor,
+                                  color:
+                                      FlutterFlowTheme.of(context).primaryColor,
                                   textStyle: FlutterFlowTheme.of(context)
                                       .subtitle2
                                       .override(
@@ -359,21 +355,25 @@ class _JobDetailScreenGrabberWidgetState
                           padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 20),
                           child: FFButtonWidget(
                             onPressed: () async {
-
                               // how to set acceptorId to current user's userId?
-
 
                               // final columnJobUpdateData = createJobRecordData(
                               //   acceptorId: currentUserReference,
                               //   accepted: true,
                               // );
+                              print("GOING TO UPDATE");
 
-                              final usersUpdateData = createUsersRecordData(
-                                uid: currentUserUid,
-                              );
-                              await columnJobRecord.acceptorID
-                                  ?.update(usersUpdateData);
+                              final jobUpdateData = createJobRecordData(
+                                  acceptorID: currentUserReference);
+                              print(columnJobRecord);
 
+                              // final usersUpdateData = createUsersRecordData(
+                              //   uid: currentUserUid,
+                              // );
+                              await columnJobRecord.reference
+                                  .update(jobUpdateData);
+
+                              print("update!!!!!!!");
 
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
@@ -411,8 +411,7 @@ class _JobDetailScreenGrabberWidgetState
                           ),
                         ),
                       ),
-                  
-if (accepted)
+                    if (accepted)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 10),
                         child: Text(
@@ -423,7 +422,8 @@ if (accepted)
                                 fontSize: 30,
                               ),
                         ),
-                      ),                  ],
+                      ),
+                  ],
                 );
               },
             ),

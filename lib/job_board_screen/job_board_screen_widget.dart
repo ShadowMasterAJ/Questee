@@ -345,13 +345,25 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
                                         ),
                                       ),
                                       itemBuilder: (context, _, listViewIndex) {
-                                        final listViewJobRecord =
+                                        print(listViewIndex);
+                                        print("DC IS VERY CONFUSED?????");
+
+                                        final listViewJobRecord = // add if statement here
                                             _pagingController!
                                                 .itemList![listViewIndex];
-                                        return JobCard(
-                                            listViewJobRecord:
-                                                listViewJobRecord,
-                                            index: listViewIndex);
+
+                                        if (listViewJobRecord.acceptorID !=
+                                            null) {
+                                          print(listViewJobRecord.delLocation);
+                                          print("not accepted yet!!");
+                                          return SizedBox.shrink();
+                                        } else {
+                                          print("accepted!!!");
+                                          return JobCard(
+                                              listViewJobRecord:
+                                                  listViewJobRecord,
+                                              index: listViewIndex);
+                                        }
                                       },
                                     ),
                                   ),
