@@ -17,7 +17,6 @@ class JobDetailScreenPosterWidget extends StatefulWidget {
   // final DocumentReference? job;
   // final JobRecord? jobDoc;
   final String indexStr;
-  // final int fuck;
   const JobDetailScreenPosterWidget({
     Key? key,
     required this.indexStr,
@@ -26,7 +25,6 @@ class JobDetailScreenPosterWidget extends StatefulWidget {
     // required this.note,
     // this.job,
     // this.jobDoc
-    // required this.fuck,
   }) : super(key: key);
 
   @override
@@ -45,16 +43,12 @@ class _JobDetailScreenPosterWidgetState
 
     // String STORE = widget.store;
     // String TIME = widget.time;
-    // print("fuck");
     // print(widget.jobDoc);
     // String NOTE = widget.note;
     int index = int.parse(widget.indexStr);
-    // int fuck = widget.fuck;
-    // final listViewJobRecord = _pagingController!.itemList![fuck];
     // print(listViewJobRecord.store!);
     // JobRecord record = widget.record!;
     // print(record.items![0]);
-    // if (widget.record == null) print("NULL YOU RETARD");
     // List<String> CHECKLIST = widget.checklist;
     print("REACHED SCREEN POSTER WIDGET 000");
     // List CHECKLIST = widget.checklist.items!.toList();
@@ -452,8 +446,8 @@ class _JobDetailScreenPosterWidgetState
                                       0, 0, 15, 0),
                                   child: FFButtonWidget(
                                     onPressed: () async {
-                                      if(true){
-                                      //if (columnJobRecord!.acceptorID != null) {
+                                      if (true) {
+                                        //if (columnJobRecord!.acceptorID != null) {
                                         await showModalBottomSheet(
                                           isScrollControlled: true,
                                           backgroundColor: Colors.transparent,
