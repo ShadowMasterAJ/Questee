@@ -67,14 +67,16 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
       initialLocation: '/',
       debugLogDiagnostics: true,
       refreshListenable: appStateNotifier,
-      errorBuilder: (context, _) =>
-          appStateNotifier.loggedIn ? NavBarPage() : AuthScreenWidget(),
-      routes: [
+      errorBuilder: (context, _) => appStateNotifier.loggedIn
+          ? JobBoardScreenWidget()
+          : AuthScreenWidget(),
+      routes: <GoRoute>[
         FFRoute(
           name: '_initialize',
           path: '/',
-          builder: (context, _) =>
-              appStateNotifier.loggedIn ? NavBarPage() : AuthScreenWidget(),
+          builder: (context, _) => appStateNotifier.loggedIn
+              ? JobBoardScreenWidget()
+              : AuthScreenWidget(),
           routes: [
             FFRoute(
               name: 'AuthScreen',
@@ -84,9 +86,12 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
             FFRoute(
               name: 'JobBoardScreen',
               path: 'jobBoardScreen',
-              builder: (context, params) => params.isEmpty
-                  ? NavBarPage(initialPage: 'JobBoardScreen')
-                  : JobBoardScreenWidget(),
+              builder: (context, params) => JobBoardScreenWidget(),
+            ),
+            FFRoute(
+              name: 'JobHistoryScreen',
+              path: 'jobHistoryScreen',
+              builder: (context, params) => JobHistoryScreenWidget(),
             ),
             FFRoute(
               name: 'SignupScreen',
@@ -94,24 +99,59 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               builder: (context, params) => SignupScreenWidget(),
             ),
             FFRoute(
-              name: 'profileScreen',
-              path: 'profileScreen',
-              builder: (context, params) => params.isEmpty
-                  ? NavBarPage(initialPage: 'profileScreen')
-                  : ProfileScreenWidget(),
+              name: 'editProfileScreen',
+              path: 'editProfileScreen',
+              builder: (context, params) => EditProfileScreenWidget(),
             ),
             FFRoute(
               name: 'createJobScreen',
               path: 'createJobScreen',
-              builder: (context, params) => params.isEmpty
-                  ? NavBarPage(initialPage: 'createJobScreen')
-                  : CreateJobScreenWidget(),
+              builder: (context, params) => CreateJobScreenWidget(),
             ),
             FFRoute(
-              name: 'JobDetailScreen',
-              path: 'jobDetailScreen',
-              builder: (context, params) => JobDetailScreenWidget(),
-            )
+              name: 'editJobScreen',
+              path: 'editJobScreen',
+              builder: (context, params) => EditJobScreenWidget(),
+            ),
+            FFRoute(
+                name: 'JobDetailScreenPoster',
+                path: 'jobDetailScreenPoster',
+                asyncParams: {
+                  'jobDoc': getDoc('job', JobRecord.serializer),
+                },
+                builder: (context, params) {
+                  return JobDetailScreenPosterWidget(
+                    indexStr: params.getParam('indexStr', ParamType.String),
+                  );
+                }),
+            FFRoute(
+              name: 'JobDetailScreenGrabber',
+              path: 'jobDetailScreenGrabber',
+              builder: (context, params) => JobDetailScreenGrabberWidget(
+                  indexStr: params.getParam('indexStr', ParamType.String)),
+            ),
+            FFRoute(
+              name: 'forgotPasswordScreen',
+              path: 'forgotPasswordScreen',
+              builder: (context, params) => ForgotPasswordScreenWidget(),
+            ),
+            FFRoute(
+              name: 'posterPaymentScreen',
+              path: 'posterPaymentScreen',
+              builder: (context, params) => PosterPaymentScreenWidget(),
+            ),
+            FFRoute(
+              name: 'ChatScreen',
+              path: 'chatScreen',
+              asyncParams: {
+                'chatUser': getDoc('users', UsersRecord.serializer),
+              },
+              builder: (context, params) => ChatScreenWidget(
+                chatRef: params.getParam(
+                    'chatRef', ParamType.DocumentReference, false, 'chats'),
+                chatUser: params.getParam('chatUser', ParamType.Document),
+              ),
+            ),
           ].map((r) => r.toRoute(appStateNotifier)).toList(),
         ).toRoute(appStateNotifier),
       ],

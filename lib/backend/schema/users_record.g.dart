@@ -78,6 +78,16 @@ class _$UsersRecordSerializer implements StructuredSerializer<UsersRecord> {
         ..add(serializers.serialize(value,
             specifiedType: const FullType(String)));
     }
+    value = object.currJobs;
+    if (value != null) {
+      result
+        ..add('curr_jobs')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(BuiltList, const [
+              const FullType(
+                  DocumentReference, const [const FullType.nullable(Object)])
+            ])));
+    }
     value = object.ffRef;
     if (value != null) {
       result
@@ -135,6 +145,13 @@ class _$UsersRecordSerializer implements StructuredSerializer<UsersRecord> {
           result.gender = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String?;
           break;
+        case 'curr_jobs':
+          result.currJobs.replace(serializers.deserialize(value,
+              specifiedType: const FullType(BuiltList, const [
+                const FullType(
+                    DocumentReference, const [const FullType.nullable(Object)])
+              ]))! as BuiltList<Object?>);
+          break;
         case 'Document__Reference__Field':
           result.ffRef = serializers.deserialize(value,
               specifiedType: const FullType(DocumentReference, const [
@@ -166,6 +183,8 @@ class _$UsersRecord extends UsersRecord {
   @override
   final String? gender;
   @override
+  final BuiltList<DocumentReference<Object?>>? currJobs;
+  @override
   final DocumentReference<Object?>? ffRef;
 
   factory _$UsersRecord([void Function(UsersRecordBuilder)? updates]) =>
@@ -180,6 +199,7 @@ class _$UsersRecord extends UsersRecord {
       this.phoneNumber,
       this.pastJobs,
       this.gender,
+      this.currJobs,
       this.ffRef})
       : super._();
 
@@ -202,6 +222,7 @@ class _$UsersRecord extends UsersRecord {
         phoneNumber == other.phoneNumber &&
         pastJobs == other.pastJobs &&
         gender == other.gender &&
+        currJobs == other.currJobs &&
         ffRef == other.ffRef;
   }
 
@@ -214,14 +235,16 @@ class _$UsersRecord extends UsersRecord {
                     $jc(
                         $jc(
                             $jc(
-                                $jc($jc(0, email.hashCode),
-                                    displayName.hashCode),
-                                photoUrl.hashCode),
-                            uid.hashCode),
-                        createdTime.hashCode),
-                    phoneNumber.hashCode),
-                pastJobs.hashCode),
-            gender.hashCode),
+                                $jc(
+                                    $jc($jc(0, email.hashCode),
+                                        displayName.hashCode),
+                                    photoUrl.hashCode),
+                                uid.hashCode),
+                            createdTime.hashCode),
+                        phoneNumber.hashCode),
+                    pastJobs.hashCode),
+                gender.hashCode),
+            currJobs.hashCode),
         ffRef.hashCode));
   }
 
@@ -236,6 +259,7 @@ class _$UsersRecord extends UsersRecord {
           ..add('phoneNumber', phoneNumber)
           ..add('pastJobs', pastJobs)
           ..add('gender', gender)
+          ..add('currJobs', currJobs)
           ..add('ffRef', ffRef))
         .toString();
   }
@@ -278,6 +302,12 @@ class UsersRecordBuilder implements Builder<UsersRecord, UsersRecordBuilder> {
   String? get gender => _$this._gender;
   set gender(String? gender) => _$this._gender = gender;
 
+  ListBuilder<DocumentReference<Object?>>? _currJobs;
+  ListBuilder<DocumentReference<Object?>> get currJobs =>
+      _$this._currJobs ??= new ListBuilder<DocumentReference<Object?>>();
+  set currJobs(ListBuilder<DocumentReference<Object?>>? currJobs) =>
+      _$this._currJobs = currJobs;
+
   DocumentReference<Object?>? _ffRef;
   DocumentReference<Object?>? get ffRef => _$this._ffRef;
   set ffRef(DocumentReference<Object?>? ffRef) => _$this._ffRef = ffRef;
@@ -297,6 +327,7 @@ class UsersRecordBuilder implements Builder<UsersRecord, UsersRecordBuilder> {
       _phoneNumber = $v.phoneNumber;
       _pastJobs = $v.pastJobs?.toBuilder();
       _gender = $v.gender;
+      _currJobs = $v.currJobs?.toBuilder();
       _ffRef = $v.ffRef;
       _$v = null;
     }
@@ -330,12 +361,16 @@ class UsersRecordBuilder implements Builder<UsersRecord, UsersRecordBuilder> {
               phoneNumber: phoneNumber,
               pastJobs: _pastJobs?.build(),
               gender: gender,
+              currJobs: _currJobs?.build(),
               ffRef: ffRef);
     } catch (_) {
       late String _$failedField;
       try {
         _$failedField = 'pastJobs';
         _pastJobs?.build();
+
+        _$failedField = 'currJobs';
+        _currJobs?.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             r'UsersRecord', _$failedField, e.toString());

@@ -189,6 +189,8 @@ dynamic deserializeParam<T>(
         return placeFromString(param);
       case ParamType.JSON:
         return json.decode(param);
+      case ParamType.Document:
+        return FirebaseFirestore.instance.doc('$collectionName/$param');
       case ParamType.DocumentReference:
         return FirebaseFirestore.instance.doc('$collectionName/$param');
 

@@ -82,6 +82,23 @@ class _$JobRecordSerializer implements StructuredSerializer<JobRecord> {
         ..add('item_quantity')
         ..add(serializers.serialize(value, specifiedType: const FullType(int)));
     }
+    value = object.posterID;
+    if (value != null) {
+      result
+        ..add('posterID')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(
+                DocumentReference, const [const FullType.nullable(Object)])));
+    }
+    value = object.acceptorID;
+    if (value != null) {
+      result
+        ..add('acceptorID')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(
+                DocumentReference, const [const FullType.nullable(Object)])));
+    }
+   
     value = object.ffRef;
     if (value != null) {
       result
@@ -142,6 +159,19 @@ class _$JobRecordSerializer implements StructuredSerializer<JobRecord> {
           result.itemQuantity = serializers.deserialize(value,
               specifiedType: const FullType(int)) as int?;
           break;
+        case 'posterID':
+          result.posterID = serializers.deserialize(value,
+              specifiedType: const FullType(DocumentReference, const [
+                const FullType.nullable(Object)
+              ])) as DocumentReference<Object?>?;
+          break;
+        case 'acceptorID':
+          result.acceptorID = serializers.deserialize(value,
+              specifiedType: const FullType(DocumentReference, const [
+                const FullType.nullable(Object)
+              ])) as DocumentReference<Object?>?;
+          break;
+       
         case 'Document__Reference__Field':
           result.ffRef = serializers.deserialize(value,
               specifiedType: const FullType(DocumentReference, const [
@@ -175,6 +205,10 @@ class _$JobRecord extends JobRecord {
   @override
   final int? itemQuantity;
   @override
+  final DocumentReference<Object?>? posterID;
+  @override
+  final DocumentReference<Object?>? acceptorID;
+  @override
   final DocumentReference<Object?>? ffRef;
 
   factory _$JobRecord([void Function(JobRecordBuilder)? updates]) =>
@@ -190,6 +224,8 @@ class _$JobRecord extends JobRecord {
       this.delTime,
       this.items,
       this.itemQuantity,
+      this.posterID,
+      this.acceptorID,
       this.ffRef})
       : super._();
 
@@ -213,26 +249,35 @@ class _$JobRecord extends JobRecord {
         delTime == other.delTime &&
         items == other.items &&
         itemQuantity == other.itemQuantity &&
+        posterID == other.posterID &&
+        acceptorID == other.acceptorID &&
         ffRef == other.ffRef;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(
+    return $jf(
         $jc(
             $jc(
                 $jc(
                     $jc(
                         $jc(
                             $jc(
-                                $jc($jc($jc(0, type.hashCode), note.hashCode),
-                                    store.hashCode),
-                                delLocation.hashCode),
-                            price.hashCode),
-                        status.hashCode),
-                    delTime.hashCode),
-                items.hashCode),
-            itemQuantity.hashCode),
+                                $jc(
+                                    $jc(
+                                        $jc(
+                                            $jc(
+                                                $jc($jc(0, type.hashCode),
+                                                    note.hashCode),
+                                                store.hashCode),
+                                            delLocation.hashCode),
+                                        price.hashCode),
+                                    status.hashCode),
+                                delTime.hashCode),
+                            items.hashCode),
+                        itemQuantity.hashCode),
+                    posterID.hashCode),
+                acceptorID.hashCode),
         ffRef.hashCode));
   }
 
@@ -248,6 +293,8 @@ class _$JobRecord extends JobRecord {
           ..add('delTime', delTime)
           ..add('items', items)
           ..add('itemQuantity', itemQuantity)
+          ..add('posterID', posterID)
+          ..add('acceptorID', acceptorID)
           ..add('ffRef', ffRef))
         .toString();
   }
@@ -292,6 +339,16 @@ class JobRecordBuilder implements Builder<JobRecord, JobRecordBuilder> {
   int? get itemQuantity => _$this._itemQuantity;
   set itemQuantity(int? itemQuantity) => _$this._itemQuantity = itemQuantity;
 
+  DocumentReference<Object?>? _posterID;
+  DocumentReference<Object?>? get posterID => _$this._posterID;
+  set posterID(DocumentReference<Object?>? posterID) =>
+      _$this._posterID = posterID;
+
+  DocumentReference<Object?>? _acceptorID;
+  DocumentReference<Object?>? get acceptorID => _$this._acceptorID;
+  set acceptorID(DocumentReference<Object?>? acceptorID) =>
+      _$this._acceptorID = acceptorID;
+
   DocumentReference<Object?>? _ffRef;
   DocumentReference<Object?>? get ffRef => _$this._ffRef;
   set ffRef(DocumentReference<Object?>? ffRef) => _$this._ffRef = ffRef;
@@ -312,6 +369,8 @@ class JobRecordBuilder implements Builder<JobRecord, JobRecordBuilder> {
       _delTime = $v.delTime;
       _items = $v.items?.toBuilder();
       _itemQuantity = $v.itemQuantity;
+      _posterID = $v.posterID;
+      _acceptorID = $v.acceptorID;
       _ffRef = $v.ffRef;
       _$v = null;
     }
@@ -346,6 +405,8 @@ class JobRecordBuilder implements Builder<JobRecord, JobRecordBuilder> {
               delTime: delTime,
               items: _items?.build(),
               itemQuantity: itemQuantity,
+              posterID: posterID,
+              acceptorID: acceptorID,
               ffRef: ffRef);
     } catch (_) {
       late String _$failedField;

@@ -1,12 +1,21 @@
 # uGrabv1
 
-A new Flutter project.
+## App Description:
 
-## Getting Started
+uGrab is an a delivery service mobile app targetted at NTU students, and provides a platform for students to post item purchase and delivery jobs, or accept such jobs from other students.
 
-FlutterFlow projects are built to run on the Flutter _stable_ release.
+uGrab aims to solve the problem of students needing to buy something urgently but cannot do so themselves due to inconvenience or other reasons, and allows students to put their job up for other students to purchase and deliver the items to them.
 
-### IMPORTANT:
+## Tools and Frameworks:
+
+This app is developed in flutter, with firebase database integration.
+
+## How to run:
+
+## Getting Started:
+Have the latest version of Flutter SDK and Android Studio installed. For more setup instructions, refer to this [link](https://www.liquidweb.com/kb/how-to-install-and-configure-flutter-sdk-windows-10/).
+
+Clone repository into desired file location.
 
 For projects with Firestore integration, you must first run the following commands to ensure the project compiles:
 
@@ -17,15 +26,14 @@ flutter packages pub run build_runner build --delete-conflicting-outputs
 
 This command creates the generated files that parse each Record from Firestore into a schema object.
 
-### Getting started continued:
+Have an emulator device open in Android Studio. For setup details, refer to this [link](https://developer.android.com/studio/run/managing-avds)
 
-This project is a starting point for a Flutter application.
+Connect to emulator device on IDE. (If using Visual Studio Code, click on "chrome" on the bottom right hand corner and select emulator device)
 
-A few resources to get you started if this is your first Flutter project:
+run the following command to run the app in emulator:
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+```
+flutter run
+```
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Note: main source code is in lib/ directory.
