@@ -4,7 +4,9 @@
 
 uGrab is an a delivery service mobile app targetted at NTU students, and provides a platform for students to post item purchase and delivery jobs, or accept such jobs from other students.
 
-uGrab aims to solve the problem of students needing to buy something urgently but cannot do so themselves due to inconvenience or other reasons, and allows students to put their job up for other students to purchase and deliver the items to them.
+It aims to solve the problem of students needing to buy something urgently but cannot do so themselves due to inconvenience or other reasons, and allows students to put their job up for other students to purchase and deliver the items to them.
+
+![Various pages of the app](assets/images/uGrab.png)
 
 ## Tools and Frameworks:
 
@@ -13,6 +15,7 @@ This app is developed in flutter, with firebase database integration.
 ## How to run:
 
 ## Getting Started:
+
 Have the latest version of Flutter SDK and Android Studio installed. For more setup instructions, refer to this [link](https://www.liquidweb.com/kb/how-to-install-and-configure-flutter-sdk-windows-10/).
 
 Clone repository into desired file location.
