@@ -12,8 +12,8 @@ export 'create_job_screen/create_job_screen_widget.dart'
 export 'edit_job_screen/edit_job_screen_widget.dart' show EditJobScreenWidget;
 export 'job_detail_screen_poster/job_detail_screen_poster_widget.dart'
     show JobDetailScreenPosterWidget;
-export 'job_detail_screen_grabber/job_detail_screen_grabber_widget.dart'
-    show JobDetailScreenGrabberWidget;
+export 'job_detail_screen_acceptor/job_detail_screen_acceptor_widget.dart'
+    show JobDetailScreenAcceptorWidget;
 export 'forgot_password_screen/forgot_password_screen_widget.dart'
     show ForgotPasswordScreenWidget;
 export 'poster_payment_screen/poster_payment_screen_widget.dart'

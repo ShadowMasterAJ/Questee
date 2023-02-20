@@ -11,20 +11,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class JobDetailScreenPosterWidget extends StatefulWidget {
-  // final String store;
-  // final String time;
-  // final String note;
-  // final DocumentReference? job;
-  // final JobRecord? jobDoc;
   final String indexStr;
   const JobDetailScreenPosterWidget({
     Key? key,
-    required this.indexStr,
-    // required this.store,
-    // required this.time,
-    // required this.note,
-    // this.job,
-    // this.jobDoc
+    required this.indexStr, //TODO better implementation, pass the jobID here and just access it's information instead of retrieving all the jobs again
   }) : super(key: key);
 
   @override
@@ -168,7 +158,6 @@ class _JobDetailScreenPosterWidgetState
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
                                   ListView(
-                                    padding: EdgeInsets.zero,
                                     shrinkWrap: true,
                                     scrollDirection: Axis.vertical,
                                     children: [
@@ -213,7 +202,6 @@ class _JobDetailScreenPosterWidgetState
                         mainAxisSize: MainAxisSize.max,
                         children: [
                           ListView(
-                            padding: EdgeInsets.zero,
                             shrinkWrap: true,
                             scrollDirection: Axis.vertical,
                             children: [
@@ -276,6 +264,7 @@ class _JobDetailScreenPosterWidgetState
                                     25, 20, 0, 0),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.max,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Padding(
                                       padding: EdgeInsetsDirectional.fromSTEB(
@@ -287,11 +276,15 @@ class _JobDetailScreenPosterWidgetState
                                         size: 24,
                                       ),
                                     ),
-                                    Text(
-                                      // NOTE,
-                                      columnJobRecord.note!,
-                                      style: FlutterFlowTheme.of(context)
-                                          .bodyText1,
+                                    Flexible(
+                                      fit: FlexFit.loose,
+                                      child: Text(
+                                        // NOTE,
+                                        columnJobRecord.note!,
+                                        style: FlutterFlowTheme.of(context)
+                                            .bodyText1,
+                                        //TODO check alignment
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -307,122 +300,150 @@ class _JobDetailScreenPosterWidgetState
                       color: FlutterFlowTheme.of(context).grayIcon,
                     ),
                     Spacer(),
-                    Stack(
-                      children: [
-                        Align(
-                          alignment: AlignmentDirectional(0, 0.11),
-                          child: FFButtonWidget(
-                            onPressed: () {
-                              print('Button pressed ...');
-                            },
-                            text: 'Chat with Job Acceptor',
-                            options: FFButtonOptions(
-                              width: 320,
-                              height: 50,
-                              color: FlutterFlowTheme.of(context).primaryColor,
-                              textStyle: FlutterFlowTheme.of(context)
-                                  .subtitle2
-                                  .override(
-                                    fontFamily: 'Poppins',
-                                    color: Colors.white,
-                                  ),
-                              borderSide: BorderSide(
-                                color: Colors.transparent,
-                                width: 1,
-                              ),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
+                    // Stack(
+                    //   children: [
+                    //     Align(
+                    //       alignment: AlignmentDirectional(0, 0.11),
+                    //       child: FFButtonWidget(
+                    //         onPressed: () {
+                    //           print('Button pressed ...');
+                    //         },
+                    //         text: 'Chat with Job Acceptor',
+                    //         options: FFButtonOptions(
+                    //           width: 320,
+                    //           height: 50,
+                    //           color: FlutterFlowTheme.of(context).primaryColor,
+                    //           textStyle: FlutterFlowTheme.of(context)
+                    //               .subtitle2
+                    //               .override(
+                    //                 fontFamily: 'Poppins',
+                    //                 color: Colors.white,
+                    //               ),
+                    //           borderSide: BorderSide(
+                    //             color: Colors.transparent,
+                    //             width: 1,
+                    //           ),
+                    //           borderRadius: BorderRadius.circular(8),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //     if (columnJobRecord.acceptorID == null)
+                    //       Align(
+                    //         alignment: AlignmentDirectional(0, 0.7),
+                    //         child: StreamBuilder<List<UsersRecord>>(
+                    //           stream: queryUsersRecord(
+                    //             singleRecord: true,
+                    //           ),
+                    //           builder: (context, snapshot) {
+                    //             // Customize what your widget looks like when it's loading.
+                    //             if (!snapshot.hasData) {
+                    //               return Center(
+                    //                 child: SizedBox(
+                    //                   width: 50,
+                    //                   height: 50,
+                    //                   child: CircularProgressIndicator(
+                    //                     color: FlutterFlowTheme.of(context)
+                    //                         .primaryColor,
+                    //                   ),
+                    //                 ),
+                    //               );
+                    //             }
+                    //             List<UsersRecord> buttonUsersRecordList =
+                    //                 snapshot.data!;
+                    //             print(buttonUsersRecordList);
+                    //             // Return an empty Container when the document does not exist.
+                    //             if (snapshot.data!.isEmpty) {
+                    //               return Container();
+                    //             }
+                    //             final buttonUsersRecord =
+                    //                 buttonUsersRecordList.isNotEmpty
+                    //                     ? buttonUsersRecordList.first
+                    //                     : null;
+                    //             return FFButtonWidget(
+                    //               onPressed: () async {
+                    //                 if (columnJobRecord.acceptorID != null) {
+                    //                   context.pushNamed(
+                    //                     'ChatScreen',
+                    //                     queryParams: {
+                    //                       'chatUser': serializeParam(
+                    //                         buttonUsersRecord,
+                    //                         ParamType.Document,
+                    //                       ),
+                    //                     }.withoutNulls,
+                    //                     extra: <String, dynamic>{
+                    //                       'chatUser': buttonUsersRecord,
+                    //                       kTransitionInfoKey: TransitionInfo(
+                    //                         hasTransition: true,
+                    //                         transitionType:
+                    //                             PageTransitionType.scale,
+                    //                         alignment: Alignment.bottomCenter,
+                    //                         duration:
+                    //                             Duration(milliseconds: 400),
+                    //                       ),
+                    //                     },
+                    //                   );
+                    //                 } else {
+                    //                   return;
+                    //                 }
+                    //               },
+                    //               text: 'Chat with Job Acceptor',
+                    //               options: FFButtonOptions(
+                    //                 width: 320,
+                    //                 height: 50,
+                    //                 color: valueOrDefault<Color>(
+                    //                   columnJobRecord!.acceptorID != null
+                    //                       ? Color(0xFF80D3A2)
+                    //                       : FlutterFlowTheme.of(context)
+                    //                           .secondaryText,
+                    //                   Color(0xFFC0C0C0),
+                    //                 ),
+                    //                 textStyle: FlutterFlowTheme.of(context)
+                    //                     .subtitle2
+                    //                     .override(
+                    //                       fontFamily: 'Poppins',
+                    //                       color: FlutterFlowTheme.of(context)
+                    //                           .primaryText,
+                    //                     ),
+                    //                 borderSide: BorderSide(
+                    //                   color: Colors.transparent,
+                    //                   width: 1,
+                    //                 ),
+                    //                 borderRadius: BorderRadius.circular(8),
+                    //               ),
+                    //             );
+                    //           },
+                    //         ),
+                    //       ),
+                    //   ],
+                    // ),
+                    FFButtonWidget(
+                      onPressed: () {
+                        columnJobRecord.acceptorID != null
+                            ? context.pushNamed("ChatScreen",
+                                queryParams: {
+                                  'jobRef': serializeParam(
+                                      columnJobRecord, ParamType.Document)
+                                }.withoutNulls)
+                            : print('Button pressed ...');
+                      },
+                      text: 'Chat with Job Acceptor',
+                      options: FFButtonOptions(
+                        width: 320,
+                        height: 50,
+                        color: FlutterFlowTheme.of(context).primaryColor,
+                        textStyle:
+                            FlutterFlowTheme.of(context).subtitle2.override(
+                                  fontFamily: 'Poppins',
+                                  color: Colors.white,
+                                ),
+                        borderSide: BorderSide(
+                          color: Colors.transparent,
+                          width: 1,
                         ),
-                        if (columnJobRecord.acceptorID == null)
-                          Align(
-                            alignment: AlignmentDirectional(0, 0.7),
-                            child: StreamBuilder<List<UsersRecord>>(
-                              stream: queryUsersRecord(
-                                singleRecord: true,
-                              ),
-                              builder: (context, snapshot) {
-                                // Customize what your widget looks like when it's loading.
-                                if (!snapshot.hasData) {
-                                  return Center(
-                                    child: SizedBox(
-                                      width: 50,
-                                      height: 50,
-                                      child: CircularProgressIndicator(
-                                        color: FlutterFlowTheme.of(context)
-                                            .primaryColor,
-                                      ),
-                                    ),
-                                  );
-                                }
-                                List<UsersRecord> buttonUsersRecordList =
-                                    snapshot.data!;
-                                print(buttonUsersRecordList);
-                                // Return an empty Container when the document does not exist.
-                                if (snapshot.data!.isEmpty) {
-                                  return Container();
-                                }
-                                final buttonUsersRecord =
-                                    buttonUsersRecordList.isNotEmpty
-                                        ? buttonUsersRecordList.first
-                                        : null;
-                                return FFButtonWidget(
-                                  onPressed: () async {
-                                    if (columnJobRecord.acceptorID != null) {
-                                      context.pushNamed(
-                                        'ChatScreen',
-                                        queryParams: {
-                                          'chatUser': serializeParam(
-                                            buttonUsersRecord,
-                                            ParamType.Document,
-                                          ),
-                                        }.withoutNulls,
-                                        extra: <String, dynamic>{
-                                          'chatUser': buttonUsersRecord,
-                                          kTransitionInfoKey: TransitionInfo(
-                                            hasTransition: true,
-                                            transitionType:
-                                                PageTransitionType.scale,
-                                            alignment: Alignment.bottomCenter,
-                                            duration:
-                                                Duration(milliseconds: 400),
-                                          ),
-                                        },
-                                      );
-                                    } else {
-                                      return;
-                                    }
-                                  },
-                                  text: 'Chat with Job Acceptor',
-                                  options: FFButtonOptions(
-                                    width: 320,
-                                    height: 50,
-                                    color: valueOrDefault<Color>(
-                                      columnJobRecord!.acceptorID != null
-                                          ? Color(0xFF80D3A2)
-                                          : FlutterFlowTheme.of(context)
-                                              .secondaryText,
-                                      Color(0xFFC0C0C0),
-                                    ),
-                                    textStyle: FlutterFlowTheme.of(context)
-                                        .subtitle2
-                                        .override(
-                                          fontFamily: 'Poppins',
-                                          color: FlutterFlowTheme.of(context)
-                                              .primaryText,
-                                        ),
-                                    borderSide: BorderSide(
-                                      color: Colors.transparent,
-                                      width: 1,
-                                    ),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                      ],
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
+
                     Padding(
                       padding: EdgeInsetsDirectional.fromSTEB(5, 10, 5, 10),
                       child: Row(

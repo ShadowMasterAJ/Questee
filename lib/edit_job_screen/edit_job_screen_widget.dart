@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+//TODO Fix this shit
 class EditJobScreenWidget extends StatefulWidget {
   const EditJobScreenWidget({Key? key}) : super(key: key);
 
@@ -537,7 +538,6 @@ class _EditJobScreenWidgetState extends State<EditJobScreenWidget> {
                                     ),
                                   ),
                                   ListView(
-                                    padding: EdgeInsets.zero,
                                     shrinkWrap: true,
                                     scrollDirection: Axis.vertical,
                                     children: [],
@@ -597,7 +597,7 @@ class _EditJobScreenWidgetState extends State<EditJobScreenWidget> {
                           child: FFButtonWidget(
                             onPressed: () async {
                               final jobCreateData = createJobRecordData(
-                                type: 'untaken',
+                                type: 'open',
                                 note: noteController!.text,
                                 store: storeValue,
                                 delLocation: delLocationController!.text,
@@ -605,7 +605,7 @@ class _EditJobScreenWidgetState extends State<EditJobScreenWidget> {
                                   double.parse(priceController!.text),
                                   3.00,
                                 ),
-                                status: 'untaken',
+                                status: 'open',
                                 delTime: datePicked,
                                 posterID: currentUserReference,
                               );

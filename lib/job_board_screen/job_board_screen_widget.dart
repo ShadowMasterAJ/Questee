@@ -315,7 +315,6 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
                                       });
                                       return _pagingController!;
                                     }(),
-                                    padding: EdgeInsets.zero,
                                     primary: false,
                                     shrinkWrap: true,
                                     scrollDirection: Axis.vertical,
@@ -345,8 +344,6 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
                                         ),
                                       ),
                                       itemBuilder: (context, _, listViewIndex) {
-                                        print(listViewIndex);
-
                                         final listViewJobRecord = // add if statement here
                                             _pagingController!
                                                 .itemList![listViewIndex];
@@ -369,8 +366,19 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
                                   builder: (context) {
                                     final searcResults =
                                         simpleSearchResults.toList();
+                                    if (searcResults.isEmpty) {
+                                      return Center(
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          child: Image.asset(
+                                            'assets/images/not_stonks.jpg',
+                                            width: double.infinity,
+                                          ),
+                                        ),
+                                      );
+                                    }
                                     return ListView.builder(
-                                        padding: EdgeInsets.zero,
                                         shrinkWrap: true,
                                         scrollDirection: Axis.vertical,
                                         itemCount: searcResults.length,
@@ -420,7 +428,6 @@ class JobCard extends StatelessWidget {
           String indexStr = index.toString();
 
           if ((listViewJobRecord.posterID!.id) == (currentUserReference!.id)) {
-            print(indexStr);
             context.pushNamed(
               'JobDetailScreenPoster',
               queryParams: {
@@ -428,9 +435,8 @@ class JobCard extends StatelessWidget {
               },
             );
           } else {
-            print(indexStr);
             context.pushNamed(
-              'JobDetailScreenGrabber',
+              'JobDetailScreenAcceptor',
               queryParams: {
                 'indexStr': serializeParam(indexStr, ParamType.String)!,
               },
@@ -450,6 +456,7 @@ class JobCard extends StatelessWidget {
                 padding: EdgeInsetsDirectional.fromSTEB(7, 7, 7, 7),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
+                  //TODO update with some specific image
                   child: Image.network(
                     'https://picsum.photos/seed/689/600',
                     width: 100,

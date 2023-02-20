@@ -10,20 +10,20 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class JobDetailScreenGrabberWidget extends StatefulWidget {
+class JobDetailScreenAcceptorWidget extends StatefulWidget {
   final String indexStr;
-  const JobDetailScreenGrabberWidget({
+  const JobDetailScreenAcceptorWidget({
     Key? key,
     required this.indexStr,
   }) : super(key: key);
 
   @override
-  _JobDetailScreenGrabberWidgetState createState() =>
-      _JobDetailScreenGrabberWidgetState();
+  _JobDetailScreenAcceptorWidgetState createState() =>
+      _JobDetailScreenAcceptorWidgetState();
 }
 
-class _JobDetailScreenGrabberWidgetState
-    extends State<JobDetailScreenGrabberWidget> {
+class _JobDetailScreenAcceptorWidgetState
+    extends State<JobDetailScreenAcceptorWidget> {
   List<String>? checkboxGroupValues;
   bool accepted = false;
   final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -114,7 +114,6 @@ class _JobDetailScreenGrabberWidgetState
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
                                   ListView(
-                                    padding: EdgeInsets.zero,
                                     shrinkWrap: true,
                                     scrollDirection: Axis.vertical,
                                     children: [
@@ -159,7 +158,6 @@ class _JobDetailScreenGrabberWidgetState
                         mainAxisSize: MainAxisSize.max,
                         children: [
                           ListView(
-                            padding: EdgeInsets.zero,
                             shrinkWrap: true,
                             scrollDirection: Axis.vertical,
                             children: [
@@ -220,6 +218,7 @@ class _JobDetailScreenGrabberWidgetState
                                 padding: EdgeInsetsDirectional.fromSTEB(
                                     25, 20, 0, 0),
                                 child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisSize: MainAxisSize.max,
                                   children: [
                                     Padding(
@@ -349,68 +348,94 @@ class _JobDetailScreenGrabberWidgetState
                         ),
                       ),
                     if (accepted == false)
-                      Align(
-                        alignment: AlignmentDirectional(0, 0),
-                        child: Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 20),
-                          child: FFButtonWidget(
-                            onPressed: () async {
-                              // how to set acceptorId to current user's userId?
+                      // Align(
+                      //   alignment: AlignmentDirectional(0, 0),
+                      //   child: Padding(
+                      //     padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 20),
+                      //     child: FFButtonWidget(
+                      //       onPressed: () async {
+                      //         // how to set acceptorId to current user's userId?
 
-                              // final columnJobUpdateData = createJobRecordData(
-                              //   acceptorId: currentUserReference,
-                              //   accepted: true,
-                              // );
-                              print("GOING TO UPDATE");
-                              // List _lst = columnJobRecord.items;
+                      //         // final columnJobUpdateData = createJobRecordData(
+                      //         //   acceptorId: currentUserReference,
+                      //         //   accepted: true,
+                      //         // );
+                      //         print("GOING TO UPDATE");
+                      //         // List _lst = columnJobRecord.items;
 
-                              final jobUpdateData = createJobRecordData(
-                                  acceptorID: currentUserReference,
-                                  items: columnJobRecord.items?.toList());
-                              print(columnJobRecord);
+                      //         final jobUpdateData = createJobRecordData(
+                      //             acceptorID: currentUserReference,
+                      //             items: columnJobRecord.items?.toList());
+                      //         print(columnJobRecord);
 
-                              // final usersUpdateData = createUsersRecordData(
-                              //   uid: currentUserUid,
-                              // );
-                              await columnJobRecord.reference
-                                  .update(jobUpdateData);
+                      //         // final usersUpdateData = createUsersRecordData(
+                      //         //   uid: currentUserUid,
+                      //         // );
+                      //         await columnJobRecord.reference
+                      //             .update(jobUpdateData);
 
-                              print("update!!!!!!!");
+                      //         print("update!!!!!!!");
 
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    'Job Accepted!',
-                                    style: TextStyle(
-                                      color: FlutterFlowTheme.of(context)
-                                          .primaryText,
-                                    ),
-                                  ),
-                                  duration: Duration(milliseconds: 2000),
-                                  backgroundColor: Color(0x00000000),
-                                ),
-                              );
-                              setState(() => accepted = true);
-                              print(columnJobRecord);
-                            },
-                            text: 'Accept This Job ',
-                            options: FFButtonOptions(
-                              width: 340,
-                              height: 50,
-                              color: Color(0xFF9ACDA1),
-                              textStyle: FlutterFlowTheme.of(context)
-                                  .subtitle2
-                                  .override(
+                      //         // ScaffoldMessenger.of(context).showSnackBar(
+                      //         //   SnackBar(
+                      //         //     content: Text(
+                      //         //       'Job Accepted!',
+                      //         //       style: TextStyle(
+                      //         //         color: FlutterFlowTheme.of(context)
+                      //         //             .primaryText,
+                      //         //       ),
+                      //         //     ),
+                      //         //     duration: Duration(milliseconds: 2000),
+                      //         //     backgroundColor: Color(0x00000000),
+                      //         //   ),
+                      //         // );
+                      //         setState(() => accepted = true);
+                      //         print(columnJobRecord);
+                      //       },
+                      //       text: 'Accept This Job ',
+                      //       options: FFButtonOptions(
+                      //         width: 340,
+                      //         height: 50,
+                      //         color: Color(0xFF9ACDA1),
+                      //         textStyle: FlutterFlowTheme.of(context)
+                      //             .subtitle2
+                      //             .override(
+                      //               fontFamily: 'Poppins',
+                      //               color: Colors.white,
+                      //             ),
+                      //         borderSide: BorderSide(
+                      //           color: Colors.transparent,
+                      //           width: 1,
+                      //         ),
+                      //         borderRadius: BorderRadius.circular(10),
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
+
+                      FFButtonWidget(
+                        onPressed: () {
+                          context.pushNamed("ChatScreen",
+                              queryParams: {
+                                'jobRef': serializeParam(
+                                    columnJobRecord, ParamType.Document)
+                              }.withoutNulls);
+                        },
+                        text: 'Chat with Job Poster',
+                        options: FFButtonOptions(
+                          width: 320,
+                          height: 50,
+                          color: FlutterFlowTheme.of(context).primaryColor,
+                          textStyle:
+                              FlutterFlowTheme.of(context).subtitle2.override(
                                     fontFamily: 'Poppins',
                                     color: Colors.white,
                                   ),
-                              borderSide: BorderSide(
-                                color: Colors.transparent,
-                                width: 1,
-                              ),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
+                          borderSide: BorderSide(
+                            color: Colors.transparent,
+                            width: 1,
                           ),
+                          borderRadius: BorderRadius.circular(8),
                         ),
                       ),
                     if (accepted)

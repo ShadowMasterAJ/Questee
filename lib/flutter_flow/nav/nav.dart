@@ -125,9 +125,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
                   );
                 }),
             FFRoute(
-              name: 'JobDetailScreenGrabber',
-              path: 'jobDetailScreenGrabber',
-              builder: (context, params) => JobDetailScreenGrabberWidget(
+              name: 'JobDetailScreenAcceptor',
+              path: 'jobDetailScreenAcceptor',
+              builder: (context, params) => JobDetailScreenAcceptorWidget(
                   indexStr: params.getParam('indexStr', ParamType.String)),
             ),
             FFRoute(
@@ -147,9 +147,11 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
                 'chatUser': getDoc('users', UsersRecord.serializer),
               },
               builder: (context, params) => ChatScreenWidget(
-                chatRef: params.getParam(
-                    'chatRef', ParamType.DocumentReference, false, 'chats'),
-                chatUser: params.getParam('chatUser', ParamType.Document),
+                jobRef: params.getParam(
+                    'jobRef', ParamType.DocumentReference, false, 'job'),
+                // chatRef: params.getParam(
+                //     'chatRef', ParamType.DocumentReference, false, 'chats'),
+                // chatUser: params.getParam('chatUser', ParamType.Document),
               ),
             ),
           ].map((r) => r.toRoute(appStateNotifier)).toList(),
