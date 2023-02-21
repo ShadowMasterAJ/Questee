@@ -91,25 +91,12 @@ class _NavBarWithMiddleButtonWidgetState
                       color: FlutterFlowTheme.of(context).grayIcon,
                       size: 24,
                     ),
-                    onPressed: () async {
-                      // context.pushNamed(
-                      //   'ChatScreen',
-                      //   queryParams: {
-                      //     'chatUser': serializeParam(
-                      //       buttonUsersRecord,
-                      //       ParamType.Document,
-                      //     ),
-                      //   }.withoutNulls,
-                      //   extra: <String, dynamic>{
-                      //     'chatUser': buttonUsersRecord,
-                      //     kTransitionInfoKey: TransitionInfo(
-                      //       hasTransition: true,
-                      //       transitionType: PageTransitionType.scale,
-                      //       alignment: Alignment.bottomCenter,
-                      //       duration: Duration(milliseconds: 400),
-                      //     ),
-                      //   },
-                      // );
+                    onPressed: () {
+                      // context.pushNamed("ChatScreen",
+                      //     queryParams: {
+                      //       'jobRef': serializeParam(
+                      //           columnJobRecord, ParamType.Document) //TODO - fix
+                      //     }.withoutNulls);
                     },
                   ),
                   Column(

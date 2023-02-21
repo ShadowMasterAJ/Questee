@@ -449,8 +449,8 @@ class JobCard extends StatelessWidget {
                 padding: EdgeInsetsDirectional.fromSTEB(7, 7, 7, 7),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: Image.network(
-                    'https://picsum.photos/seed/689/600',
+                  child: Image.asset(
+                    'assets/images/app_launcher_icon.png', //TODO - change
                     width: 100,
                     height: 100,
                     fit: BoxFit.cover,

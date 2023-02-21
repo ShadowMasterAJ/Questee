@@ -124,8 +124,8 @@ class _EditProfileScreenWidgetState extends State<EditProfileScreenWidget> {
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                 ),
-                                child: Image.network(
-                                  'https://images.unsplash.com/photo-1536164261511-3a17e671d380?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=630&q=80',
+                                child: Image.asset(
+                                  "assets/images/app_launcher_icon.png",
                                   fit: BoxFit.fitWidth,
                                 ),
                               ),

@@ -14,7 +14,7 @@ class JobDetailScreenPosterWidget extends StatefulWidget {
   final String indexStr;
   const JobDetailScreenPosterWidget({
     Key? key,
-    required this.indexStr, //TODO better implementation, pass the jobID here and just access it's information instead of retrieving all the jobs again
+    required this.indexStr, //TODO - better implementation, pass the jobID here and just access it's information instead of retrieving all the jobs again
   }) : super(key: key);
 
   @override
@@ -75,16 +75,14 @@ class _JobDetailScreenPosterWidgetState
                   );
                 }
                 List<JobRecord> columnJobRecordList = snapshot.data!;
-                print(index);
-                print(columnJobRecordList);
-                print(columnJobRecordList[index]);
-                // Return an empty Container when the document does not exist.
+
                 if (snapshot.data!.isEmpty) {
                   return Container();
                 }
                 final columnJobRecord = columnJobRecordList.isNotEmpty
                     ? columnJobRecordList[index]
                     : null;
+
                 return Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
@@ -197,7 +195,7 @@ class _JobDetailScreenPosterWidgetState
                       color: FlutterFlowTheme.of(context).grayIcon,
                     ),
                     Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(0, 20, 0, 20),
+                      padding: EdgeInsetsDirectional.fromSTEB(0, 10, 0, 10),
                       child: Column(
                         mainAxisSize: MainAxisSize.max,
                         children: [
@@ -205,90 +203,21 @@ class _JobDetailScreenPosterWidgetState
                             shrinkWrap: true,
                             scrollDirection: Axis.vertical,
                             children: [
-                              Padding(
-                                padding:
-                                    EdgeInsetsDirectional.fromSTEB(25, 0, 0, 0),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsetsDirectional.fromSTEB(
-                                          0, 0, 10, 0),
-                                      child: Icon(
-                                        Icons.shopping_cart,
-                                        color: FlutterFlowTheme.of(context)
-                                            .gray200,
-                                        size: 24,
-                                      ),
-                                    ),
-                                    Text(
-                                      columnJobRecord.store!,
-                                      // STORE,
-                                      style: FlutterFlowTheme.of(context)
-                                          .bodyText1,
-                                    ),
-                                  ],
-                                ),
+                              StoreTimeNoteEntry(
+                                icon: Icons.shopping_cart,
+                                entry: columnJobRecord.store!,
                               ),
-                              Padding(
-                                padding: EdgeInsetsDirectional.fromSTEB(
-                                    25, 20, 0, 0),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsetsDirectional.fromSTEB(
-                                          0, 0, 10, 0),
-                                      child: Icon(
-                                        Icons.timer,
-                                        color: FlutterFlowTheme.of(context)
-                                            .gray200,
-                                        size: 24,
-                                      ),
-                                    ),
-                                    Text(
-                                      valueOrDefault<String>(
-                                        dateTimeFormat(
-                                            'jm', columnJobRecord.delTime),
-                                        'ASAP',
-                                      ),
-                                      // TIME,
-                                      style: FlutterFlowTheme.of(context)
-                                          .bodyText1,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsetsDirectional.fromSTEB(
-                                    25, 20, 0, 0),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsetsDirectional.fromSTEB(
-                                          0, 0, 10, 0),
-                                      child: Icon(
-                                        Icons.info_outlined,
-                                        color: FlutterFlowTheme.of(context)
-                                            .gray200,
-                                        size: 24,
-                                      ),
-                                    ),
-                                    Flexible(
-                                      fit: FlexFit.loose,
-                                      child: Text(
-                                        // NOTE,
-                                        columnJobRecord.note!,
-                                        style: FlutterFlowTheme.of(context)
-                                            .bodyText1,
-                                        //TODO check alignment
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                              StoreTimeNoteEntry(
+                                  icon: Icons.timer,
+                                  entry: valueOrDefault<String>(
+                                    dateTimeFormat(
+                                        'jm', columnJobRecord.delTime),
+                                    'ASAP',
+                                  )),
+                              StoreTimeNoteEntry(
+                                  icon: Icons.info,
+                                  entry: columnJobRecord.note!,
+                                  lines: 2),
                             ],
                           ),
                         ],
@@ -536,6 +465,48 @@ class _JobDetailScreenPosterWidgetState
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class StoreTimeNoteEntry extends StatelessWidget {
+  const StoreTimeNoteEntry({
+    Key? key,
+    required this.entry,
+    this.lines = 1,
+    required this.icon,
+  }) : super(key: key);
+
+  final String entry;
+  final int lines;
+  final IconData icon;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(25, 20, 0, 0),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
+            child: Icon(
+              icon,
+              color: FlutterFlowTheme.of(context).gray200,
+              size: 24,
+            ),
+          ),
+          Flexible(
+            fit: FlexFit.loose,
+            child: Text(
+              entry,
+              style: FlutterFlowTheme.of(context).bodyText1,
+              maxLines: lines,
+            ),
+          ),
+        ],
       ),
     );
   }

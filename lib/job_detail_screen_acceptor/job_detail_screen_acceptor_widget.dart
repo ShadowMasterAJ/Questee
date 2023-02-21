@@ -57,7 +57,6 @@ class _JobDetailScreenAcceptorWidgetState
                   );
                 }
                 List<JobRecord> columnJobRecordList = snapshot.data!;
-                print(columnJobRecordList);
 
                 // Return an empty Container when the document does not exist.
                 if (snapshot.data!.isEmpty) {
@@ -66,6 +65,8 @@ class _JobDetailScreenAcceptorWidgetState
                 final columnJobRecord = columnJobRecordList.isNotEmpty
                     ? columnJobRecordList[index]
                     : null;
+                print(
+                    "------------------------------Note: ${columnJobRecord!.note}");
                 return Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
@@ -218,7 +219,8 @@ class _JobDetailScreenAcceptorWidgetState
                                 padding: EdgeInsetsDirectional.fromSTEB(
                                     25, 20, 0, 0),
                                 child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   mainAxisSize: MainAxisSize.max,
                                   children: [
                                     Padding(
@@ -232,7 +234,9 @@ class _JobDetailScreenAcceptorWidgetState
                                       ),
                                     ),
                                     Text(
-                                      columnJobRecord.note!,
+                                      columnJobRecord.note!.length < 2
+                                          ? "Poster provided no description"
+                                          : columnJobRecord.note!,
                                       style: FlutterFlowTheme.of(context)
                                           .bodyText1,
                                     ),
@@ -249,6 +253,45 @@ class _JobDetailScreenAcceptorWidgetState
                       thickness: 1,
                       color: FlutterFlowTheme.of(context).grayIcon,
                     ),
+                    Padding(
+                      padding: EdgeInsetsDirectional.fromSTEB(0, 20, 0, 20),
+                      child: StreamBuilder<List<UsersRecord>>(
+                          stream: queryUsersRecord(
+                            singleRecord: false,
+                          ),
+                          builder: (context, snapshot) {
+                            // Customize what your widget looks like when it's loading.
+                            if (!snapshot.hasData) {
+                              return Center(
+                                child: SizedBox(
+                                  width: 50,
+                                  height: 50,
+                                  child: CircularProgressIndicator(
+                                    color: FlutterFlowTheme.of(context)
+                                        .primaryColor,
+                                  ),
+                                ),
+                              );
+                            }
+
+                            List<UsersRecord> poster = snapshot.data!
+                                .where((element) =>
+                                    element.uid.toString() ==
+                                    columnJobRecord.posterID!.id)
+                                .toList();
+
+                            return Text(
+                              poster.length > 0
+                                  ? "Posted by: ${poster[0].displayName.toString()}"
+                                  : "Error",
+                              style: FlutterFlowTheme.of(context).bodyText1,
+                            );
+                            // Text(
+                            //   columnJobRecord.posterID!.id,
+                            //   style: FlutterFlowTheme.of(context).bodyText1,
+                            // ),
+                          }),
+                    ),
                     Spacer(),
                     if (accepted)
                       Align(
@@ -257,7 +300,7 @@ class _JobDetailScreenAcceptorWidgetState
                           padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 10),
                           child: StreamBuilder<List<UsersRecord>>(
                             stream: queryUsersRecord(
-                              singleRecord: false,
+                              singleRecord: true,
                             ),
                             builder: (context, snapshot) {
                               // Customize what your widget looks like when it's loading.
@@ -273,7 +316,6 @@ class _JobDetailScreenAcceptorWidgetState
                                   ),
                                 );
                               }
-
                               //  List<JobRecord> columnJobRecordList = snapshot.data!;
 
                               // Return an empty Container when the document does not exist.

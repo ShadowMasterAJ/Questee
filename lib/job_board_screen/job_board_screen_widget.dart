@@ -350,7 +350,7 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
 
                                         if (listViewJobRecord.acceptorID !=
                                             null) {
-                                          print(listViewJobRecord.delLocation);
+                                          // print(listViewJobRecord.delLocation);
                                           return SizedBox.shrink();
                                         } else {
                                           return JobCard(
@@ -456,93 +456,79 @@ class JobCard extends StatelessWidget {
                 padding: EdgeInsetsDirectional.fromSTEB(7, 7, 7, 7),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  //TODO update with some specific image
-                  child: Image.network(
-                    'https://picsum.photos/seed/689/600',
+                  //TODO - update with some specific image
+                  child: Image.asset(
+                    "assets/images/app_launcher_icon.png",
                     width: 100,
                     height: 100,
-                    fit: BoxFit.cover,
+                    fit: BoxFit.fill,
                   ),
                 ),
               ),
-              Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
-                          child: Icon(
-                            Icons.shopping_cart,
-                            color: FlutterFlowTheme.of(context)
-                                .secondaryBackground,
-                            size: 24,
-                          ),
-                        ),
-                        Text(
-                          listViewJobRecord.store!,
-                          style: FlutterFlowTheme.of(context).bodyText1,
-                        ),
-                      ],
+              Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CardEntry(
+                      icon: Icons.shopping_cart,
+                      store: listViewJobRecord.store!,
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
-                          child: Icon(
-                            Icons.access_time,
-                            color: FlutterFlowTheme.of(context)
-                                .secondaryBackground,
-                            size: 24,
-                          ),
-                        ),
-                        Text(
-                          valueOrDefault<String>(
-                            dateTimeFormat('jm', listViewJobRecord.delTime),
-                            'ASAP',
-                          ),
-                          style: FlutterFlowTheme.of(context).bodyText1,
-                        ),
-                      ],
+                    CardEntry(
+                      icon: Icons.access_time,
+                      store: valueOrDefault<String>(
+                        dateTimeFormat('jm', listViewJobRecord.delTime),
+                        'ASAP',
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
-                          child: FaIcon(
-                            FontAwesomeIcons.moneyCheckDollar,
-                            color: FlutterFlowTheme.of(context)
-                                .secondaryBackground,
-                            size: 22,
-                          ),
-                        ),
-                        Text(
-                          listViewJobRecord.delLocation!,
-                          style: FlutterFlowTheme.of(context).bodyText1,
-                        ),
-                      ],
+                    CardEntry(
+                      icon: FontAwesomeIcons.locationArrow,
+                      store: listViewJobRecord.delLocation!,
+                      lines: 2,
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class CardEntry extends StatelessWidget {
+  const CardEntry(
+      {Key? key, required this.store, required this.icon, this.lines = 1})
+      : super(key: key);
+
+  final String store;
+  final IconData icon;
+  final int lines;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
+            child: Icon(
+              icon,
+              color: FlutterFlowTheme.of(context).secondaryBackground,
+              size: 24,
+            ),
+          ),
+          Flexible(
+            child: Text(
+              store,
+              style: FlutterFlowTheme.of(context).bodyText1,
+              maxLines: lines,
+            ),
+          ),
+        ],
       ),
     );
   }
