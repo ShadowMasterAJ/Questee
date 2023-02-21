@@ -114,10 +114,10 @@ class _CreateJobScreenWidgetState extends State<CreateJobScreenWidget> {
                             children: [jobStore(context), jobType(context)],
                           ),
                           DeliveryLocation(
-                              delLocationController:
-                                  delLocationController),
+                              delLocationController: delLocationController),
                           Padding(
-                            padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
+                            padding:
+                                EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
                             child: Row(
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -207,8 +207,6 @@ class _CreateJobScreenWidgetState extends State<CreateJobScreenWidget> {
         ),
       ),
     );
-
-
   }
 
   Expanded jobType(BuildContext context) {
@@ -465,7 +463,7 @@ class CreateTaskButton extends StatelessWidget {
               3.00,
             ),
             items: _items,
-            status: 'untaken',
+            status: 'open',
             delTime: datePicked,
             posterID: currentUserReference,
           );
