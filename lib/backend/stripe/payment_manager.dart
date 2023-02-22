@@ -301,7 +301,6 @@ Future<StripePaymentResponse> showWebPaymentSheet(
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: Colors.transparent,
-        content
         content: buildPaymentSheet(context, 420),
       ),
     );
