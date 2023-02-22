@@ -184,6 +184,7 @@ class _CreateJobScreenWidgetState extends State<CreateJobScreenWidget> {
               Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
                 child: AutoSizeText(
+                  // TODO: change time selection to actual calendar
                   valueOrDefault<String>(
                     dateTimeFormat('d/M H:mm', datePicked),
                     'Deadline',
