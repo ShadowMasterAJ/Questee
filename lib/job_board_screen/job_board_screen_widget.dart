@@ -48,6 +48,22 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
 
   @override
   Widget build(BuildContext context) {
+    // TODO: new idea - change the text input field to make it dynamic, so there is no need for the button in the first place. when one backspaces more entries will reappear etc all that
+    // queryJobRecordOnce()
+    //     .then(
+    //   (records) => _simpleSearchResults = TextSearch(
+    //     records
+    //         .map(
+    //           (record) =>
+    //               TextSearchItem(record, [record.store!, record.delLocation!]),
+    //         )
+    //         .toList(),
+    //   ).search("").map((r) => r.object).toList(),
+    // )
+    //     .onError((_, __) {
+    //   return _simpleSearchResults = [];
+    // }).whenComplete(() => setState(() {}));
+    // _updateSearchResults(_simpleSearchResults);
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: FlutterFlowTheme.of(context).primaryBackground,

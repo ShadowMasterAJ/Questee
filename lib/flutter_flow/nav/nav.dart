@@ -1,5 +1,7 @@
 import 'dart:async';
 
+// TODO : remove every aspect that is flutterflow
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:page_transition/page_transition.dart';
