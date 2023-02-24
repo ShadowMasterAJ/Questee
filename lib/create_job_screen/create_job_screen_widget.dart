@@ -452,7 +452,6 @@ class CreateTaskButton extends StatelessWidget {
         onPressed: () async {
           for (int i = 0; i < _controllers.length; i++) {
             _items.add(_controllers[i].text);
-            // print(_items[1]);
           }
           final jobCreateData = createJobRecordData(
             type: type,
@@ -468,8 +467,11 @@ class CreateTaskButton extends StatelessWidget {
             delTime: datePicked,
             posterID: currentUserReference,
           );
-          await JobRecord.collection.doc().set(jobCreateData);
-
+          // await JobRecord.collection.doc().set(jobCreateData);
+          final newDocRef = JobRecord.collection.doc();
+          await newDocRef.set(jobCreateData);
+          final jobId = newDocRef.id;
+          UsersRecord.addCurrJobsPosted(currentUserReference!.id, jobId);
           context.pushNamed('JobBoardScreen');
         },
         text: 'Create Task',

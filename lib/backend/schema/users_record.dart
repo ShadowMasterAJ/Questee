@@ -27,13 +27,25 @@ abstract class UsersRecord implements Built<UsersRecord, UsersRecordBuilder> {
   @BuiltValueField(wireName: 'phone_number')
   String? get phoneNumber;
 
-  @BuiltValueField(wireName: 'past_jobs')
-  BuiltList<DocumentReference>? get pastJobs;
+  // @BuiltValueField(wireName: 'past_jobs')
+  // BuiltList<DocumentReference>? get pastJobs;
+
+  @BuiltValueField(wireName: 'curr_jobs_accepted')
+  BuiltList<String>? get currJobsAccepted;
+
+  @BuiltValueField(wireName: 'curr_jobs_posted')
+  BuiltList<String>? get currJobsPosted;
+
+  @BuiltValueField(wireName: 'past_jobs_accepted')
+  BuiltList<String>? get pastJobsAccepted;
+
+  @BuiltValueField(wireName: 'past_jobs_posted')
+  BuiltList<String>? get pastJobsPosted;
 
   String? get gender;
 
-  @BuiltValueField(wireName: 'curr_jobs')
-  BuiltList<DocumentReference>? get currJobs;
+  // @BuiltValueField(wireName: 'curr_jobs')
+  // BuiltList<DocumentReference>? get currJobs;
 
   @BuiltValueField(wireName: kDocumentReferenceField)
   DocumentReference? get ffRef;
@@ -45,9 +57,11 @@ abstract class UsersRecord implements Built<UsersRecord, UsersRecordBuilder> {
     ..photoUrl = ''
     ..uid = ''
     ..phoneNumber = ''
-    ..pastJobs = ListBuilder()
+    ..pastJobsAccepted = ListBuilder()
+    ..pastJobsPosted = ListBuilder()
     ..gender = ''
-    ..currJobs = ListBuilder();
+    ..currJobsAccepted = ListBuilder()
+    ..currJobsPosted = ListBuilder();
 
   static CollectionReference get collection =>
       FirebaseFirestore.instance.collection('users');
@@ -68,6 +82,47 @@ abstract class UsersRecord implements Built<UsersRecord, UsersRecordBuilder> {
           Map<String, dynamic> data, DocumentReference reference) =>
       serializers.deserializeWith(serializer,
           {...mapFromFirestore(data), kDocumentReferenceField: reference})!;
+
+  static Future<void> addCurrJobsPosted(String userId, String jobId) async {
+    final userRef = FirebaseFirestore.instance.collection('users').doc(userId);
+
+    await userRef.update({
+      'currJobsPosted': FieldValue.arrayUnion([jobId])
+    });
+  }
+
+  static Future<void> addCurrJobsAccepted(String userId, String jobId) async {
+    final userRef = FirebaseFirestore.instance.collection('users').doc(userId);
+
+    await userRef.update({
+      'currJobsAccepted': FieldValue.arrayUnion([jobId])
+    });
+  }
+
+  static Future<void> sendToPastJobsPosted(String userId, String jobId) async {
+    final userRef = FirebaseFirestore.instance.collection('users').doc(userId);
+
+    await userRef.update({
+      'currJobsPosted': FieldValue.arrayRemove([jobId])
+    });
+
+    await userRef.update({
+      'pastJobsPosted': FieldValue.arrayUnion([jobId])
+    });
+  }
+
+  static Future<void> sendToPastJobsAccepted(
+      String userId, String jobId) async {
+    final userRef = FirebaseFirestore.instance.collection('users').doc(userId);
+
+    await userRef.update({
+      'currJobsAccepted': FieldValue.arrayRemove([jobId])
+    });
+
+    await userRef.update({
+      'pastJobsAccpted': FieldValue.arrayUnion([jobId])
+    });
+  }
 }
 
 Map<String, dynamic> createUsersRecordData({
@@ -77,23 +132,87 @@ Map<String, dynamic> createUsersRecordData({
   String? uid,
   DateTime? createdTime,
   String? phoneNumber,
+  List<String>? currJobsPosted,
+  List<String>? currJobsAccepted,
+  List<String>? pastJobsPosted,
+  List<String>? pastJobsAccepted,
   String? gender,
 }) {
-  final firestoreData = serializers.toFirestore(
-    UsersRecord.serializer,
-    UsersRecord(
-      (u) => u
-        ..email = email
-        ..displayName = displayName
-        ..photoUrl = photoUrl
-        ..uid = uid
-        ..createdTime = createdTime
-        ..phoneNumber = phoneNumber
-        ..pastJobs = null
-        ..gender = gender
-        ..currJobs = null,
-    ),
-  );
+  final firestoreData =
+      serializers.toFirestore(UsersRecord.serializer, UsersRecord((u) {
+    u
+      ..email = email
+      ..displayName = displayName
+      ..photoUrl = photoUrl
+      ..uid = uid
+      ..createdTime = createdTime
+      ..phoneNumber = phoneNumber
+      ..gender = gender;
+
+    var s = currJobsPosted;
+    var t = currJobsAccepted;
+    var w = pastJobsPosted;
+    var v = pastJobsAccepted;
+
+    int len;
+    if (s != null) {
+      len = s.length; // Safe
+    } else {
+      len = 0;
+    }
+    for (int i = 0; i < len; i++) {
+      u.currJobsPosted.add(currJobsPosted![i]);
+    }
+
+    int len1;
+    if (t != null) {
+      len1 = t.length; // Safe
+    } else {
+      len1 = 0;
+    }
+    for (int i = 0; i < len1; i++) {
+      u.currJobsPosted.add(currJobsAccepted![i]);
+    }
+
+    int len2;
+    if (w != null) {
+      len2 = w.length; // Safe
+    } else {
+      len2 = 0;
+    }
+    for (int i = 0; i < len2; i++) {
+      u.currJobsPosted.add(pastJobsPosted![i]);
+    }
+
+    int len3;
+    if (v != null) {
+      len3 = v.length; // Safe
+    } else {
+      len3 = 0;
+    }
+    for (int i = 0; i < len3; i++) {
+      u.currJobsPosted.add(pastJobsAccepted![i]);
+    }
+  }));
 
   return firestoreData;
 }
+
+
+// Future<void> addCurrJobsAccepted(String userId, DocumentReference? jobId) async {
+//   final userRef = FirebaseFirestore.instance.collection('users').doc(userId);
+
+//   await userRef.update(updatedData); // TODO: update to jobsacceptedlist
+// }
+
+// Future<void> addPastJobsPosted(String userId, Map<String, dynamic> jobId) async {
+//   final userRef = FirebaseFirestore.instance.collection('users').doc(userId);
+
+//   await userRef.update(updatedData); // TODO: update to jobsacceptedlist
+// }
+
+// Future<void> addPastJobsPosted(String userId, Map<String, dynamic> jobId) async {
+//   final userRef = FirebaseFirestore.instance.collection('users').doc(userId);
+
+//   await userRef.update(updatedData); // TODO: update to jobsacceptedlist
+// }

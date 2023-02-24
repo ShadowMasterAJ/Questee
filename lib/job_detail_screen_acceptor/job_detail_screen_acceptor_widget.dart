@@ -303,6 +303,13 @@ class _JobDetailScreenAcceptorWidgetState
                               singleRecord: true,
                             ),
                             builder: (context, snapshot) {
+                              /// TODO: modify jobrecord accept button to add to user jobsaccepted list
+
+                              // final newDocRef = JobRecord.collection.doc();
+                              // await newDocRef.set(jobCreateData);
+                              // final jobId = newDocRef.id;
+                              // UsersRecord.addCurrJobsAccepted(currentUserReference!.id, jobId);
+
                               // Customize what your widget looks like when it's loading.
                               if (!snapshot.hasData) {
                                 return Center(

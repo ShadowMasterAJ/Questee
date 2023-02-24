@@ -61,10 +61,20 @@ class _$UsersRecordSerializer implements StructuredSerializer<UsersRecord> {
         ..add(serializers.serialize(value,
             specifiedType: const FullType(String)));
     }
-    value = object.pastJobs;
+    value = object.pastJobsAccepted;
     if (value != null) {
       result
-        ..add('past_jobs')
+        ..add('past_jobs_accepted')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(BuiltList, const [
+              const FullType(
+                  DocumentReference, const [const FullType.nullable(Object)])
+            ])));
+    }
+    value = object.pastJobsPosted;
+    if (value != null) {
+      result
+        ..add('past_jobs_posted')
         ..add(serializers.serialize(value,
             specifiedType: const FullType(BuiltList, const [
               const FullType(
@@ -78,10 +88,20 @@ class _$UsersRecordSerializer implements StructuredSerializer<UsersRecord> {
         ..add(serializers.serialize(value,
             specifiedType: const FullType(String)));
     }
-    value = object.currJobs;
+    value = object.currJobsAccepted;
     if (value != null) {
       result
-        ..add('curr_jobs')
+        ..add('curr_jobs_accepted')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(BuiltList, const [
+              const FullType(
+                  DocumentReference, const [const FullType.nullable(Object)])
+            ])));
+    }
+    value = object.currJobsPosted;
+    if (value != null) {
+      result
+        ..add('curr_jobs_posted')
         ..add(serializers.serialize(value,
             specifiedType: const FullType(BuiltList, const [
               const FullType(
@@ -134,8 +154,15 @@ class _$UsersRecordSerializer implements StructuredSerializer<UsersRecord> {
           result.phoneNumber = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String?;
           break;
-        case 'past_jobs':
-          result.pastJobs.replace(serializers.deserialize(value,
+        case 'past_jobs_accepted':
+          result.pastJobsAccepted.replace(serializers.deserialize(value,
+              specifiedType: const FullType(BuiltList, const [
+                const FullType(
+                    DocumentReference, const [const FullType.nullable(Object)])
+              ]))! as BuiltList<Object?>);
+          break;
+        case 'past_jobs_posted':
+          result.pastJobsPosted.replace(serializers.deserialize(value,
               specifiedType: const FullType(BuiltList, const [
                 const FullType(
                     DocumentReference, const [const FullType.nullable(Object)])
@@ -145,8 +172,15 @@ class _$UsersRecordSerializer implements StructuredSerializer<UsersRecord> {
           result.gender = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String?;
           break;
-        case 'curr_jobs':
-          result.currJobs.replace(serializers.deserialize(value,
+        case 'curr_jobs_accepted':
+          result.currJobsAccepted.replace(serializers.deserialize(value,
+              specifiedType: const FullType(BuiltList, const [
+                const FullType(
+                    DocumentReference, const [const FullType.nullable(Object)])
+              ]))! as BuiltList<Object?>);
+          break;
+        case 'curr_jobs_posted':
+          result.currJobsPosted.replace(serializers.deserialize(value,
               specifiedType: const FullType(BuiltList, const [
                 const FullType(
                     DocumentReference, const [const FullType.nullable(Object)])
@@ -179,11 +213,15 @@ class _$UsersRecord extends UsersRecord {
   @override
   final String? phoneNumber;
   @override
-  final BuiltList<DocumentReference<Object?>>? pastJobs;
+  final BuiltList<String>? pastJobsAccepted;
+  @override
+  final BuiltList<String>? pastJobsPosted;
   @override
   final String? gender;
   @override
-  final BuiltList<DocumentReference<Object?>>? currJobs;
+  final BuiltList<String>? currJobsAccepted;
+  @override
+  final BuiltList<String>? currJobsPosted;
   @override
   final DocumentReference<Object?>? ffRef;
 
@@ -197,9 +235,11 @@ class _$UsersRecord extends UsersRecord {
       this.uid,
       this.createdTime,
       this.phoneNumber,
-      this.pastJobs,
+      this.pastJobsAccepted,
+      this.pastJobsPosted,
       this.gender,
-      this.currJobs,
+      this.currJobsAccepted,
+      this.currJobsPosted,
       this.ffRef})
       : super._();
 
@@ -220,9 +260,11 @@ class _$UsersRecord extends UsersRecord {
         uid == other.uid &&
         createdTime == other.createdTime &&
         phoneNumber == other.phoneNumber &&
-        pastJobs == other.pastJobs &&
+        pastJobsAccepted == other.pastJobsAccepted &&
+        pastJobsPosted == other.pastJobsPosted &&
         gender == other.gender &&
-        currJobs == other.currJobs &&
+        currJobsAccepted == other.currJobsAccepted &&
+        currJobsPosted == other.currJobsPosted &&
         ffRef == other.ffRef;
   }
 
@@ -236,15 +278,19 @@ class _$UsersRecord extends UsersRecord {
                         $jc(
                             $jc(
                                 $jc(
-                                    $jc($jc(0, email.hashCode),
-                                        displayName.hashCode),
-                                    photoUrl.hashCode),
-                                uid.hashCode),
-                            createdTime.hashCode),
-                        phoneNumber.hashCode),
-                    pastJobs.hashCode),
-                gender.hashCode),
-            currJobs.hashCode),
+                                    $jc(
+                                        $jc(
+                                            $jc($jc(0, email.hashCode),
+                                                displayName.hashCode),
+                                            photoUrl.hashCode),
+                                        uid.hashCode),
+                                    createdTime.hashCode),
+                                phoneNumber.hashCode),
+                            pastJobsAccepted.hashCode),
+                        pastJobsPosted.hashCode),
+                    gender.hashCode),
+                currJobsAccepted.hashCode),
+            currJobsPosted.hashCode),
         ffRef.hashCode));
   }
 
@@ -257,9 +303,11 @@ class _$UsersRecord extends UsersRecord {
           ..add('uid', uid)
           ..add('createdTime', createdTime)
           ..add('phoneNumber', phoneNumber)
-          ..add('pastJobs', pastJobs)
+          ..add('pastJobsAccepted', pastJobsAccepted)
+          ..add('pastJobsPosted', pastJobsPosted)
           ..add('gender', gender)
-          ..add('currJobs', currJobs)
+          ..add('currJobsAccepted', currJobsAccepted)
+          ..add('currJobsPosted', currJobsPosted)
           ..add('ffRef', ffRef))
         .toString();
   }
@@ -292,21 +340,33 @@ class UsersRecordBuilder implements Builder<UsersRecord, UsersRecordBuilder> {
   String? get phoneNumber => _$this._phoneNumber;
   set phoneNumber(String? phoneNumber) => _$this._phoneNumber = phoneNumber;
 
-  ListBuilder<DocumentReference<Object?>>? _pastJobs;
-  ListBuilder<DocumentReference<Object?>> get pastJobs =>
-      _$this._pastJobs ??= new ListBuilder<DocumentReference<Object?>>();
-  set pastJobs(ListBuilder<DocumentReference<Object?>>? pastJobs) =>
-      _$this._pastJobs = pastJobs;
+  ListBuilder<String>? _pastJobsAccepted;
+  ListBuilder<String> get pastJobsAccepted =>
+      _$this._pastJobsAccepted ??= new ListBuilder<String>();
+  set pastJobsAccepted(ListBuilder<String>? pastJobsAccepted) =>
+      _$this._pastJobsAccepted = pastJobsAccepted;
+
+  ListBuilder<String>? _pastJobsPosted;
+  ListBuilder<String> get pastJobsPosted =>
+      _$this._pastJobsPosted ??= new ListBuilder<String>();
+  set pastJobsPosted(ListBuilder<String>? pastJobsPosted) =>
+      _$this._pastJobsPosted = pastJobsPosted;
 
   String? _gender;
   String? get gender => _$this._gender;
   set gender(String? gender) => _$this._gender = gender;
 
-  ListBuilder<DocumentReference<Object?>>? _currJobs;
-  ListBuilder<DocumentReference<Object?>> get currJobs =>
-      _$this._currJobs ??= new ListBuilder<DocumentReference<Object?>>();
-  set currJobs(ListBuilder<DocumentReference<Object?>>? currJobs) =>
-      _$this._currJobs = currJobs;
+  ListBuilder<String>? _currJobsAccepted;
+  ListBuilder<String> get currJobsAccepted =>
+      _$this._currJobsAccepted ??= new ListBuilder<String>();
+  set currJobsAccepted(ListBuilder<String>? currJobsAccepted) =>
+      _$this._currJobsAccepted = currJobsAccepted;
+
+  ListBuilder<String>? _currJobsPosted;
+  ListBuilder<String> get currJobsPosted =>
+      _$this._currJobsPosted ??= new ListBuilder<String>();
+  set currJobsPosted(ListBuilder<String>? currJobsPosted) =>
+      _$this._currJobsPosted = currJobsPosted;
 
   DocumentReference<Object?>? _ffRef;
   DocumentReference<Object?>? get ffRef => _$this._ffRef;
@@ -325,9 +385,11 @@ class UsersRecordBuilder implements Builder<UsersRecord, UsersRecordBuilder> {
       _uid = $v.uid;
       _createdTime = $v.createdTime;
       _phoneNumber = $v.phoneNumber;
-      _pastJobs = $v.pastJobs?.toBuilder();
+      _pastJobsAccepted = $v.pastJobsAccepted?.toBuilder();
+      _pastJobsPosted = $v.pastJobsPosted?.toBuilder();
       _gender = $v.gender;
-      _currJobs = $v.currJobs?.toBuilder();
+      _currJobsAccepted = $v.currJobsAccepted?.toBuilder();
+      _currJobsPosted = $v.currJobsPosted?.toBuilder();
       _ffRef = $v.ffRef;
       _$v = null;
     }
@@ -359,18 +421,26 @@ class UsersRecordBuilder implements Builder<UsersRecord, UsersRecordBuilder> {
               uid: uid,
               createdTime: createdTime,
               phoneNumber: phoneNumber,
-              pastJobs: _pastJobs?.build(),
+              pastJobsAccepted: _pastJobsAccepted?.build(),
+              pastJobsPosted: _pastJobsPosted?.build(),
               gender: gender,
-              currJobs: _currJobs?.build(),
+              currJobsAccepted: _currJobsAccepted?.build(),
+              currJobsPosted: _currJobsPosted?.build(),
               ffRef: ffRef);
     } catch (_) {
       late String _$failedField;
       try {
-        _$failedField = 'pastJobs';
-        _pastJobs?.build();
+        _$failedField = 'pastJobsAccepted';
+        _pastJobsAccepted?.build();
 
-        _$failedField = 'currJobs';
-        _currJobs?.build();
+        _$failedField = 'pastJobsPosted';
+        _pastJobsPosted?.build();
+
+        _$failedField = 'currJobsAccepted';
+        _currJobsAccepted?.build();
+
+        _$failedField = 'currJobsPosted';
+        _currJobsPosted?.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             r'UsersRecord', _$failedField, e.toString());
