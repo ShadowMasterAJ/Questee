@@ -1,11 +1,10 @@
-// import '../backend/backend.dart';
+// import 'package:flutter/material.dart';
+// import 'package:google_fonts/google_fonts.dart';
+// import 'package:provider/provider.dart';
+
 // import '../flutter_flow/chat/index.dart';
 // import '../flutter_flow/flutter_flow_icon_button.dart';
 // import '../flutter_flow/flutter_flow_theme.dart';
-// import '../flutter_flow/flutter_flow_util.dart';
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:flutter/material.dart';
-// import 'package:google_fonts/google_fonts.dart';
 
 // class ChatScreenWidget extends StatefulWidget {
 //   const ChatScreenWidget({
@@ -52,7 +51,8 @@
 
 //   @override
 //   Widget build(BuildContext context) {
-//     late Stream<QuerySnapshot> _stream;
+//     context.watch<FFAppState>();
+
 //     return StreamBuilder<List<UsersRecord>>(
 //       stream: queryUsersRecord(
 //         singleRecord: true,
@@ -193,6 +193,7 @@
 //     );
 //   }
 // }
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -213,7 +214,7 @@ class _ChatScreenWidgetState extends State<ChatScreenWidget> {
   final CollectionReference _chatRef =
       FirebaseFirestore.instance.collection('chat');
   late Query _messageQuery;
-
+  late String _userType;
   @override
   void initState() {
     super.initState();
@@ -221,86 +222,96 @@ class _ChatScreenWidgetState extends State<ChatScreenWidget> {
         .where('jobID', isEqualTo: widget.jobRef)
         .orderBy('timestamp', descending: true)
         .limit(50);
+
+    // _chatRef.where('senderID', isEqualTo: currentUserUid).toString();
+    print('-----------------------------');
+    print("Chatref:${_chatRef.where('jobID', isEqualTo: widget.jobRef)}");
+    print(_userType.toString());
+    print("Current userid ${currentUserUid.toString()}");
+    print('-----------------------------');
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Chat'),
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: StreamBuilder<QuerySnapshot>(
-              stream: _messageQuery.snapshots(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return ClipRRect(
-                    child: Image.asset(
-                      'assets/images/messagesEmpty@2x.png',
-                      width: MediaQuery.of(context).size.width * 0.76,
-                    ),
-                  );
-                }
-                List<QueryDocumentSnapshot> docs = snapshot.data!.docs;
-                print("--------------------------\nSome docs:$docs");
-                return ListView.builder(
-                  controller: _scrollController,
-                  reverse: true,
-                  itemCount: docs.length,
-                  itemBuilder: (context, index) {
-                    Map<String, dynamic>? data =
-                        docs[index].data() as Map<String, dynamic>?;
-                    return ListTile(
-                      title: Text(data!['text']),
-                      subtitle: Text(data['senderID'].id),
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Chat'),
+        ),
+        body: Column(
+          children: [
+            Expanded(
+              child: StreamBuilder<QuerySnapshot>(
+                stream: _messageQuery.snapshots(),
+                builder: (context, snapshot) {
+                  print("Snapshot: $snapshot");
+                  if (!snapshot.hasData) {
+                    return ClipRRect(
+                      child: Image.asset(
+                        'assets/images/messagesEmpty@2x.png',
+                        width: MediaQuery.of(context).size.width * 0.76,
+                      ),
                     );
-                  },
-                );
-              },
+                  }
+                  List<QueryDocumentSnapshot> docs = snapshot.data!.docs;
+
+                  return ListView.builder(
+                    controller: _scrollController,
+                    reverse: true,
+                    itemCount: docs.length,
+                    itemBuilder: (context, index) {
+                      Map<String, dynamic>? data =
+                          docs[index].data() as Map<String, dynamic>?;
+                      return ListTile(
+                        title: Text(data!['text']),
+                        subtitle: Text(data['senderID'].id),
+                      );
+                    },
+                  );
+                },
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _textEditingController,
-                    decoration: InputDecoration(
-                      hintText: 'Enter message',
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _textEditingController,
+                      decoration: InputDecoration(
+                        hintText: 'Enter message',
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  width: 8.0,
-                ),
-                ElevatedButton(
-                  child: Text('Send'),
-                  onPressed: () async {
-                    String text = _textEditingController.text;
-                    if (text.isEmpty) {
-                      return;
-                    }
-                    DocumentReference messageRef =
-                        await _chatRef.doc().collection('messages').add({
-                      'senderID': FirebaseFirestore.instance
-                          .doc('users/${currentUserReference!.id}'),
-                      'text': text,
-                      'timestamp': DateTime.now(),
-                      'jobID': widget.jobRef,
-                    });
-                    _textEditingController.clear();
-                    _scrollController.animateTo(0.0,
-                        duration: Duration(milliseconds: 300),
-                        curve: Curves.easeOut);
-                  },
-                ),
-              ],
+                  SizedBox(
+                    width: 8.0,
+                  ),
+                  ElevatedButton(
+                    child: Text('Send'),
+                    onPressed: () async {
+                      String text = _textEditingController.text;
+                      if (text.isEmpty) {
+                        return;
+                      }
+                      DocumentReference messageRef =
+                          await _chatRef.doc().collection('messages').add({
+                        'senderID': FirebaseFirestore.instance
+                            .doc('users/${currentUserReference!.id}'),
+                        'text': text,
+                        'timestamp': DateTime.now(),
+                        'jobID': widget.jobRef,
+                      });
+                      _textEditingController.clear();
+                      _scrollController.animateTo(0.0,
+                          duration: Duration(milliseconds: 300),
+                          curve: Curves.easeOut);
+                    },
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

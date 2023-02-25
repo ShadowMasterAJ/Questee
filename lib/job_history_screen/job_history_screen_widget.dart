@@ -195,7 +195,7 @@ class CurrentJobsPosted extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
       child: StreamBuilder<List<JobRecord>>(
-        stream: queryJobRecord(limit: 3),
+        stream: queryJobRecord(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
@@ -218,8 +218,6 @@ class CurrentJobsPosted extends StatelessWidget {
                       jobRecord.posterID?.id == currentUserUid)
                   .toList() ??
               [];
-
-          print("Current Length: ${listViewJobRecordList.length}");
 
           if (listViewJobRecordList.isEmpty) {
             return NoJobPlaceholder();
@@ -311,7 +309,7 @@ class CurrentJobsAccepted extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
       child: StreamBuilder<List<JobRecord>>(
-        stream: queryJobRecord(limit: 3),
+        stream: queryJobRecord(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
@@ -334,9 +332,7 @@ class CurrentJobsAccepted extends StatelessWidget {
                       jobRecord.acceptorID?.id == currentUserUid)
                   .toList() ??
               [];
-
-          print("Current Length: ${listViewJobRecordList.length}");
-
+          print("JobsAcceped: $listViewJobRecordList");
           if (listViewJobRecordList.isEmpty) {
             return NoJobPlaceholder();
           }
