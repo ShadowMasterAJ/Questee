@@ -29,6 +29,8 @@ class _JobHistoryScreenWidgetState extends State<JobHistoryScreenWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final userRef =
+        FirebaseFirestore.instance.collection('users').doc('userId');
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -158,6 +160,7 @@ class PastJobsPosted extends StatelessWidget {
           final allJobRecords = snapshot.data ?? [];
 
           // Filter the job records to only show completed jobs for the current user
+          // TODO: replace with getting from pastJobsPosted list
           final filteredJobRecords = allJobRecords
               .where((jobRecord) =>
                   jobRecord.status == 'completed' &&
@@ -192,6 +195,8 @@ class CurrentJobsPosted extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // final lst = currentUserReference!.getDocument()
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
       child: StreamBuilder<List<JobRecord>>(
@@ -211,30 +216,81 @@ class CurrentJobsPosted extends StatelessWidget {
             );
           }
 
-          final listViewJobRecordList = snapshot.data
-                  ?.where((jobRecord) =>
-                      (jobRecord.status == 'open' ||
-                          jobRecord.status == 'ongoing') &&
-                      jobRecord.posterID?.id == currentUserUid)
-                  .toList() ??
-              [];
+          // TODO: change to read from currJobsPosted # DC TP HERE
 
-          print("Current Length: ${listViewJobRecordList.length}");
+          List<dynamic> currJobsPosted = [];
 
-          if (listViewJobRecordList.isEmpty) {
-            return NoJobPlaceholder();
-          }
+          currentUserReference?.get().then((DocumentSnapshot documentSnapshot) {
+            if (documentSnapshot.exists) {
+              Map<String, dynamic> data =
+                  documentSnapshot.data() as Map<String, dynamic>;
+              currJobsPosted.add(data['curr_jobs_posted'][0]);
+              print("Current Length: ${currJobsPosted.length}");
+              print(currJobsPosted);
+            } else {
+              print('User does not exist in Firestore');
+            }
+          }).catchError((error) {
+            currJobsPosted = [];
+          });
+
+          print("Current Length: ${currJobsPosted.length}");
+
+          print(currJobsPosted);
+          print("?");
+          // if (currJobsPosted.isEmpty) {
+          //   print("isEmpty");
+          //   return NoJobPlaceholder();
+          // }
+          print("here");
+
+          // final allJobRecords = snapshot.data ?? [];
 
           return ListView.builder(
             primary: false,
             shrinkWrap: true,
             scrollDirection: Axis.vertical,
-            itemCount: listViewJobRecordList.length,
+            itemCount: currJobsPosted.length,
             itemBuilder: (context, i) {
-              final listViewJobRecord = listViewJobRecordList[i];
+              print("errror");
+              final listViewJobRecord = currJobsPosted[i];
               return JobCard(index: i, jobRecord: listViewJobRecord);
             },
           );
+
+          // return FutureBuilder<List<JobRecord>>(
+          //   future: Future.wait(currJobsPosted.map((refString) =>
+          //       JobRecord.getDocumentOnce(
+          //           FirebaseFirestore.instance.doc(refString)))),
+          //   builder: (context, snapshot) {
+          //     print("here");
+          //     if (snapshot.connectionState == ConnectionState.waiting) {
+          //       return Center(child: CircularProgressIndicator());
+          //     } else if (snapshot.hasError) {
+          //       return Text('Error: ${snapshot.error}');
+          //     } else {
+          //       final jobRecords = snapshot.data!;
+          //       // return ListView.builder(
+          //       //   primary: false,
+          //       //   shrinkWrap: true,
+          //       //   scrollDirection: Axis.vertical,
+          //       //   itemCount: jobRecords.length,
+          //       //   itemBuilder: (context, i) {
+          //       //     return JobCard(index: i, jobRecord: jobRecords[i]);
+          //       //   },
+          //       return ListView.builder(
+          //         primary: false,
+          //         shrinkWrap: true,
+          //         scrollDirection: Axis.vertical,
+          //         itemCount: jobRecords.length,
+          //         itemBuilder: (context, i) {
+          //           print(jobRecords[i]);
+          //           return JobCard(index: i, jobRecord: jobRecords[i]);
+          //         },
+          //       );
+          //     }
+          //   },
+          // );
         },
       ),
     );
@@ -274,6 +330,7 @@ class PastJobsAccepted extends StatelessWidget {
           final allJobRecords = snapshot.data ?? [];
 
           // Filter the job records to only show completed jobs for the current user
+          // TODO: change to read from pastJobsAccepted/Posted
           final filteredJobRecords = allJobRecords
               .where((jobRecord) =>
                   jobRecord.status == 'completed' &&
@@ -326,6 +383,7 @@ class CurrentJobsAccepted extends StatelessWidget {
               child: Text('An error occurred. Please try again later.'),
             );
           }
+          // TODO: change to read from currJobsAccepted
 
           final listViewJobRecordList = snapshot.data
                   ?.where((jobRecord) =>

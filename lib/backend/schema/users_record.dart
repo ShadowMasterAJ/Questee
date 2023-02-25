@@ -87,7 +87,7 @@ abstract class UsersRecord implements Built<UsersRecord, UsersRecordBuilder> {
     final userRef = FirebaseFirestore.instance.collection('users').doc(userId);
 
     await userRef.update({
-      'currJobsPosted': FieldValue.arrayUnion([jobId])
+      'curr_jobs_posted': FieldValue.arrayUnion([jobId])
     });
   }
 
@@ -95,7 +95,7 @@ abstract class UsersRecord implements Built<UsersRecord, UsersRecordBuilder> {
     final userRef = FirebaseFirestore.instance.collection('users').doc(userId);
 
     await userRef.update({
-      'currJobsAccepted': FieldValue.arrayUnion([jobId])
+      'curr_jobs_accepted': FieldValue.arrayUnion([jobId])
     });
   }
 
@@ -103,11 +103,11 @@ abstract class UsersRecord implements Built<UsersRecord, UsersRecordBuilder> {
     final userRef = FirebaseFirestore.instance.collection('users').doc(userId);
 
     await userRef.update({
-      'currJobsPosted': FieldValue.arrayRemove([jobId])
+      'curr_jobs_posted': FieldValue.arrayRemove([jobId])
     });
 
     await userRef.update({
-      'pastJobsPosted': FieldValue.arrayUnion([jobId])
+      'past_jobs_posted': FieldValue.arrayUnion([jobId])
     });
   }
 
@@ -116,13 +116,20 @@ abstract class UsersRecord implements Built<UsersRecord, UsersRecordBuilder> {
     final userRef = FirebaseFirestore.instance.collection('users').doc(userId);
 
     await userRef.update({
-      'currJobsAccepted': FieldValue.arrayRemove([jobId])
+      'curr_jobs_accepted': FieldValue.arrayRemove([jobId])
     });
 
     await userRef.update({
-      'pastJobsAccpted': FieldValue.arrayUnion([jobId])
+      'past_jobs_accpted': FieldValue.arrayUnion([jobId])
     });
   }
+
+  // factory UsersRecord.fromSnapshot(DocumentSnapshot snapshot) {
+  //   return UsersRecord(
+  //     uid: snapshot.uid,
+  //     currJobsPosted: List<String>.from(snapshot.data()?['currJobsPosted'] ?? []),
+  //   );
+  // }
 }
 
 Map<String, dynamic> createUsersRecordData({
@@ -197,22 +204,3 @@ Map<String, dynamic> createUsersRecordData({
 
   return firestoreData;
 }
-
-
-// Future<void> addCurrJobsAccepted(String userId, DocumentReference? jobId) async {
-//   final userRef = FirebaseFirestore.instance.collection('users').doc(userId);
-
-//   await userRef.update(updatedData); // TODO: update to jobsacceptedlist
-// }
-
-// Future<void> addPastJobsPosted(String userId, Map<String, dynamic> jobId) async {
-//   final userRef = FirebaseFirestore.instance.collection('users').doc(userId);
-
-//   await userRef.update(updatedData); // TODO: update to jobsacceptedlist
-// }
-
-// Future<void> addPastJobsPosted(String userId, Map<String, dynamic> jobId) async {
-//   final userRef = FirebaseFirestore.instance.collection('users').doc(userId);
-
-//   await userRef.update(updatedData); // TODO: update to jobsacceptedlist
-// }
