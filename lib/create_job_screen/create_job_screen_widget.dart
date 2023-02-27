@@ -468,10 +468,10 @@ class CreateTaskButton extends StatelessWidget {
             posterID: currentUserReference,
           );
           // await JobRecord.collection.doc().set(jobCreateData);
-          final newDocRef = JobRecord.collection.doc();
-          await newDocRef.set(jobCreateData);
-          final jobId = newDocRef.id;
-          UsersRecord.addCurrJobsPosted(currentUserReference!.id, jobId);
+          final newJobRef = JobRecord.collection.doc();
+          await newJobRef.set(jobCreateData);
+          // final jobId = '/job/' + newDocRef.id;
+          UsersRecord.addCurrJobsPosted(currentUserReference!.id, newJobRef);
           context.pushNamed('JobBoardScreen');
         },
         text: 'Create Task',
