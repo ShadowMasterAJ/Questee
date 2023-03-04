@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import '../backend/backend.dart';
 import '../components/AmountBottomSheet.dart';
 import '../flutter_flow/flutter_flow_checkbox_group.dart';
@@ -5,10 +7,6 @@ import '../flutter_flow/flutter_flow_icon_button.dart';
 import '../flutter_flow/flutter_flow_theme.dart';
 import '../flutter_flow/flutter_flow_util.dart';
 import '../flutter_flow/flutter_flow_widgets.dart';
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class JobDetailScreenPosterWidget extends StatefulWidget {
   final String indexStr;
@@ -122,13 +120,13 @@ class _JobDetailScreenPosterWidgetState
                         onPressed: () {
                           print('Button pressed ...');
                         },
-                        text: columnJobRecord!.acceptorID != null
+                        text: columnJobRecord.acceptorID != null
                             ? 'Your job has been Accepted!'
                             : 'Your job is pending acceptance.',
                         options: FFButtonOptions(
                           width: 300,
                           height: 40,
-                          color: columnJobRecord!.acceptorID != null
+                          color: columnJobRecord.acceptorID != null
                               ? Color(0xFF80D3A2)
                               : FlutterFlowTheme.of(context).secondaryText,
                           textStyle:
@@ -163,7 +161,7 @@ class _JobDetailScreenPosterWidgetState
                                         padding: EdgeInsetsDirectional.fromSTEB(
                                             20, 0, 0, 0),
                                         child: FlutterFlowCheckboxGroup(
-                                          options: columnJobRecord!.items!
+                                          options: columnJobRecord.items!
                                               .toList(), // HI DC REFER TO HERE
                                           onChanged: (val) => setState(
                                               () => checkboxGroupValues = val),
@@ -403,7 +401,6 @@ class _JobDetailScreenPosterWidgetState
                                           },
                                         ).then((value) => setState(() {}));
                                       } else {
-                                        return;
                                       }
                                     },
                                     text: 'Verify',
@@ -411,7 +408,7 @@ class _JobDetailScreenPosterWidgetState
                                       width: 150,
                                       height: 50,
                                       color: valueOrDefault<Color>(
-                                        columnJobRecord!.acceptorID != null
+                                        columnJobRecord.acceptorID != null
                                             ? Color(0xFF80D3A2)
                                             : FlutterFlowTheme.of(context)
                                                 .secondaryText,

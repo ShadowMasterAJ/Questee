@@ -248,7 +248,9 @@ class _SignupScreenWidgetState extends State<SignupScreenWidget> {
                                   if (val == null || val.isEmpty) {
                                     return 'Field is required';
                                   }
-
+                                  if (val.contains('cock')) {
+                                    return "No cocks pls";
+                                  }
                                   if (!RegExp(kTextValidatorEmailRegex)
                                       .hasMatch(val)) {
                                     return 'Has to be a valid email address.';
@@ -404,16 +406,16 @@ class _SignupScreenWidgetState extends State<SignupScreenWidget> {
                                 ),
                                 errorBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                    color: FlutterFlowTheme.of(context)
-                                        .alternate,
+                                    color:
+                                        FlutterFlowTheme.of(context).alternate,
                                     width: 0.5,
                                   ),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 focusedErrorBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                    color: FlutterFlowTheme.of(context)
-                                        .alternate,
+                                    color:
+                                        FlutterFlowTheme.of(context).alternate,
                                     width: 0.5,
                                   ),
                                   borderRadius: BorderRadius.circular(8),
@@ -421,9 +423,8 @@ class _SignupScreenWidgetState extends State<SignupScreenWidget> {
                                 filled: true,
                                 fillColor: FlutterFlowTheme.of(context)
                                     .secondaryBackground,
-                                contentPadding:
-                                    EdgeInsetsDirectional.fromSTEB(
-                                        20, 24, 0, 24),
+                                contentPadding: EdgeInsetsDirectional.fromSTEB(
+                                    20, 24, 0, 24),
                                 suffixIcon: InkWell(
                                   onTap: () => setState(
                                     () => userCfmPasswordVisibility =

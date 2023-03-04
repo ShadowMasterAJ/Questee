@@ -213,15 +213,15 @@ class _$UsersRecord extends UsersRecord {
   @override
   final String? phoneNumber;
   @override
-  final BuiltList<DocumentReference?>? pastJobsAccepted;
+  final BuiltList<DocumentReference>? pastJobsAccepted;
   @override
-  final BuiltList<DocumentReference?>? pastJobsPosted;
+  final BuiltList<DocumentReference>? pastJobsPosted;
   @override
   final String? gender;
   @override
-  final BuiltList<DocumentReference?>? currJobsAccepted;
+  final BuiltList<DocumentReference>? currJobsAccepted;
   @override
-  final BuiltList<DocumentReference?>? currJobsPosted;
+  final BuiltList<DocumentReference>? currJobsPosted;
   @override
   final DocumentReference<Object?>? ffRef;
 
@@ -340,32 +340,32 @@ class UsersRecordBuilder implements Builder<UsersRecord, UsersRecordBuilder> {
   String? get phoneNumber => _$this._phoneNumber;
   set phoneNumber(String? phoneNumber) => _$this._phoneNumber = phoneNumber;
 
-  ListBuilder<DocumentReference?>? _pastJobsAccepted;
-  ListBuilder<DocumentReference?> get pastJobsAccepted =>
-      _$this._pastJobsAccepted ??= new ListBuilder<DocumentReference?>();
-  set pastJobsAccepted(ListBuilder<DocumentReference?>? pastJobsAccepted) =>
+  ListBuilder<DocumentReference>? _pastJobsAccepted;
+  ListBuilder<DocumentReference> get pastJobsAccepted =>
+      _$this._pastJobsAccepted ??= new ListBuilder<DocumentReference>();
+  set pastJobsAccepted(ListBuilder<DocumentReference>? pastJobsAccepted) =>
       _$this._pastJobsAccepted = pastJobsAccepted;
 
-  ListBuilder<DocumentReference?>? _pastJobsPosted;
-  ListBuilder<DocumentReference?> get pastJobsPosted =>
-      _$this._pastJobsPosted ??= new ListBuilder<DocumentReference?>();
-  set pastJobsPosted(ListBuilder<DocumentReference?>? pastJobsPosted) =>
+  ListBuilder<DocumentReference>? _pastJobsPosted;
+  ListBuilder<DocumentReference> get pastJobsPosted =>
+      _$this._pastJobsPosted ??= new ListBuilder<DocumentReference>();
+  set pastJobsPosted(ListBuilder<DocumentReference>? pastJobsPosted) =>
       _$this._pastJobsPosted = pastJobsPosted;
 
   String? _gender;
   String? get gender => _$this._gender;
   set gender(String? gender) => _$this._gender = gender;
 
-  ListBuilder<DocumentReference?>? _currJobsAccepted;
-  ListBuilder<DocumentReference?> get currJobsAccepted =>
-      _$this._currJobsAccepted ??= new ListBuilder<DocumentReference?>();
-  set currJobsAccepted(ListBuilder<DocumentReference?>? currJobsAccepted) =>
+  ListBuilder<DocumentReference>? _currJobsAccepted;
+  ListBuilder<DocumentReference> get currJobsAccepted =>
+      _$this._currJobsAccepted ??= new ListBuilder<DocumentReference>();
+  set currJobsAccepted(ListBuilder<DocumentReference>? currJobsAccepted) =>
       _$this._currJobsAccepted = currJobsAccepted;
 
-  ListBuilder<DocumentReference?>? _currJobsPosted;
-  ListBuilder<DocumentReference?> get currJobsPosted =>
-      _$this._currJobsPosted ??= new ListBuilder<DocumentReference?>();
-  set currJobsPosted(ListBuilder<DocumentReference?>? currJobsPosted) =>
+  ListBuilder<DocumentReference>? _currJobsPosted;
+  ListBuilder<DocumentReference> get currJobsPosted =>
+      _$this._currJobsPosted ??= new ListBuilder<DocumentReference>();
+  set currJobsPosted(ListBuilder<DocumentReference>? currJobsPosted) =>
       _$this._currJobsPosted = currJobsPosted;
 
   DocumentReference<Object?>? _ffRef;
@@ -385,11 +385,11 @@ class UsersRecordBuilder implements Builder<UsersRecord, UsersRecordBuilder> {
       _uid = $v.uid;
       _createdTime = $v.createdTime;
       _phoneNumber = $v.phoneNumber;
-      _pastJobsAccepted = $v.pastJobsAccepted?.toBuilder();
-      _pastJobsPosted = $v.pastJobsPosted?.toBuilder();
+      _pastJobsAccepted = $v.pastJobsAccepted as ListBuilder<DocumentReference>?;
+      _pastJobsPosted = $v.pastJobsPosted  as ListBuilder<DocumentReference>?;
       _gender = $v.gender;
-      _currJobsAccepted = $v.currJobsAccepted?.toBuilder();
-      _currJobsPosted = $v.currJobsPosted?.toBuilder();
+      _currJobsAccepted = $v.currJobsAccepted as ListBuilder<DocumentReference>?;
+      _currJobsPosted = $v.currJobsPosted as ListBuilder<DocumentReference>?;
       _ffRef = $v.ffRef;
       _$v = null;
     }

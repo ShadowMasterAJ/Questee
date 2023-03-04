@@ -29,8 +29,7 @@ class _JobHistoryScreenWidgetState extends State<JobHistoryScreenWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final userRef =
-        FirebaseFirestore.instance.collection('users').doc('userId');
+    
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -89,20 +88,6 @@ class PostedJobsTab extends StatelessWidget {
   const PostedJobsTab({
     Key? key,
   }) : super(key: key);
-
-  // Widget errorCheck(BuildContext context) {
-  //   try {
-  //     return PastJobsPosted();
-  //   } catch (e) {
-  //     print("got an error here");
-  //     return Center(
-  //         child: CircularProgressIndicator(
-  //       color: FlutterFlowTheme.of(context).primaryColor,
-  //     ));
-  //   }
-  //   // return CurrentJobsPosted();
-  // }
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -156,6 +141,8 @@ class _PastJobsPostedState extends State<PastJobsPosted> {
 
       final Map<String, dynamic>? data =
           snapshot.data() as Map<String, dynamic>?;
+      //TODO - fix double circular progressors
+      //TODO - cache the loaded shit
 
       if (data != null && data.containsKey('past_jobs_posted')) {
         pastJobsPosted = data['past_jobs_posted'] as List<dynamic>;

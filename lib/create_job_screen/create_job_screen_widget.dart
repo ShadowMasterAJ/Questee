@@ -412,6 +412,8 @@ class OfferedPrice extends StatelessWidget {
         validator: (val) {
           if (val == null || val.isEmpty) {
             return 'Field is required';
+          } else if (val == "cock" || val == "penis") {
+            return "Why must you do this DC?";
           }
           return null;
         },

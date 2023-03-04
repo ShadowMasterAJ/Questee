@@ -31,21 +31,18 @@ abstract class UsersRecord implements Built<UsersRecord, UsersRecordBuilder> {
   // BuiltList<DocumentReference>? get pastJobs;
 
   @BuiltValueField(wireName: 'curr_jobs_accepted')
-  BuiltList<DocumentReference?>? get currJobsAccepted;
+  BuiltList<DocumentReference>? get currJobsAccepted;
 
   @BuiltValueField(wireName: 'curr_jobs_posted')
-  BuiltList<DocumentReference?>? get currJobsPosted;
+  BuiltList<DocumentReference>? get currJobsPosted;
 
   @BuiltValueField(wireName: 'past_jobs_accepted')
-  BuiltList<DocumentReference?>? get pastJobsAccepted;
+  BuiltList<DocumentReference>? get pastJobsAccepted;
 
   @BuiltValueField(wireName: 'past_jobs_posted')
-  BuiltList<DocumentReference?>? get pastJobsPosted;
+  BuiltList<DocumentReference>? get pastJobsPosted;
 
   String? get gender;
-
-  // @BuiltValueField(wireName: 'curr_jobs')
-  // BuiltList<DocumentReference>? get currJobs;
 
   @BuiltValueField(wireName: kDocumentReferenceField)
   DocumentReference? get ffRef;
@@ -57,9 +54,9 @@ abstract class UsersRecord implements Built<UsersRecord, UsersRecordBuilder> {
     ..photoUrl = ''
     ..uid = ''
     ..phoneNumber = ''
+    ..gender = ''
     ..pastJobsAccepted = ListBuilder()
     ..pastJobsPosted = ListBuilder()
-    ..gender = ''
     ..currJobsAccepted = ListBuilder()
     ..currJobsPosted = ListBuilder();
 
@@ -142,10 +139,10 @@ Map<String, dynamic> createUsersRecordData({
   String? uid,
   DateTime? createdTime,
   String? phoneNumber,
-  List<DocumentReference?>? currJobsPosted,
-  List<DocumentReference?>? currJobsAccepted,
-  List<DocumentReference?>? pastJobsPosted,
-  List<DocumentReference?>? pastJobsAccepted,
+  List<DocumentReference>? currJobsPosted,
+  List<DocumentReference>? currJobsAccepted,
+  List<DocumentReference>? pastJobsPosted,
+  List<DocumentReference>? pastJobsAccepted,
   String? gender,
 }) {
   final firestoreData =
@@ -171,7 +168,7 @@ Map<String, dynamic> createUsersRecordData({
       len = 0;
     }
     for (int i = 0; i < len; i++) {
-      u.currJobsPosted.add(currJobsPosted![i]);
+      u.currJobsPosted.add(currJobsPosted![i] as DocumentReference<Object?>);
     }
 
     int len1;
@@ -181,7 +178,7 @@ Map<String, dynamic> createUsersRecordData({
       len1 = 0;
     }
     for (int i = 0; i < len1; i++) {
-      u.currJobsPosted.add(currJobsAccepted![i]);
+      u.currJobsPosted.add(currJobsAccepted![i] as DocumentReference<Object?>);
     }
 
     int len2;
@@ -191,7 +188,7 @@ Map<String, dynamic> createUsersRecordData({
       len2 = 0;
     }
     for (int i = 0; i < len2; i++) {
-      u.currJobsPosted.add(pastJobsPosted![i]);
+      u.currJobsPosted.add(pastJobsPosted![i]) as DocumentReference<Object?>;
     }
 
     int len3;
@@ -201,7 +198,7 @@ Map<String, dynamic> createUsersRecordData({
       len3 = 0;
     }
     for (int i = 0; i < len3; i++) {
-      u.currJobsPosted.add(pastJobsAccepted![i]);
+      u.currJobsPosted.add(pastJobsAccepted![i] as DocumentReference<Object?>);
     }
   }));
 

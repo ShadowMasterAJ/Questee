@@ -131,62 +131,62 @@ Future<List<ChatsRecord>> queryChatsRecordOnce({
       singleRecord: singleRecord,
     );
 
-Future<FFFirestorePage<ChatsRecord>> queryChatsRecordPage({
-  Query Function(Query)? queryBuilder,
-  DocumentSnapshot? nextPageMarker,
-  required int pageSize,
-  required bool isStream,
-}) =>
-    queryCollectionPage(
-      ChatsRecord.collection,
-      ChatsRecord.serializer,
-      queryBuilder: queryBuilder,
-      nextPageMarker: nextPageMarker,
-      pageSize: pageSize,
-      isStream: isStream,
-    );
+// Future<FFFirestorePage<ChatsRecord>> queryChatsRecordPage({
+//   Query Function(Query)? queryBuilder,
+//   DocumentSnapshot? nextPageMarker,
+//   required int pageSize,
+//   required bool isStream,
+// }) =>
+//     queryCollectionPage(
+//       ChatsRecord.collection,
+//       ChatsRecord.serializer,
+//       queryBuilder: queryBuilder,
+//       nextPageMarker: nextPageMarker,
+//       pageSize: pageSize,
+//       isStream: isStream,
+//     );
 
-/// Functions to query ChatMessagesRecords (as a Stream and as a Future).
-Stream<List<ChatMessagesRecord>> queryChatMessagesRecord({
-  Query Function(Query)? queryBuilder,
-  int limit = -1,
-  bool singleRecord = false,
-}) =>
-    queryCollection(
-      ChatMessagesRecord.collection,
-      ChatMessagesRecord.serializer,
-      queryBuilder: queryBuilder,
-      limit: limit,
-      singleRecord: singleRecord,
-    );
+// /// Functions to query ChatMessagesRecords (as a Stream and as a Future).
+// Stream<List<ChatMessagesRecord>> queryChatMessagesRecord({
+//   Query Function(Query)? queryBuilder,
+//   int limit = -1,
+//   bool singleRecord = false,
+// }) =>
+//     queryCollection(
+//       ChatMessagesRecord.collection,
+//       ChatMessagesRecord.serializer,
+//       queryBuilder: queryBuilder,
+//       limit: limit,
+//       singleRecord: singleRecord,
+//     );
 
-Future<List<ChatMessagesRecord>> queryChatMessagesRecordOnce({
-  Query Function(Query)? queryBuilder,
-  int limit = -1,
-  bool singleRecord = false,
-}) =>
-    queryCollectionOnce(
-      ChatMessagesRecord.collection,
-      ChatMessagesRecord.serializer,
-      queryBuilder: queryBuilder,
-      limit: limit,
-      singleRecord: singleRecord,
-    );
+// Future<List<ChatMessagesRecord>> queryChatMessagesRecordOnce({
+//   Query Function(Query)? queryBuilder,
+//   int limit = -1,
+//   bool singleRecord = false,
+// }) =>
+//     queryCollectionOnce(
+//       ChatMessagesRecord.collection,
+//       ChatMessagesRecord.serializer,
+//       queryBuilder: queryBuilder,
+//       limit: limit,
+//       singleRecord: singleRecord,
+//     );
 
-Future<FFFirestorePage<ChatMessagesRecord>> queryChatMessagesRecordPage({
-  Query Function(Query)? queryBuilder,
-  DocumentSnapshot? nextPageMarker,
-  required int pageSize,
-  required bool isStream,
-}) =>
-    queryCollectionPage(
-      ChatMessagesRecord.collection,
-      ChatMessagesRecord.serializer,
-      queryBuilder: queryBuilder,
-      nextPageMarker: nextPageMarker,
-      pageSize: pageSize,
-      isStream: isStream,
-    );
+// Future<FFFirestorePage<ChatMessagesRecord>> queryChatMessagesRecordPage({
+//   Query Function(Query)? queryBuilder,
+//   DocumentSnapshot? nextPageMarker,
+//   required int pageSize,
+//   required bool isStream,
+// }) =>
+//     queryCollectionPage(
+//       ChatMessagesRecord.collection,
+//       ChatMessagesRecord.serializer,
+//       queryBuilder: queryBuilder,
+//       nextPageMarker: nextPageMarker,
+//       pageSize: pageSize,
+//       isStream: isStream,
+//     );
 
 Stream<List<T>> queryCollection<T>(Query collection, Serializer<T> serializer,
     {Query Function(Query)? queryBuilder,
