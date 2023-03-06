@@ -101,6 +101,9 @@ class _JobDetailScreenAcceptorWidgetState
                         ],
                       ),
                     ),
+                    columnJobRecord!.acceptorID != null
+                        ? JobAcceptedChip(columnJobRecord: columnJobRecord)
+                        : Container(),
                     DelItems(columnJobRecord, context),
                     Divider(
                       height: 1,
@@ -153,7 +156,7 @@ class _JobDetailScreenAcceptorWidgetState
                             List<UsersRecord> poster = snapshot.data!
                                 .where((element) =>
                                     element.uid.toString() ==
-                                    columnJobRecord!.posterID!.id)
+                                    columnJobRecord.posterID!.id)
                                 .toList();
                             return Text(
                               poster.length > 0
@@ -164,11 +167,12 @@ class _JobDetailScreenAcceptorWidgetState
                           }),
                     ),
                     Spacer(),
-                    columnJobRecord!.acceptorID == null
-                        ? AcceptJobButton(columnJobRecord, context)
-                        : ChatButton(columnJobRecordList: columnJobRecordList),
-                    columnJobRecord.acceptorID.toString() == currentUserUid
-                        ? JobAcceptedText()
+                    columnJobRecord.acceptorID != null
+                        ? ChatButton(columnJobRecordList: columnJobRecordList)
+                        : AcceptJobButton(columnJobRecord, context),
+                   //TODO - add verification functionality
+                    columnJobRecord.acceptorID != null
+                        ? ChatButton(columnJobRecordList: columnJobRecordList)
                         : Container(),
                   ],
                 );
@@ -182,6 +186,7 @@ class _JobDetailScreenAcceptorWidgetState
 
   // ignore: non_constant_identifier_names
   Align DelItems(JobRecord? columnJobRecord, BuildContext context) {
+    print("Items: ${columnJobRecord!.items!.toList()}");
     return Align(
       alignment: AlignmentDirectional(-0.1, 0.05),
       child: Column(
@@ -199,7 +204,7 @@ class _JobDetailScreenAcceptorWidgetState
                     scrollDirection: Axis.vertical,
                     children: [
                       FlutterFlowCheckboxGroup(
-                        options: columnJobRecord!.items!.toList(),
+                        options: columnJobRecord.items!.toList(),
                         onChanged: (val) =>
                             setState(() => checkboxGroupValues = val),
                         activeColor: FlutterFlowTheme.of(context).primaryColor,
@@ -249,6 +254,42 @@ class _JobDetailScreenAcceptorWidgetState
         ),
       ),
     );
+  }
+}
+
+class JobAcceptedChip extends StatelessWidget {
+  const JobAcceptedChip({
+    Key? key,
+    required this.columnJobRecord,
+  }) : super(key: key);
+
+  final JobRecord? columnJobRecord;
+
+  @override
+  Widget build(BuildContext context) {
+    return FFButtonWidget(
+        onPressed: () {
+          print('Button pressed ...');
+        },
+        text: "You have accepted the job.",
+        options: FFButtonOptions(
+          width: 300,
+          height: 40,
+          color: columnJobRecord!.acceptorID != null
+              ? Color(0xFF80D3A2)
+              : FlutterFlowTheme.of(context).secondaryText,
+          textStyle: FlutterFlowTheme.of(context)
+              .subtitle2
+              .override(
+                fontFamily: 'Poppins',
+                color: Colors.white,
+              ),
+          borderSide: BorderSide(
+            color: Colors.transparent,
+          ),
+          borderRadius: BorderRadius.circular(8),
+        ),
+      );
   }
 }
 

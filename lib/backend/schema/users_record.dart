@@ -156,49 +156,25 @@ Map<String, dynamic> createUsersRecordData({
       ..phoneNumber = phoneNumber
       ..gender = gender;
 
-    var s = currJobsPosted;
-    var t = currJobsAccepted;
-    var w = pastJobsPosted;
-    var v = pastJobsAccepted;
+    List<DocumentReference<Object?>>? currJP = currJobsPosted;
+    List<DocumentReference<Object?>>? currJA = currJobsAccepted;
+    List<DocumentReference<Object?>>? pastJP = pastJobsPosted;
+    List<DocumentReference<Object?>>? pastJA = pastJobsAccepted;
 
-    int len;
-    if (s != null) {
-      len = s.length; // Safe
-    } else {
-      len = 0;
-    }
-    for (int i = 0; i < len; i++) {
-      u.currJobsPosted.add(currJobsPosted![i] as DocumentReference<Object?>);
+    for (int i = 0; i < currJP!.length; i++) {
+      u.currJobsPosted.add(currJobsPosted![i]);
     }
 
-    int len1;
-    if (t != null) {
-      len1 = t.length; // Safe
-    } else {
-      len1 = 0;
-    }
-    for (int i = 0; i < len1; i++) {
-      u.currJobsPosted.add(currJobsAccepted![i] as DocumentReference<Object?>);
+    for (int i = 0; i < currJA!.length; i++) {
+      u.currJobsPosted.add(currJobsAccepted![i]);
     }
 
-    int len2;
-    if (w != null) {
-      len2 = w.length; // Safe
-    } else {
-      len2 = 0;
-    }
-    for (int i = 0; i < len2; i++) {
-      u.currJobsPosted.add(pastJobsPosted![i]) as DocumentReference<Object?>;
+    for (int i = 0; i < pastJP!.length; i++) {
+      u.currJobsPosted.add(pastJobsPosted![i]);
     }
 
-    int len3;
-    if (v != null) {
-      len3 = v.length; // Safe
-    } else {
-      len3 = 0;
-    }
-    for (int i = 0; i < len3; i++) {
-      u.currJobsPosted.add(pastJobsAccepted![i] as DocumentReference<Object?>);
+    for (int i = 0; i < pastJA!.length; i++) {
+      u.currJobsPosted.add(pastJobsAccepted![i]);
     }
   }));
 

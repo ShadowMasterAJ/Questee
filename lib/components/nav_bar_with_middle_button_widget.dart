@@ -1,9 +1,10 @@
-import '../flutter_flow/flutter_flow_icon_button.dart';
-import '../flutter_flow/flutter_flow_theme.dart';
-import '../flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
+
+import 'package:u_grabv1/flutter_flow/chat/index.dart';
+
+import '../flutter_flow/flutter_flow_icon_button.dart';
+import '../flutter_flow/flutter_flow_theme.dart';
 
 class NavBarWithMiddleButtonWidget extends StatefulWidget {
   const NavBarWithMiddleButtonWidget({Key? key}) : super(key: key);
@@ -91,12 +92,24 @@ class _NavBarWithMiddleButtonWidgetState
                       color: FlutterFlowTheme.of(context).grayIcon,
                       size: 24,
                     ),
-                    onPressed: () {
-                      // context.pushNamed("ChatScreen",
-                      //     queryParams: {
-                      //       'jobRef': serializeParam(
-                      //           columnJobRecord, ParamType.Document) //TODO - fix
-                      //     }.withoutNulls);
+                    onPressed: () async {
+                      context.pushNamed(
+                        'ChatScreen',
+                        queryParams: {
+                          'jobRef': serializeParam(
+                            userCurrJobsAccepted!.first,
+                            ParamType.DocumentReference,
+                          ),
+                        }.withoutNulls,
+                        // extra: {
+                        //   kTransitionInfoKey: TransitionInfo(
+                        //     hasTransition: true,
+                        //     transitionType: PageTransitionType.fade,
+                        //     alignment: Alignment.bottomCenter,
+                        //     duration: Duration(milliseconds: 1000),
+                        //   ),
+                        // },
+                      );
                     },
                   ),
                   Column(

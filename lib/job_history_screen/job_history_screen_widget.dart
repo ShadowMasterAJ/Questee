@@ -434,7 +434,7 @@ class CurrentJobsAccepted extends StatefulWidget {
 }
 
 class _CurrentJobsAcceptedState extends State<CurrentJobsAccepted> {
-  late List<dynamic> currJobsAccepted = [];
+  List<dynamic> currJobsAccepted = [];
 
   Future<List<dynamic>> getCurrJobsAccepted() async {
     try {

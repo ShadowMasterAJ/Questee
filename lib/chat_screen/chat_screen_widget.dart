@@ -29,7 +29,6 @@ class _ChatScreenWidgetState extends State<ChatScreenWidget> {
     super.initState();
     _chatDocRef = _chatRef.doc(widget.jobRef.id);
     _messageRef = _chatDocRef.collection('messages');
-    print("Message ref: $_messageRef");
     createChatDocument();
   }
 
@@ -38,9 +37,6 @@ class _ChatScreenWidgetState extends State<ChatScreenWidget> {
     final poster = jobSnapshot.get("posterID");
     final acceptor = jobSnapshot.get("acceptorID");
     _userType = currentUserReference == acceptor ? 'acceptor' : 'poster';
-
-    print(
-        "Usertype in chat is: $_userType ($currentUserReference == $acceptor)");
 
     await _chatDocRef.set({
       'jobID': widget.jobRef,
@@ -57,8 +53,12 @@ class _ChatScreenWidgetState extends State<ChatScreenWidget> {
         body: Column(
           children: [
             Header(userType: _userType),
-            MessagesArea(messageRef: _messageRef, scrollController: _scrollController),
-            MessageBar(textEditingController: _textEditingController, messageRef: _messageRef, scrollController: _scrollController),
+            MessagesArea(
+                messageRef: _messageRef, scrollController: _scrollController),
+            MessageBar(
+                textEditingController: _textEditingController,
+                messageRef: _messageRef,
+                scrollController: _scrollController),
           ],
         ),
       ),
@@ -70,7 +70,8 @@ class Header extends StatelessWidget {
   const Header({
     Key? key,
     required String userType,
-  }) : _userType = userType, super(key: key);
+  })  : _userType = userType,
+        super(key: key);
 
   final String _userType;
 
@@ -119,7 +120,9 @@ class MessagesArea extends StatelessWidget {
     Key? key,
     required CollectionReference<Object?> messageRef,
     required ScrollController scrollController,
-  }) : _messageRef = messageRef, _scrollController = scrollController, super(key: key);
+  })  : _messageRef = messageRef,
+        _scrollController = scrollController,
+        super(key: key);
 
   final CollectionReference<Object?> _messageRef;
   final ScrollController _scrollController;
@@ -145,8 +148,6 @@ class MessagesArea extends StatelessWidget {
             );
           }
           final messages = snapshot.data!.docs;
-
-          print("Messages-------------------------$messages");
           if (messages.length == 0) {
             return Image.asset(
               'assets/images/messagesEmpty@2x.png',
@@ -159,8 +160,6 @@ class MessagesArea extends StatelessWidget {
               itemCount: messages.length,
               itemBuilder: (BuildContext context, int index) {
                 final message = messages[index];
-                print(
-                    "Message-------------------------${message.data()}");
                 final sender = message['senderID'];
                 final messageText = message['message'];
                 final currentUser = currentUserUid;
@@ -185,7 +184,10 @@ class MessageBar extends StatelessWidget {
     required TextEditingController textEditingController,
     required CollectionReference<Object?> messageRef,
     required ScrollController scrollController,
-  }) : _textEditingController = textEditingController, _messageRef = messageRef, _scrollController = scrollController, super(key: key);
+  })  : _textEditingController = textEditingController,
+        _messageRef = messageRef,
+        _scrollController = scrollController,
+        super(key: key);
 
   final TextEditingController _textEditingController;
   final CollectionReference<Object?> _messageRef;
@@ -214,8 +216,7 @@ class MessageBar extends StatelessWidget {
                       fontSize: 16.0,
                     ),
                     minLines: 1,
-                    maxLines:
-                        10, // Set maxLines to null or a high number
+                    maxLines: 10, // Set maxLines to null or a high number
                     decoration: InputDecoration(
                       hintText: 'Type a message',
                       hintStyle: TextStyle(

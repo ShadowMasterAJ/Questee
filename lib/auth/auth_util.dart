@@ -97,6 +97,15 @@ String get currentPhoneNumber =>
 
 String get currentJwtToken => _currentJwtToken ?? '';
 
+List<DocumentReference<Object?>>? get userCurrJobsAccepted =>
+    currentUserDocument?.currJobsAccepted!.asList();
+List<DocumentReference<Object?>>? get userCurrJobsPosted =>
+    currentUserDocument?.currJobsPosted!.asList();
+List<DocumentReference<Object?>>? get userPastJobsAccepted =>
+    currentUserDocument?.pastJobsAccepted!.asList();
+List<DocumentReference<Object?>>? get userPastJobsPosted =>
+    currentUserDocument?.pastJobsPosted!.asList();
+
 bool get currentUserEmailVerified {
   // Reloads the user when checking in order to get the most up to date
   // email verified status.
