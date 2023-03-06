@@ -400,8 +400,7 @@ class _JobDetailScreenPosterWidgetState
                                             );
                                           },
                                         ).then((value) => setState(() {}));
-                                      } else {
-                                      }
+                                      } else {}
                                     },
                                     text: 'Verify',
                                     options: FFButtonOptions(
