@@ -47,10 +47,10 @@ class _ChatScreenWidgetState extends State<ChatScreenWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
-        body: Column(
+    return Scaffold(
+      backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+      body: SafeArea(
+        child: Column(
           children: [
             Header(userType: _userType),
             MessagesArea(

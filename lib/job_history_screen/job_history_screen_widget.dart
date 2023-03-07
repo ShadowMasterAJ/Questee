@@ -29,7 +29,6 @@ class _JobHistoryScreenWidgetState extends State<JobHistoryScreenWidget> {
 
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: FlutterFlowTheme.of(context).primaryBackground,

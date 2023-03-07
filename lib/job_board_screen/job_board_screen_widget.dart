@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -31,6 +33,7 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
   void initState() {
     super.initState();
     searchFieldController = TextEditingController();
+    FFAppState().showFullList = true;
   }
 
   @override
@@ -72,114 +75,102 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
     );
   }
 
-  // ignore: non_constant_identifier_names
   Expanded JobList(BuildContext context) {
+    print(FFAppState().showFullList);
     return Expanded(
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            FFAppState().showFullList
-                ? Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(0, 10, 0, 12),
-                    child: PagedListView<DocumentSnapshot<Object?>?, JobRecord>(
-                      pagingController: () {
-                        final Query<Object?> Function(Query<Object?>)
-                            queryBuilder = (jobRecord) => jobRecord;
-                        if (_pagingController != null) {
-                          final query = queryBuilder(JobRecord.collection);
-                          if (query != _pagingQuery) {
-                            // The query has changed
-                            _pagingQuery = query;
-                            _streamSubscriptions.forEach((s) => s?.cancel());
-                            _streamSubscriptions.clear();
-                            _pagingController!.refresh();
+      child: FFAppState().showFullList
+          ? Padding(
+              padding: EdgeInsetsDirectional.fromSTEB(0, 10, 0, 12),
+              child: PagedListView<DocumentSnapshot<Object?>?, JobRecord>(
+                pagingController: () {
+                  final Query<Object?> Function(Query<Object?>) queryBuilder =
+                      (jobRecord) => jobRecord;
+                  if (_pagingController != null) {
+                    final query = queryBuilder(JobRecord.collection);
+                    if (query != _pagingQuery) {
+                      // The query has changed
+                      _pagingQuery = query;
+                      _streamSubscriptions.forEach((s) => s?.cancel());
+                      _streamSubscriptions.clear();
+                      _pagingController!.refresh();
+                    }
+                    return _pagingController!;
+                  }
+
+                  _pagingController = PagingController(firstPageKey: null);
+                  _pagingQuery = queryBuilder(JobRecord.collection);
+                  _pagingController!.addPageRequestListener((nextPageMarker) {
+                    queryJobRecordPage(
+                      queryBuilder: (jobRecord) => jobRecord,
+                      nextPageMarker: nextPageMarker,
+                      pageSize: 10,
+                      isStream: true,
+                    ).then((page) {
+                      _pagingController!.appendPage(
+                        page.data,
+                        page.nextPageMarker,
+                      );
+                      final streamSubscription =
+                          page.dataStream?.listen((data) {
+                        final itemIndexes = _pagingController!.itemList!
+                            .asMap()
+                            .map((k, v) => MapEntry(v.reference.id, k));
+                        data.forEach((item) {
+                          final index = itemIndexes[item.reference.id];
+                          final items = _pagingController!.itemList!;
+                          if (index != null) {
+                            items.replaceRange(index, index + 1, [item]);
+                            _pagingController!.itemList = {
+                              for (var item in items) item.reference: item
+                            }.values.toList();
                           }
-                          return _pagingController!;
-                        }
-
-                        _pagingController =
-                            PagingController(firstPageKey: null);
-                        _pagingQuery = queryBuilder(JobRecord.collection);
-                        _pagingController!
-                            .addPageRequestListener((nextPageMarker) {
-                          queryJobRecordPage(
-                            queryBuilder: (jobRecord) => jobRecord,
-                            nextPageMarker: nextPageMarker,
-                            pageSize: 25,
-                            isStream: true,
-                          ).then((page) {
-                            _pagingController!.appendPage(
-                              page.data,
-                              page.nextPageMarker,
-                            );
-                            final streamSubscription =
-                                page.dataStream?.listen((data) {
-                              final itemIndexes = _pagingController!.itemList!
-                                  .asMap()
-                                  .map((k, v) => MapEntry(v.reference.id, k));
-                              data.forEach((item) {
-                                final index = itemIndexes[item.reference.id];
-                                final items = _pagingController!.itemList!;
-                                if (index != null) {
-                                  items.replaceRange(index, index + 1, [item]);
-                                  _pagingController!.itemList = {
-                                    for (var item in items) item.reference: item
-                                  }.values.toList();
-                                }
-                              });
-                              setState(() {});
-                            });
-                            _streamSubscriptions.add(streamSubscription);
-                          });
                         });
-                        return _pagingController!;
-                      }(),
-                      primary: false,
-                      shrinkWrap: true,
-                      scrollDirection: Axis.vertical,
-                      builderDelegate: PagedChildBuilderDelegate<JobRecord>(
-                        // Customize what your widget looks like when it's loading the first page.
-                        firstPageProgressIndicatorBuilder: (_) => Center(
-                          child: SizedBox(
-                            width: 50,
-                            height: 50,
-                            child: CircularProgressIndicator(
-                              color: FlutterFlowTheme.of(context).primaryColor,
-                            ),
-                          ),
-                        ),
-                        noItemsFoundIndicatorBuilder: (_) => Center(
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Image.asset(
-                              'assets/images/not_stonks.jpg',
-                              width: double.infinity,
-                            ),
-                          ),
-                        ),
-                        itemBuilder: (context, _, listViewIndex) {
-                          final listViewJobRecord = // add if statement here
-                              _pagingController!.itemList![listViewIndex];
-
-                          // print(listViewJobRecord.delLocation);
-                          return listViewJobRecord.acceptorID != null
-                              ? SizedBox.shrink()
-                              : JobCard(
-                                  listViewJobRecord: listViewJobRecord,
-                                  index: listViewIndex);
-                        },
+                        setState(() {});
+                      });
+                      _streamSubscriptions.add(streamSubscription);
+                    });
+                  });
+                  return _pagingController!;
+                }(),
+                primary: false,
+                shrinkWrap: true,
+                scrollDirection: Axis.vertical,
+                builderDelegate: PagedChildBuilderDelegate<JobRecord>(
+                  // Customize what your widget looks like when it's loading the first page.
+                  firstPageProgressIndicatorBuilder: (_) => Center(
+                    child: SizedBox(
+                      width: 50,
+                      height: 50,
+                      child: CircularProgressIndicator(
+                        color: FlutterFlowTheme.of(context).primaryColor,
                       ),
                     ),
-                  )
-                : SearchResults(simpleSearchResults: simpleSearchResults),
-          ],
-        ),
-      ),
+                  ),
+                  noItemsFoundIndicatorBuilder: (_) => Center(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.asset(
+                        'assets/images/not_stonks.jpg',
+                        width: double.infinity,
+                      ),
+                    ),
+                  ),
+                  itemBuilder: (context, _, listViewIndex) {
+                    final listViewJobRecord = // add if statement here
+                        _pagingController!.itemList![listViewIndex];
+
+                    return listViewJobRecord.acceptorID != null
+                        ? SizedBox.shrink()
+                        : JobCard(
+                            jobRecord: listViewJobRecord, index: listViewIndex);
+                  },
+                ),
+              ),
+            )
+          : SearchResults(simpleSearchResults: simpleSearchResults),
     );
   }
 
-  // ignore: non_constant_identifier_names
   Container SearchBar(BuildContext context) {
     return Container(
       width: double.infinity,
@@ -189,24 +180,22 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Expanded(
             child: Stack(
               children: [
-                Align(
-                  alignment: AlignmentDirectional(0, -0.15),
-                  child: Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(12, 0, 8, 0),
-                    child: TextFormField(
-                      controller: searchFieldController,
-                      onChanged: (_) => EasyDebounce.debounce(
-                        'searchFieldController',
-                        Duration(milliseconds: 500),
-                        () => setState(() {}),
-                      ),
-                      obscureText: false,
-                      decoration: InputDecoration(
+                Padding(
+                  padding: EdgeInsetsDirectional.fromSTEB(12, 0, 8, 0),
+                  child: TextFormField(
+                    controller: searchFieldController,
+                    onChanged: (_) {
+                      EasyDebounce.debounce(
+                          'searchFieldController',
+                          Duration(milliseconds: 100),
+                          () async => await searchInQuery());
+                    },
+                    obscureText: false,
+                    decoration: InputDecoration(
                         hintText: 'Search Jobs',
                         hintStyle: FlutterFlowTheme.of(context).bodyText2,
                         enabledBorder: OutlineInputBorder(
@@ -214,101 +203,93 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
                             color: Color(0x00000000),
                             width: 1,
                           ),
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(10),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                            color: Color(0x00000000),
+                            color:
+                                FlutterFlowTheme.of(context).primaryColorLight,
                             width: 1,
                           ),
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Color(0x00000000),
-                            width: 1,
-                          ),
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        focusedErrorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Color(0x00000000),
-                            width: 1,
-                          ),
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(20),
                         ),
                         filled: true,
                         fillColor:
                             FlutterFlowTheme.of(context).secondaryBackground,
                         contentPadding:
-                            EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
+                            EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
                         prefixIcon: Icon(
                           Icons.search_rounded,
-                          color: Color(0x67FFFFFF),
+                          color: FlutterFlowTheme.of(context).primaryColorLight,
                           size: 25,
                         ),
-                      ),
-                      style: FlutterFlowTheme.of(context).bodyText1,
-                    ),
+                        suffixIcon: ClearSearchTextButton(context)),
+                    style: FlutterFlowTheme.of(context).bodyText1,
                   ),
                 ),
-                Align(
-                  alignment: AlignmentDirectional(0.85, 0),
-                  child: InkWell(
-                    onTap: () async {
-                      setState(() {
-                        searchFieldController?.clear();
-                      });
-                      setState(() => FFAppState().showFullList = true);
-                    },
-                    child: Icon(
-                      Icons.clear_outlined,
-                      color: FlutterFlowTheme.of(context).secondaryText,
-                      size: 24,
-                    ),
-                  ),
-                ),
+                // ClearSearchTextButton(context),
               ],
             ),
           ),
-          Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(0, 0, 16, 0),
-            child: FlutterFlowIconButton(
-              borderColor: Color(0x0096669E),
-              borderRadius: 10,
-              borderWidth: 1,
-              buttonSize: 50,
-              fillColor: FlutterFlowTheme.of(context).primaryColor,
-              icon: FaIcon(
-                FontAwesomeIcons.magnifyingGlass,
-                color: FlutterFlowTheme.of(context).primaryText,
-                size: 24,
-              ),
-              onPressed: () async {
-                await queryJobRecordOnce()
-                    .then(
-                      (records) => simpleSearchResults = TextSearch(
-                        records
-                            .map(
-                              (record) => TextSearchItem(
-                                  record, [record.store!, record.delLocation!]),
-                            )
-                            .toList(),
-                      )
-                          .search(searchFieldController!.text)
-                          .map((r) => r.object)
-                          .toList(),
-                    )
-                    .onError((_, __) => simpleSearchResults = [])
-                    .whenComplete(() => setState(() {}));
-
-                setState(() => FFAppState().showFullList = false);
-              },
-            ),
-          ),
+          SearchButton(context),
         ],
       ),
     );
+  }
+
+  InkWell ClearSearchTextButton(BuildContext context) {
+    return InkWell(
+      onTap: searchFieldController!.text.isNotEmpty
+          ? () async => setState(() {
+                searchFieldController!.clear();
+                FFAppState().showFullList = true;
+              })
+          : () {},
+      child: Icon(
+        Icons.clear_outlined,
+        color: FlutterFlowTheme.of(context).primaryColorLight,
+        size: 24,
+      ),
+    );
+  }
+
+  Padding SearchButton(BuildContext context) {
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(0, 0, 16, 0),
+      child: FlutterFlowIconButton(
+        borderColor: Color(0x0096669E),
+        borderRadius: 10,
+        borderWidth: 1,
+        buttonSize: 48,
+        fillColor: FlutterFlowTheme.of(context).primaryColor,
+        icon: FaIcon(
+          FontAwesomeIcons.magnifyingGlass,
+          color: FlutterFlowTheme.of(context).primaryColorLight,
+          size: 24,
+        ),
+        onPressed: searchFieldController!.text.isNotEmpty
+            ? () async => await searchInQuery()
+            : () {},
+      ),
+    );
+  }
+
+  Future<void> searchInQuery() async {
+    await queryJobRecordOnce()
+        .then(
+          (records) => simpleSearchResults = TextSearch(
+            records
+                .map(
+                  (record) => TextSearchItem(
+                      record, [record.store!, record.delLocation!]),
+                )
+                .toList(),
+          ).search(searchFieldController!.text).map((r) => r.object).toList(),
+        )
+        .onError((_, __) => simpleSearchResults = [])
+        .whenComplete(() => setState(() {}));
+
+    setState(() => FFAppState().showFullList = false);
   }
 }
 
@@ -322,31 +303,33 @@ class SearchResults extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Builder(
-      builder: (context) {
-        final searcResults = simpleSearchResults.toList();
-        if (searcResults.isEmpty) {
-          return Center(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Image.asset(
-                'assets/images/not_stonks.jpg',
-                width: double.infinity,
+    print(simpleSearchResults);
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(0, 10, 0, 12),
+      child: Builder(
+        builder: (context) {
+          final searcResults = simpleSearchResults;
+          if (searcResults.isEmpty) {
+            return Center(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.asset(
+                  'assets/images/not_stonks.jpg',
+                  width: double.infinity,
+                ),
               ),
-            ),
-          );
-        }
-        return ListView.builder(
-            shrinkWrap: true,
-            scrollDirection: Axis.vertical,
-            itemCount: searcResults.length,
-            itemBuilder: (context, searcResultsIndex) {
-              final searcResultsItem = searcResults[searcResultsIndex];
-              return JobCard(
-                  listViewJobRecord: searcResultsItem,
-                  index: searcResultsIndex);
-            });
-      },
+            );
+          }
+          return ListView.builder(
+              shrinkWrap: true,
+              scrollDirection: Axis.vertical,
+              itemCount: searcResults.length,
+              itemBuilder: (context, index) {
+                final searcResultsItem = searcResults[index];
+                return JobCard(jobRecord: searcResultsItem, index: index);
+              });
+        },
+      ),
     );
   }
 }
@@ -393,11 +376,11 @@ class JobBoardHeader extends StatelessWidget {
 class JobCard extends StatelessWidget {
   const JobCard({
     Key? key,
-    required this.listViewJobRecord,
+    required this.jobRecord,
     required this.index,
   }) : super(key: key);
 
-  final JobRecord listViewJobRecord;
+  final JobRecord jobRecord;
   final int index;
 
   @override
@@ -409,7 +392,7 @@ class JobCard extends StatelessWidget {
         onTap: () async {
           String indexStr = index.toString();
 
-          if ((listViewJobRecord.posterID!.id) == (currentUserReference!.id)) {
+          if ((jobRecord.posterID!.id) == (currentUserReference!.id)) {
             context.pushNamed(
               'JobDetailScreenPoster',
               queryParams: {
@@ -453,18 +436,18 @@ class JobCard extends StatelessWidget {
                   children: [
                     CardEntry(
                       icon: Icons.shopping_cart,
-                      store: listViewJobRecord.store!,
+                      store: jobRecord.store!,
                     ),
                     CardEntry(
                       icon: Icons.access_time,
                       store: valueOrDefault<String>(
-                        dateTimeFormat('jm', listViewJobRecord.delTime),
+                        dateTimeFormat('jm', jobRecord.delTime),
                         'ASAP',
                       ),
                     ),
                     CardEntry(
                       icon: FontAwesomeIcons.locationArrow,
-                      store: listViewJobRecord.delLocation!,
+                      store: jobRecord.delLocation!,
                       lines: 2,
                     ),
                   ],
