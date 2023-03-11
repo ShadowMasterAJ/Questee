@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:u_grabv1/auth/auth_util.dart';
 import 'package:u_grabv1/flutter_flow/flutter_flow_theme.dart';
@@ -29,6 +30,7 @@ class _ChatScreenWidgetState extends State<ChatScreenWidget> {
     super.initState();
     _chatDocRef = _chatRef.doc(widget.jobRef.id);
     _messageRef = _chatDocRef.collection('messages');
+    print("Message ref: $_messageRef");
     createChatDocument();
   }
 
@@ -53,8 +55,13 @@ class _ChatScreenWidgetState extends State<ChatScreenWidget> {
         child: Column(
           children: [
             Header(userType: _userType),
-            MessagesArea(
-                messageRef: _messageRef, scrollController: _scrollController),
+            Expanded(
+              child: MessagesArea(
+                messageRef: _messageRef,
+                scrollController: _scrollController,
+                userType: _userType,
+              ),
+            ),
             MessageBar(
                 textEditingController: _textEditingController,
                 messageRef: _messageRef,
@@ -116,10 +123,13 @@ class Header extends StatelessWidget {
 }
 
 class MessagesArea extends StatelessWidget {
+  final userType;
+
   const MessagesArea({
     Key? key,
     required CollectionReference<Object?> messageRef,
     required ScrollController scrollController,
+    required this.userType,
   })  : _messageRef = messageRef,
         _scrollController = scrollController,
         super(key: key);
@@ -129,51 +139,111 @@ class MessagesArea extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: StreamBuilder<QuerySnapshot>(
-        stream: _messageRef
-            .orderBy('timestamp', descending: true)
-            .limit(50)
-            .snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Center(
-              child: SizedBox(
-                width: 50,
-                height: 50,
-                child: CircularProgressIndicator(
-                  color: FlutterFlowTheme.of(context).primaryColor,
-                ),
+    return StreamBuilder<QuerySnapshot>(
+      stream: _messageRef
+          .orderBy('timestamp', descending: true)
+          .limit(50)
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Center(
+            child: SizedBox(
+              width: 50,
+              height: 50,
+              child: CircularProgressIndicator(
+                color: FlutterFlowTheme.of(context).primaryColor,
               ),
-            );
-          }
-          final messages = snapshot.data!.docs;
-          if (messages.length == 0) {
-            return Image.asset(
-              'assets/images/messagesEmpty@2x.png',
-              width: MediaQuery.of(context).size.width * 0.76,
-            );
-          } else {
-            return ListView.builder(
-              controller: _scrollController,
-              reverse: true,
-              itemCount: messages.length,
-              itemBuilder: (BuildContext context, int index) {
-                final message = messages[index];
-                final sender = message['senderID'];
-                final messageText = message['message'];
-                final currentUser = currentUserUid;
+            ),
+          );
+        }
+        final messages = snapshot.data!.docs;
+        if (messages.isEmpty) {
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 30,
+                ),
+                SvgPicture.asset(
+                  'assets/illustrations/empty_chat.svg',
+                  width: MediaQuery.of(context).size.width * 0.7,
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 20, horizontal: 50),
+                  decoration: BoxDecoration(
+                      color: FlutterFlowTheme.of(context).secondaryBackground,
+                      borderRadius: BorderRadius.circular(20)),
+                  padding: EdgeInsets.all(10),
+                  child: Text(
+                    userType == 'acceptor'
+                        ? "Start chatting with the job poster. Clarify doubts, confirm items and more!"
+                        : "Start chatting with the job acceptor. Clarify doubts, confirm items and more!",
+                    textAlign: TextAlign.center,
+                    style: FlutterFlowTheme.of(context).bodyText1.override(
+                          fontFamily: 'Poppins',
+                          fontSize: 16,
+                        ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+        return ListView.builder(
+          controller: _scrollController,
+          reverse: true,
+          itemCount: messages.length,
+          itemBuilder: (BuildContext context, int index) {
+            final message = messages[index];
+            final sender = message['senderID'];
+            final messageText = message['message'];
+            final currentUser = currentUserUid;
 
-                return MessageBubble(
-                  messageText: messageText,
-                  sender: sender,
-                  currentUser: currentUser,
-                );
-              },
-            );
-          }
-        },
-      ),
+            return index == messages.length - 1
+                ? Column(
+                    children: [
+                      SizedBox(
+                        height: 30,
+                      ),
+                      SvgPicture.asset(
+                        'assets/illustrations/empty_chat.svg',
+                        width: MediaQuery.of(context).size.width * 0.7,
+                      ),
+                      Container(
+                        margin:
+                            EdgeInsets.symmetric(vertical: 20, horizontal: 50),
+                        decoration: BoxDecoration(
+                            color: FlutterFlowTheme.of(context)
+                                .secondaryBackground,
+                            borderRadius: BorderRadius.circular(20)),
+                        padding: EdgeInsets.all(10),
+                        child: Text(
+                          userType == 'acceptor'
+                              ? "Start chatting with the job poster. Clarify doubts, confirm items and more!"
+                              : "Start chatting with the job acceptor. Clarify doubts, confirm items and more!",
+                          textAlign: TextAlign.center,
+                          style:
+                              FlutterFlowTheme.of(context).bodyText1.override(
+                                    fontFamily: 'Poppins',
+                                    fontSize: 16,
+                                  ),
+                        ),
+                      ),
+                      MessageBubble(
+                        messageText: messageText,
+                        sender: sender,
+                        currentUser: currentUser,
+                      ),
+                    ],
+                  )
+                : MessageBubble(
+                    messageText: messageText,
+                    sender: sender,
+                    currentUser: currentUser,
+                  );
+          },
+        );
+      },
     );
   }
 }

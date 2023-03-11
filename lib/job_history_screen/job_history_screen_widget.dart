@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
@@ -603,15 +604,32 @@ class NoJobPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Center(
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: Image.asset(
-            'assets/images/not_stonks.jpg',
-            width: double.infinity,
-          ),
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(30.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SvgPicture.asset(
+              'assets/illustrations/no_jobs.svg',
+              width: MediaQuery.of(context).size.width * 0.5,
+            ),
+            Container(
+              // margin: EdgeInsets.symmetric(vertical: 20, horizontal: 50),
+              decoration: BoxDecoration(
+                  color: FlutterFlowTheme.of(context).secondaryBackground,
+                  borderRadius: BorderRadius.circular(20)),
+              padding: EdgeInsets.all(10),
+              child: Text(
+                "No jobs found",
+                textAlign: TextAlign.center,
+                style: FlutterFlowTheme.of(context).bodyText1.override(
+                      fontFamily: 'Poppins',
+                      fontSize: 16,
+                    ),
+              ),
+            ),
+          ],
         ),
       ),
     );

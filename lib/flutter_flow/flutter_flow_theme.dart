@@ -152,7 +152,7 @@ class LightModeTheme extends FlutterFlowTheme {
 }
 
 class DarkModeTheme extends FlutterFlowTheme {
-  late Color primaryColor = const Color(0xFF96669E);
+  late Color primaryColor = Color.fromARGB(255, 163, 120, 171);
   late Color primaryColorDark = const Color(0xFF684162);
   late Color primaryColorLight = Color.fromARGB(255, 209, 172, 199);
 

@@ -2,6 +2,7 @@
 
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:text_search/text_search.dart';
@@ -147,11 +148,34 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
                     ),
                   ),
                   noItemsFoundIndicatorBuilder: (_) => Center(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Image.asset(
-                        'assets/images/not_stonks.jpg',
-                        width: double.infinity,
+                    child: Padding(
+                      padding: const EdgeInsets.all(30.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          SvgPicture.asset(
+                            'assets/illustrations/no_jobs.svg',
+                            width: MediaQuery.of(context).size.width * 0.7,
+                          ),
+                          Container(
+                            // margin: EdgeInsets.symmetric(vertical: 20, horizontal: 50),
+                            decoration: BoxDecoration(
+                                color: FlutterFlowTheme.of(context)
+                                    .secondaryBackground,
+                                borderRadius: BorderRadius.circular(20)),
+                            padding: EdgeInsets.all(10),
+                            child: Text(
+                              "No jobs found",
+                              textAlign: TextAlign.center,
+                              style: FlutterFlowTheme.of(context)
+                                  .bodyText1
+                                  .override(
+                                    fontFamily: 'Poppins',
+                                    fontSize: 16,
+                                  ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -311,11 +335,32 @@ class SearchResults extends StatelessWidget {
           final searcResults = simpleSearchResults;
           if (searcResults.isEmpty) {
             return Center(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.asset(
-                  'assets/images/not_stonks.jpg',
-                  width: double.infinity,
+              child: Padding(
+                padding: const EdgeInsets.all(30.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    SvgPicture.asset(
+                      'assets/illustrations/no_jobs.svg',
+                      width: MediaQuery.of(context).size.width * 0.7,
+                    ),
+                    Container(
+                      // margin: EdgeInsets.symmetric(vertical: 20, horizontal: 50),
+                      decoration: BoxDecoration(
+                          color:
+                              FlutterFlowTheme.of(context).secondaryBackground,
+                          borderRadius: BorderRadius.circular(20)),
+                      padding: EdgeInsets.all(10),
+                      child: Text(
+                        "No jobs found",
+                        textAlign: TextAlign.center,
+                        style: FlutterFlowTheme.of(context).bodyText1.override(
+                              fontFamily: 'Poppins',
+                              fontSize: 16,
+                            ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             );
@@ -442,7 +487,7 @@ class JobCard extends StatelessWidget {
                       icon: Icons.access_time,
                       store: valueOrDefault<String>(
                         dateTimeFormat('jm', jobRecord.delTime),
-                        'ASAP',
+                        'ASAP', //TODO - fix conditions to show 'ASAP'
                       ),
                     ),
                     CardEntry(
