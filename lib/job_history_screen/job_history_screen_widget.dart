@@ -84,497 +84,6 @@ class _JobHistoryScreenWidgetState extends State<JobHistoryScreenWidget> {
   }
 }
 
-class PostedJobsTab extends StatelessWidget {
-  const PostedJobsTab({
-    Key? key,
-  }) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          JobDesc(desc: "Current Jobs"),
-          if (ModalRoute.of(context)?.isCurrent ?? false) CurrentJobsPosted(),
-          JobDesc(desc: "Past Jobs"),
-          if (ModalRoute.of(context)?.isCurrent ?? false) PastJobsPosted(),
-        ],
-      ),
-    );
-  }
-}
-
-class AcceptedJobsTab extends StatelessWidget {
-  const AcceptedJobsTab({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          JobDesc(desc: "Current Jobs"),
-          if (ModalRoute.of(context)?.isCurrent ?? true) CurrentJobsAccepted(),
-          JobDesc(desc: "Past Jobs"),
-          if (ModalRoute.of(context)?.isCurrent ?? true) PastJobsAccepted(),
-        ],
-      ),
-    );
-  }
-}
-
-class PastJobsPosted extends StatefulWidget {
-  const PastJobsPosted({Key? key}) : super(key: key);
-
-  @override
-  _PastJobsPostedState createState() => _PastJobsPostedState();
-}
-
-class _PastJobsPostedState extends State<PastJobsPosted> {
-  late List<dynamic> pastJobsPosted = [];
-
-  Future<List<dynamic>> getPastJobsPosted() async {
-    try {
-      final DocumentSnapshot snapshot = await currentUserReference!.get();
-
-      final Map<String, dynamic>? data =
-          snapshot.data() as Map<String, dynamic>?;
-      //TODO - fix double circular progressors
-      //TODO - cache the loaded shit
-
-      if (data != null && data.containsKey('past_jobs_posted')) {
-        pastJobsPosted = data['past_jobs_posted'] as List<dynamic>;
-      } else {
-        pastJobsPosted = [];
-      }
-    } catch (e) {
-      print(e);
-    }
-
-    return pastJobsPosted;
-  }
-
-  Future<JobRecord> jobRecordCreator(int i) async {
-    return await JobRecord.getDocumentOnce(pastJobsPosted[i]);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    getPastJobsPosted().then((value) {
-      setState(() {
-        pastJobsPosted = value;
-      });
-    }).catchError((error) {
-      print(error);
-      pastJobsPosted = []; // or any other fallback value
-    });
-
-    // getPastJobsPosted();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // if (pastJobsPosted == null) {
-    //   return Center(
-    //     child: CircularProgressIndicator(
-    //       color: FlutterFlowTheme.of(context).primaryColor,
-    //     ),
-    //   );
-    // }
-
-    if (pastJobsPosted.isEmpty) {
-      return NoJobPlaceholder();
-    }
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
-      child: ListView.builder(
-        primary: false,
-        shrinkWrap: true,
-        scrollDirection: Axis.vertical,
-        itemCount: pastJobsPosted.length,
-        itemBuilder: (context, i) {
-          return FutureBuilder<JobRecord>(
-              future: jobRecordCreator(i),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                    child: CircularProgressIndicator(
-                      color: FlutterFlowTheme.of(context).primaryColor,
-                    ),
-                  );
-                }
-
-                if (snapshot.hasError) {
-                  return Center(
-                    child: Text('An error occurred. Please try again later.'),
-                  );
-                }
-
-                JobRecord jobRecord = snapshot.data!;
-
-                return JobCard(index: i, jobRecord: jobRecord);
-              });
-        },
-      ),
-    );
-  }
-}
-
-class CurrentJobsPosted extends StatefulWidget {
-  const CurrentJobsPosted({Key? key}) : super(key: key);
-
-  @override
-  _CurrentJobsPostedState createState() => _CurrentJobsPostedState();
-}
-
-class _CurrentJobsPostedState extends State<CurrentJobsPosted> {
-  late List<dynamic> currJobsPosted = [];
-
-  Future<List<dynamic>> getCurrJobsPosted() async {
-    try {
-      final DocumentSnapshot snapshot = await currentUserReference!.get();
-
-      final Map<String, dynamic>? data =
-          snapshot.data() as Map<String, dynamic>?;
-
-      if (data != null && data.containsKey('curr_jobs_posted')) {
-        currJobsPosted = data['curr_jobs_posted'] as List<dynamic>;
-      } else {
-        currJobsPosted = [];
-      }
-    } catch (e) {
-      print(e);
-    }
-
-    return currJobsPosted;
-  }
-
-  Future<JobRecord> jobRecordCreator(int i) async {
-    return await JobRecord.getDocumentOnce(currJobsPosted[i]);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    getCurrJobsPosted().then((value) {
-      setState(() {
-        currJobsPosted = value;
-      });
-    }).catchError((error) {
-      print(error);
-      currJobsPosted = []; // or any other fallback value
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    try {
-      print("nulling");
-      print(currJobsPosted[0]);
-    } catch (e) {
-      return Center(
-          child: CircularProgressIndicator(
-        color: FlutterFlowTheme.of(context).primaryColor,
-      ));
-    }
-
-    // if (currJobsPosted == null) {
-    //   return Center(
-    //     child: CircularProgressIndicator(
-    //       color: FlutterFlowTheme.of(context).primaryColor,
-    //     ),
-    //   );
-    // }
-
-    if (currJobsPosted.isEmpty) {
-      return NoJobPlaceholder();
-    }
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
-      child: ListView.builder(
-        primary: false,
-        shrinkWrap: true,
-        scrollDirection: Axis.vertical,
-        itemCount: currJobsPosted.length,
-        itemBuilder: (context, i) {
-          return FutureBuilder<JobRecord>(
-              future: jobRecordCreator(i),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                    child: CircularProgressIndicator(
-                      color: FlutterFlowTheme.of(context).primaryColor,
-                    ),
-                  );
-                }
-
-                if (snapshot.hasError) {
-                  return Center(
-                    child: Text('An error occurred. Please try again later.'),
-                  );
-                }
-
-                JobRecord jobRecord = snapshot.data!;
-
-                return JobCard(index: i, jobRecord: jobRecord);
-              });
-        },
-      ),
-    );
-  }
-}
-
-class PastJobsAccepted extends StatefulWidget {
-  const PastJobsAccepted({Key? key}) : super(key: key);
-
-  @override
-  _PastJobsAcceptedState createState() => _PastJobsAcceptedState();
-}
-
-class _PastJobsAcceptedState extends State<PastJobsAccepted> {
-  late List<dynamic> pastJobsAccepted = [];
-
-  Future<List<dynamic>> getPastJobsAccepted() async {
-    try {
-      final DocumentSnapshot snapshot = await currentUserReference!.get();
-
-      final Map<String, dynamic>? data =
-          snapshot.data() as Map<String, dynamic>?;
-
-      if (data != null && data.containsKey('past_jobs_accepted')) {
-        pastJobsAccepted = data['past_jobs_accepted'] as List<dynamic>;
-      } else {
-        pastJobsAccepted = [];
-      }
-    } catch (e) {
-      print(e);
-    }
-
-    return pastJobsAccepted;
-  }
-
-  Future<JobRecord> jobRecordCreator(int i) async {
-    return await JobRecord.getDocumentOnce(pastJobsAccepted[i]);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    super.initState();
-    getPastJobsAccepted().then((value) {
-      setState(() {
-        pastJobsAccepted = value;
-      });
-    }).catchError((error) {
-      print(error);
-      pastJobsAccepted = []; // or any other fallback value
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (pastJobsAccepted == null) {
-      return Center(
-        child: CircularProgressIndicator(
-          color: FlutterFlowTheme.of(context).primaryColor,
-        ),
-      );
-    }
-
-    if (pastJobsAccepted.isEmpty) {
-      return NoJobPlaceholder();
-    }
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
-      child: ListView.builder(
-        primary: false,
-        shrinkWrap: true,
-        scrollDirection: Axis.vertical,
-        itemCount: pastJobsAccepted.length,
-        itemBuilder: (context, i) {
-          return FutureBuilder<JobRecord>(
-              future: jobRecordCreator(i),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                    child: CircularProgressIndicator(
-                      color: FlutterFlowTheme.of(context).primaryColor,
-                    ),
-                  );
-                }
-
-                if (snapshot.hasError) {
-                  return Center(
-                    child: Text('An error occurred. Please try again later.'),
-                  );
-                }
-
-                JobRecord jobRecord = snapshot.data!;
-
-                return JobCard(index: i, jobRecord: jobRecord);
-              });
-        },
-      ),
-    );
-  }
-}
-
-class CurrentJobsAccepted extends StatefulWidget {
-  const CurrentJobsAccepted({Key? key}) : super(key: key);
-
-  @override
-  _CurrentJobsAcceptedState createState() => _CurrentJobsAcceptedState();
-}
-
-class _CurrentJobsAcceptedState extends State<CurrentJobsAccepted> {
-  List<dynamic> currJobsAccepted = [];
-
-  Future<List<dynamic>> getCurrJobsAccepted() async {
-    try {
-      final DocumentSnapshot snapshot = await currentUserReference!.get();
-
-      final Map<String, dynamic>? data =
-          snapshot.data() as Map<String, dynamic>?;
-
-      if (data != null && data.containsKey('curr_jobs_accepted')) {
-        currJobsAccepted = data['curr_jobs_accepted'] as List<dynamic>;
-      } else {
-        currJobsAccepted = [];
-      }
-    } catch (e) {
-      print(e);
-    }
-
-    return currJobsAccepted;
-  }
-
-  Future<JobRecord> jobRecordCreator(int i) async {
-    return await JobRecord.getDocumentOnce(currJobsAccepted[i]);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    getCurrJobsAccepted().then((value) {
-      setState(() {
-        currJobsAccepted = value;
-      });
-    }).catchError((error) {
-      print(error);
-      currJobsAccepted = []; // or any other fallback value
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (currJobsAccepted == null) {
-      return Center(
-        child: CircularProgressIndicator(
-          color: FlutterFlowTheme.of(context).primaryColor,
-        ),
-      );
-    }
-
-    if (currJobsAccepted.isEmpty) {
-      return NoJobPlaceholder();
-    }
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
-      child: ListView.builder(
-        primary: false,
-        shrinkWrap: true,
-        scrollDirection: Axis.vertical,
-        itemCount: currJobsAccepted.length,
-        itemBuilder: (context, i) {
-          return FutureBuilder<JobRecord>(
-              future: jobRecordCreator(i),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                    child: CircularProgressIndicator(
-                      color: FlutterFlowTheme.of(context).primaryColor,
-                    ),
-                  );
-                }
-
-                if (snapshot.hasError) {
-                  return Center(
-                    child: Text('An error occurred. Please try again later.'),
-                  );
-                }
-
-                JobRecord jobRecord = snapshot.data!;
-
-                return JobCard(index: i, jobRecord: jobRecord);
-              });
-        },
-      ),
-    );
-  }
-}
-// class CurrentJobsAccepted extends StatelessWidget {
-//   const CurrentJobsAccepted({
-//     Key? key,
-//   }) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Padding(
-//       padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
-//       child: StreamBuilder<List<JobRecord>>(
-//         stream: queryJobRecord(),
-//         builder: (context, snapshot) {
-//           if (snapshot.connectionState == ConnectionState.waiting) {
-//             return Center(
-//               child: CircularProgressIndicator(
-//                 color: FlutterFlowTheme.of(context).primaryColor,
-//               ),
-//             );
-//           }
-
-//           if (snapshot.hasError) {
-//             return Center(
-//               child: Text('An error occurred. Please try again later.'),
-//             );
-//           }
-//           // TODO: change to read from currJobsAccepted
-
-//           final listViewJobRecordList = snapshot.data
-//                   ?.where((jobRecord) =>
-//                       (jobRecord.status == 'open' ||
-//                           jobRecord.status == 'ongoing') &&
-//                       jobRecord.acceptorID?.id == currentUserUid)
-//                   .toList() ??
-//               [];
-//           print("JobsAcceped: $listViewJobRecordList");
-//           if (listViewJobRecordList.isEmpty) {
-//             return NoJobPlaceholder();
-//           }
-
-//           return ListView.builder(
-//             primary: false,
-//             shrinkWrap: true,
-//             scrollDirection: Axis.vertical,
-//             itemCount: listViewJobRecordList.length,
-//             itemBuilder: (context, i) {
-//               final listViewJobRecord = listViewJobRecordList[i];
-//               return JobCard(index: i, jobRecord: listViewJobRecord);
-//             },
-//           );
-//         },
-//       ),
-//     );
-//   }
-// }
-
 class JobDesc extends StatelessWidget {
   const JobDesc({
     Key? key,
@@ -643,134 +152,286 @@ class JobCard extends StatelessWidget {
     required this.index,
   }) : super(key: key);
 
-  final JobRecord jobRecord;
+  final DocumentReference jobRecord;
   final int index;
+
+  Future<Map<String, Object>> getJobData() async {
+    
+    print("JOBRECORD: $jobRecord");
+    final DocumentSnapshot snapshot = await jobRecord.get();
+
+    final data = snapshot.data() as Map<String, dynamic>?;
+
+    return {
+      'del_location': data!['del_location'].toString(),
+      'del_time': data['del_time'].toDate(),
+      'items': data['items'],
+      'note': data['note'],
+      'posterID': data['posterID'],
+      'acceptorID': data.containsKey('acceptorID') ? data['acceptorID'] : "",
+      'store': data['store'],
+      'status': data['status'],
+      'type': data['type'],
+      'price': data['price'],
+    };
+  }
 
   @override
   Widget build(BuildContext context) {
-    int index = this.index;
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
-      child: InkWell(
-        onTap: () async {
-          String indexStr = index.toString();
+    return FutureBuilder<Map<String, Object>>(
+      future: getJobData(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
 
-          if ((jobRecord.posterID!.id) == (currentUserReference!.id)) {
-            context.pushNamed(
-              'JobDetailScreenPoster',
-              queryParams: {
-                'indexStr': serializeParam(indexStr, ParamType.String)!,
-              },
-            );
-          } else {
-            context.pushNamed(
-              'JobDetailScreenAcceptor',
-              queryParams: {
-                'indexStr': serializeParam(indexStr, ParamType.String)!,
-              },
-            );
-          }
-        },
-        child: Card(
-          clipBehavior: Clip.antiAliasWithSaveLayer,
-          color: FlutterFlowTheme.of(context).primaryColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(7, 7, 7, 7),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Image.asset(
-                    'assets/images/app_launcher_icon.png', //TODO - change
-                    width: 100,
-                    height: 100,
-                    fit: BoxFit.cover,
-                  ),
-                ),
+        if (snapshot.hasError) {
+          print("Error: ${snapshot.error}");
+
+          return Center(
+            child: Text('Error fetching data'),
+          );
+        }
+
+        final jobData = snapshot.data!;
+        final location = jobData['del_location'].toString();
+        final delTime = jobData['del_time'] as DateTime;
+        final posterID = jobData['posterID'] as DocumentReference;
+        final store = jobData['store'].toString();
+
+        return Padding(
+          padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
+          child: InkWell(
+            onTap: () {
+              String indexStr = index.toString();
+
+              if (posterID.id == currentUserReference!.id) {
+                context.pushNamed(
+                  'JobDetailScreenPoster',
+                  queryParams: {
+                    'indexStr': serializeParam(indexStr, ParamType.String)!,
+                  },
+                );
+              } else {
+
+                print("PUSHING JOBRECORD: $jobRecord");
+                context.pushNamed(
+                  'JobDetailScreenAcceptor',
+                  queryParams: {
+                    'jobRecord':
+                        serializeParam(jobRecord, ParamType.DocumentReference)!,
+                  },
+                );
+              }
+            },
+            child: Card(
+              clipBehavior: Clip.antiAliasWithSaveLayer,
+              color: FlutterFlowTheme.of(context).primaryColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
               ),
-              Column(
+              child: Row(
                 mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
-                          child: Icon(
-                            Icons.shopping_cart,
-                            color: FlutterFlowTheme.of(context)
-                                .secondaryBackground,
-                            size: 24,
-                          ),
-                        ),
-                        Text(
-                          jobRecord.store!,
-                          style: FlutterFlowTheme.of(context).bodyText1,
-                        ),
-                      ],
+                    padding: EdgeInsetsDirectional.fromSTEB(7, 7, 7, 7),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.asset(
+                        'assets/images/app_launcher_icon.png', //TODO - change
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
-                          child: Icon(
-                            Icons.access_time,
-                            color: FlutterFlowTheme.of(context)
-                                .secondaryBackground,
-                            size: 24,
-                          ),
+                  Column(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Padding(
+                              padding:
+                                  EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
+                              child: Icon(
+                                Icons.shopping_cart,
+                                color: FlutterFlowTheme.of(context)
+                                    .secondaryBackground,
+                                size: 24,
+                              ),
+                            ),
+                            Text(
+                              store,
+                              style: FlutterFlowTheme.of(context).bodyText1,
+                            ),
+                          ],
                         ),
-                        Text(
-                          valueOrDefault<String>(
-                            dateTimeFormat('jm', jobRecord.delTime),
-                            'ASAP',
-                          ),
-                          style: FlutterFlowTheme.of(context).bodyText1,
+                      ),
+                      Padding(
+                        padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding:
+                                  EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
+                              child: Icon(
+                                Icons.access_time,
+                                color: FlutterFlowTheme.of(context)
+                                    .secondaryBackground,
+                                size: 24,
+                              ),
+                            ),
+                            Text(
+                              valueOrDefault<String>(
+                                dateTimeFormat('jm', delTime),
+                                'ASAP',
+                              ),
+                              style: FlutterFlowTheme.of(context).bodyText1,
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
-                          child: FaIcon(
-                            FontAwesomeIcons.moneyCheckAlt,
-                            color: FlutterFlowTheme.of(context)
-                                .secondaryBackground,
-                            size: 22,
-                          ),
+                      ),
+                      Padding(
+                        padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding:
+                                  EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
+                              child: FaIcon(
+                                FontAwesomeIcons.moneyBill,
+                                color: FlutterFlowTheme.of(context)
+                                    .secondaryBackground,
+                                size: 22,
+                              ),
+                            ),
+                            Text(
+                              location,
+                              style: FlutterFlowTheme.of(context).bodyText1,
+                            ),
+                          ],
                         ),
-                        Text(
-                          jobRecord.delLocation!,
-                          style: FlutterFlowTheme.of(context).bodyText1,
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
+            ),
           ),
-        ),
+        );
+      },
+    );
+  }
+}
+
+class PostedJobsTab extends StatelessWidget {
+  const PostedJobsTab({
+    Key? key,
+  }) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          JobDesc(desc: "Current Jobs"),
+          if (ModalRoute.of(context)?.isCurrent ?? false)
+            JobCategoryBuilder(jobCat: "curr_jobs_posted"),
+          JobDesc(desc: "Past Jobs"),
+          if (ModalRoute.of(context)?.isCurrent ?? false)
+            JobCategoryBuilder(jobCat: "past_jobs_posted"),
+        ],
       ),
+    );
+  }
+}
+
+class AcceptedJobsTab extends StatelessWidget {
+  const AcceptedJobsTab({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          JobDesc(desc: "Current Jobs"),
+          if (ModalRoute.of(context)?.isCurrent ?? true)
+            JobCategoryBuilder(jobCat: "curr_jobs_accepted"),
+          JobDesc(desc: "Past Jobs"),
+          if (ModalRoute.of(context)?.isCurrent ?? true)
+            JobCategoryBuilder(jobCat: "past_jobs_accepted"),
+        ],
+      ),
+    );
+  }
+}
+
+class JobCategoryBuilder extends StatefulWidget {
+  final String jobCat;
+
+  const JobCategoryBuilder({Key? key, required this.jobCat}) : super(key: key);
+
+  @override
+  _JobCategoryBuilderState createState() => _JobCategoryBuilderState();
+}
+
+class _JobCategoryBuilderState extends State<JobCategoryBuilder> {
+  Future<List<DocumentReference>> _getJobRecords() async {
+    try {
+      final snapshot = await currentUserReference!.get();
+      final data = snapshot.data() as Map<String, dynamic>?;
+      if (data != null && data.containsKey(widget.jobCat)) {
+        final userJobCat = List<DocumentReference>.from(data[widget.jobCat]);
+        return userJobCat.map((record) => record).toList();
+      } else {
+        return [];
+      }
+    } catch (e) {
+      print(e);
+      return []; // or any other fallback value
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<List<DocumentReference>>(
+      future: _getJobRecords(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          final _jobRecords = snapshot.data;
+          return _jobRecords!.isEmpty
+              ? NoJobPlaceholder()
+              : Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
+                  child: ListView.builder(
+                    primary: false,
+                    shrinkWrap: true,
+                    scrollDirection: Axis.vertical,
+                    itemCount: _jobRecords.length,
+                    itemBuilder: (context, i) =>
+                        JobCard(index: i, jobRecord: _jobRecords[i]),
+                  ),
+                );
+        } else {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
     );
   }
 }

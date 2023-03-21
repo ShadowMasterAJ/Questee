@@ -9,10 +9,10 @@ import '../flutter_flow/flutter_flow_util.dart';
 import '../flutter_flow/flutter_flow_widgets.dart';
 
 class JobDetailScreenAcceptorWidget extends StatefulWidget {
-  final String indexStr;
+  final DocumentReference jobRecord;
   const JobDetailScreenAcceptorWidget({
     Key? key,
-    required this.indexStr,
+    required this.jobRecord,
   }) : super(key: key);
 
   @override
@@ -24,10 +24,31 @@ class _JobDetailScreenAcceptorWidgetState
     extends State<JobDetailScreenAcceptorWidget> {
   List<String>? checkboxGroupValues;
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  
+  Future<Map<String, Object>> getJobData() async {
+    print("RECEIVED JOBRECORD: ${widget.jobRecord}");
+    //TODO - fix the error: Null check operator used on a null value. why? somehow the jobRecord docref is null/<jobID> insetad of jobs/<jobID>
+
+    final DocumentSnapshot snapshot = await widget.jobRecord.get();
+
+    final data = snapshot.data() as Map<String, dynamic>?;
+
+    return {
+      'del_location': data!['del_location'].toString(),
+      'del_time': data['del_time'].toDate(),
+      'items': data['items'],
+      'note': data['note'],
+      'posterID': data['posterID'],
+      'acceptorID': data.containsKey('acceptorID') ? data['acceptorID'] : "",
+      'store': data['store'],
+      'status': data['status'],
+      'type': data['type'],
+      'price': data['price'],
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
-    int index = int.parse(widget.indexStr);
-
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -36,32 +57,37 @@ class _JobDetailScreenAcceptorWidgetState
           onTap: () => FocusScope.of(context).unfocus(),
           child: Padding(
             padding: EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
-            child: StreamBuilder<List<JobRecord>>(
-              stream: queryJobRecord(
-                singleRecord: false,
-              ),
-              builder: (context, snapshot) {
-                // Customize what your widget looks like when it's loading.
-                if (!snapshot.hasData) {
+            child: FutureBuilder<Map<String, Object>>(
+              future: getJobData(),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(
-                    child: SizedBox(
-                      width: 50,
-                      height: 50,
-                      child: CircularProgressIndicator(
-                        color: FlutterFlowTheme.of(context).primaryColor,
-                      ),
-                    ),
+                    child: CircularProgressIndicator(),
                   );
                 }
-                List<JobRecord> columnJobRecordList = snapshot.data!;
 
-                // Return an empty Container when the document does not exist.
-                if (snapshot.data!.isEmpty) {
-                  return Container();
+                if (snapshot.hasError) {
+                  print("Error: ${snapshot.error}");
+
+                  return Center(
+                    child: Text('Error fetching data'),
+                  );
                 }
-                final columnJobRecord = columnJobRecordList.isNotEmpty
-                    ? columnJobRecordList[index]
-                    : null;
+
+                final jobData = snapshot.data!;
+                print("JOBDATA: $jobData");
+
+                final location = jobData['del_location'].toString();
+                final delTime = jobData['del_time'] as DateTime;
+                final posterID = jobData['posterID'] as DocumentReference;
+                final store = jobData['store'].toString();
+
+                final acceptorID = jobData['acceptorID'] as DocumentReference;
+                final type = jobData['type'].toString();
+                final status = jobData['status'].toString();
+                final items = jobData['items'] as List<String>;
+                final note = jobData['note'].toString();
+                final price = jobData['price'] as double;
 
                 return Column(
                   mainAxisSize: MainAxisSize.max,
@@ -101,10 +127,8 @@ class _JobDetailScreenAcceptorWidgetState
                         ],
                       ),
                     ),
-                    columnJobRecord!.acceptorID != null
-                        ? JobAcceptedChip(columnJobRecord: columnJobRecord)
-                        : Container(),
-                    DelItems(columnJobRecord, context),
+                    JobAcceptedChip(acceptorID: acceptorID.id),
+                    DelItems(items, context),
                     Divider(
                       height: 1,
                       thickness: 1,
@@ -119,9 +143,9 @@ class _JobDetailScreenAcceptorWidgetState
                             shrinkWrap: true,
                             scrollDirection: Axis.vertical,
                             children: [
-                              DelStore(columnJobRecord: columnJobRecord),
-                              DelTiming(columnJobRecord: columnJobRecord),
-                              PosterNote(columnJobRecord: columnJobRecord),
+                              DelStore(store: store),
+                              DelTiming(delTime: delTime),
+                              PosterNote(note: note),
                             ],
                           ),
                         ],
@@ -155,8 +179,7 @@ class _JobDetailScreenAcceptorWidgetState
 
                             List<UsersRecord> poster = snapshot.data!
                                 .where((element) =>
-                                    element.uid.toString() ==
-                                    columnJobRecord.posterID!.id)
+                                    element.uid.toString() == posterID.id)
                                 .toList();
                             return Text(
                               poster.length > 0
@@ -167,12 +190,14 @@ class _JobDetailScreenAcceptorWidgetState
                           }),
                     ),
                     Spacer(),
-                    columnJobRecord.acceptorID != null
-                        ? ChatButton(columnJobRecordList: columnJobRecordList)
-                        : AcceptJobButton(columnJobRecord, context),
-                   //TODO - add verification functionality
-                    columnJobRecord.acceptorID != null
-                        ? ChatButton(columnJobRecordList: columnJobRecordList)
+                    acceptorID.id != ""
+                        ? ChatButton(jobRecord: widget.jobRecord)
+                        : AcceptJobButton(widget.jobRecord, context),
+
+                    //TODO - add verification functionality
+
+                    acceptorID.id != ""
+                        ? ChatButton(jobRecord: widget.jobRecord)
                         : Container(),
                   ],
                 );
@@ -185,8 +210,7 @@ class _JobDetailScreenAcceptorWidgetState
   }
 
   // ignore: non_constant_identifier_names
-  Align DelItems(JobRecord? columnJobRecord, BuildContext context) {
-    print("Items: ${columnJobRecord!.items!.toList()}");
+  Align DelItems(List<String> items, BuildContext context) {
     return Align(
       alignment: AlignmentDirectional(-0.1, 0.05),
       child: Column(
@@ -204,7 +228,7 @@ class _JobDetailScreenAcceptorWidgetState
                     scrollDirection: Axis.vertical,
                     children: [
                       FlutterFlowCheckboxGroup(
-                        options: columnJobRecord.items!.toList(),
+                        options: items,
                         onChanged: (val) =>
                             setState(() => checkboxGroupValues = val),
                         activeColor: FlutterFlowTheme.of(context).primaryColor,
@@ -225,17 +249,17 @@ class _JobDetailScreenAcceptorWidgetState
   }
 
   // ignore: non_constant_identifier_names
-  Padding AcceptJobButton(JobRecord columnJobRecord, BuildContext context) {
+  Padding AcceptJobButton(
+      DocumentReference columnJobRecord, BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 20),
       child: FFButtonWidget(
         onPressed: () async {
-          final jobUpdateData = createJobRecordData(
-              acceptorID: currentUserReference,
-              items: columnJobRecord.items?.toList());
+          final jobUpdateData =
+              createJobRecordData(acceptorID: currentUserReference);
           UsersRecord.addCurrJobsAccepted(
-              currentUserReference!.id, columnJobRecord.reference);
-          await columnJobRecord.reference.update(jobUpdateData);
+              currentUserReference!.id, columnJobRecord);
+          await columnJobRecord.update(jobUpdateData);
         },
         text: 'Accept This Job ',
         options: FFButtonOptions(
@@ -260,46 +284,44 @@ class _JobDetailScreenAcceptorWidgetState
 class JobAcceptedChip extends StatelessWidget {
   const JobAcceptedChip({
     Key? key,
-    required this.columnJobRecord,
+    required this.acceptorID,
   }) : super(key: key);
 
-  final JobRecord? columnJobRecord;
+  final String acceptorID;
 
   @override
   Widget build(BuildContext context) {
     return FFButtonWidget(
-        onPressed: () {
-          print('Button pressed ...');
-        },
-        text: "You have accepted the job.",
-        options: FFButtonOptions(
-          width: 300,
-          height: 40,
-          color: columnJobRecord!.acceptorID != null
-              ? Color(0xFF80D3A2)
-              : FlutterFlowTheme.of(context).secondaryText,
-          textStyle: FlutterFlowTheme.of(context)
-              .subtitle2
-              .override(
-                fontFamily: 'Poppins',
-                color: Colors.white,
-              ),
-          borderSide: BorderSide(
-            color: Colors.transparent,
-          ),
-          borderRadius: BorderRadius.circular(8),
+      onPressed: () {
+        print('Button pressed ...');
+      },
+      text: "You have accepted the job.",
+      options: FFButtonOptions(
+        width: 300,
+        height: 40,
+        color: acceptorID != ""
+            ? Color(0xFF80D3A2)
+            : FlutterFlowTheme.of(context).secondaryText,
+        textStyle: FlutterFlowTheme.of(context).subtitle2.override(
+              fontFamily: 'Poppins',
+              color: Colors.white,
+            ),
+        borderSide: BorderSide(
+          color: Colors.transparent,
         ),
-      );
+        borderRadius: BorderRadius.circular(8),
+      ),
+    );
   }
 }
 
 class ChatButton extends StatelessWidget {
   const ChatButton({
     Key? key,
-    required this.columnJobRecordList,
+    required this.jobRecord,
   }) : super(key: key);
 
-  final List<JobRecord> columnJobRecordList;
+  final DocumentReference jobRecord;
 
   @override
   Widget build(BuildContext context) {
@@ -323,17 +345,13 @@ class ChatButton extends StatelessWidget {
           }
           //  List<JobRecord> columnJobRecordList = snapshot.data!;
 
-          final DocumentReference<Object?>? columnJobRecord =
-              columnJobRecordList.isNotEmpty
-                  ? columnJobRecordList.first.reference
-                  : null;
           return FFButtonWidget(
             onPressed: () async {
               context.pushNamed(
                 'ChatScreen',
                 queryParams: {
                   'jobRef': serializeParam(
-                    columnJobRecord,
+                    jobRecord,
                     ParamType.DocumentReference,
                   ),
                 }.withoutNulls,
@@ -372,10 +390,10 @@ class ChatButton extends StatelessWidget {
 class DelStore extends StatelessWidget {
   const DelStore({
     Key? key,
-    required this.columnJobRecord,
+    required this.store,
   }) : super(key: key);
 
-  final JobRecord? columnJobRecord;
+  final String store;
 
   @override
   Widget build(BuildContext context) {
@@ -393,7 +411,7 @@ class DelStore extends StatelessWidget {
             ),
           ),
           Text(
-            columnJobRecord!.store!,
+            store,
             style: FlutterFlowTheme.of(context).bodyText1,
           ),
         ],
@@ -405,10 +423,10 @@ class DelStore extends StatelessWidget {
 class DelTiming extends StatelessWidget {
   const DelTiming({
     Key? key,
-    required this.columnJobRecord,
+    required this.delTime,
   }) : super(key: key);
 
-  final JobRecord? columnJobRecord;
+  final DateTime delTime;
 
   @override
   Widget build(BuildContext context) {
@@ -428,7 +446,7 @@ class DelTiming extends StatelessWidget {
           Text(
             // columnJobRecord!.delTime.toString(),
             valueOrDefault<String>(
-              dateTimeFormat('jm', columnJobRecord!.delTime),
+              dateTimeFormat('jm', delTime),
               'ASAP',
             ),
             style: FlutterFlowTheme.of(context).bodyText1,
@@ -442,10 +460,10 @@ class DelTiming extends StatelessWidget {
 class PosterNote extends StatelessWidget {
   const PosterNote({
     Key? key,
-    required this.columnJobRecord,
+    required this.note,
   }) : super(key: key);
 
-  final JobRecord? columnJobRecord;
+  final String note;
 
   @override
   Widget build(BuildContext context) {
@@ -465,9 +483,7 @@ class PosterNote extends StatelessWidget {
             ),
           ),
           Text(
-            columnJobRecord!.note!.length < 2
-                ? "Poster provided no description"
-                : columnJobRecord!.note!,
+            note.length < 2 ? "Poster provided no description" : note,
             style: FlutterFlowTheme.of(context).bodyText1,
           ),
         ],

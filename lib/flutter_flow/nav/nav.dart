@@ -10,7 +10,6 @@ import '../../backend/backend.dart';
 import '../../auth/firebase_user_provider.dart';
 
 import '../../index.dart';
-import '../../main.dart';
 import '../lat_lng.dart';
 import '../place.dart';
 import 'serialization_util.dart';
@@ -130,7 +129,8 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               name: 'JobDetailScreenAcceptor',
               path: 'jobDetailScreenAcceptor',
               builder: (context, params) => JobDetailScreenAcceptorWidget(
-                  indexStr: params.getParam('indexStr', ParamType.String)),
+                  jobRecord: params.getParam(
+                      'jobRecord', ParamType.DocumentReference)),
             ),
             FFRoute(
               name: 'forgotPasswordScreen',
