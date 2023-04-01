@@ -1,24 +1,15 @@
-import 'package:built_value/serializer.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import '../flutter_flow/flutter_flow_util.dart';
-
-import 'schema/users_record.dart';
-import 'schema/job_record.dart';
-import 'schema/chats_record.dart';
-import 'schema/chat_messages_record.dart';
-import 'schema/serializers.dart';
+import 'package:u_grabv1/flutter_flow/chat/index.dart';
 
 export 'dart:async' show StreamSubscription;
 export 'package:cloud_firestore/cloud_firestore.dart';
-export 'schema/index.dart';
-export 'schema/serializers.dart';
-
-export 'schema/users_record.dart';
-export 'schema/job_record.dart';
-export 'schema/chats_record.dart';
 export 'schema/chat_messages_record.dart';
+export 'schema/chats_record.dart';
+export 'schema/index.dart';
+export 'schema/job_record.dart';
+export 'schema/serializers.dart';
+export 'schema/users_record.dart';
 
 /// Functions to query UsersRecords (as a Stream and as a Future).
 Stream<List<UsersRecord>> queryUsersRecord({
@@ -302,13 +293,16 @@ Future maybeCreateUser(User user) async {
   }
 
   final userData = createUsersRecordData(
-    email: user.email,
-    displayName: user.displayName,
-    photoUrl: user.photoURL,
-    uid: user.uid,
-    phoneNumber: user.phoneNumber,
-    createdTime: getCurrentTimestamp,
-  );
+      email: user.email,
+      displayName: user.displayName,
+      photoUrl: user.photoURL,
+      uid: user.uid,
+      phoneNumber: user.phoneNumber,
+      createdTime: getCurrentTimestamp,
+      currJobsAccepted: [],
+      currJobsPosted: [],
+      pastJobsAccepted: [],
+      pastJobsPosted: []);
 
   await userRecord.set(userData);
 }

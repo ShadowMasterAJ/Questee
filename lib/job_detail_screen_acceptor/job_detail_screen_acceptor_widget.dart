@@ -9,10 +9,10 @@ import '../flutter_flow/flutter_flow_util.dart';
 import '../flutter_flow/flutter_flow_widgets.dart';
 
 class JobDetailScreenAcceptorWidget extends StatefulWidget {
-  final DocumentReference jobRecord;
+  final DocumentReference jobRef;
   const JobDetailScreenAcceptorWidget({
     Key? key,
-    required this.jobRecord,
+    required this.jobRef,
   }) : super(key: key);
 
   @override
@@ -24,17 +24,18 @@ class _JobDetailScreenAcceptorWidgetState
     extends State<JobDetailScreenAcceptorWidget> {
   List<String>? checkboxGroupValues;
   final scaffoldKey = GlobalKey<ScaffoldState>();
-  
+
   Future<Map<String, Object>> getJobData() async {
-    print("RECEIVED JOBRECORD: ${widget.jobRecord}");
-    //TODO - fix the error: Null check operator used on a null value. why? somehow the jobRecord docref is null/<jobID> insetad of jobs/<jobID>
+    print("RECEIVED JOBRECORD: ${widget.jobRef}");
+    final DocumentReference correctRef =
+        FirebaseFirestore.instance.doc('job/${widget.jobRef.id}');
+    final DocumentSnapshot snapshot = await correctRef.get();
+    print("CORRECTED JOBRECORD: $correctRef");
 
-    final DocumentSnapshot snapshot = await widget.jobRecord.get();
-
-    final data = snapshot.data() as Map<String, dynamic>?;
+    final data = snapshot.data() as Map<String, dynamic>;
 
     return {
-      'del_location': data!['del_location'].toString(),
+      'del_location': data['del_location'].toString(),
       'del_time': data['del_time'].toDate(),
       'items': data['items'],
       'note': data['note'],
@@ -49,6 +50,8 @@ class _JobDetailScreenAcceptorWidgetState
 
   @override
   Widget build(BuildContext context) {
+    final DocumentReference correctRef =
+        FirebaseFirestore.instance.doc('job/${widget.jobRef.id}');
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -75,17 +78,18 @@ class _JobDetailScreenAcceptorWidgetState
                 }
 
                 final jobData = snapshot.data!;
-                print("JOBDATA: $jobData");
 
                 final location = jobData['del_location'].toString();
                 final delTime = jobData['del_time'] as DateTime;
                 final posterID = jobData['posterID'] as DocumentReference;
                 final store = jobData['store'].toString();
 
-                final acceptorID = jobData['acceptorID'] as DocumentReference;
+                final acceptorID = jobData['acceptorID'] != ""
+                    ? (jobData['acceptorID'] as DocumentReference).id
+                    : jobData['acceptorID'];
                 final type = jobData['type'].toString();
                 final status = jobData['status'].toString();
-                final items = jobData['items'] as List<String>;
+                final items = List<String>.from(jobData['items']);
                 final note = jobData['note'].toString();
                 final price = jobData['price'] as double;
 
@@ -113,7 +117,7 @@ class _JobDetailScreenAcceptorWidgetState
                           ),
                           Padding(
                             padding:
-                                EdgeInsetsDirectional.fromSTEB(20, 0, 0, 0),
+                                EdgeInsetsDirectional.fromSTEB(30, 0, 0, 0),
                             child: Text(
                               'Job Details.',
                               textAlign: TextAlign.center,
@@ -127,7 +131,7 @@ class _JobDetailScreenAcceptorWidgetState
                         ],
                       ),
                     ),
-                    JobAcceptedChip(acceptorID: acceptorID.id),
+                    JobAcceptedChip(acceptorID: acceptorID),
                     DelItems(items, context),
                     Divider(
                       height: 1,
@@ -190,14 +194,14 @@ class _JobDetailScreenAcceptorWidgetState
                           }),
                     ),
                     Spacer(),
-                    acceptorID.id != ""
-                        ? ChatButton(jobRecord: widget.jobRecord)
-                        : AcceptJobButton(widget.jobRecord, context),
+                    acceptorID != ""
+                        ? ChatButton(jobRecord: correctRef)
+                        : AcceptJobButton(correctRef, context),
 
                     //TODO - add verification functionality
 
-                    acceptorID.id != ""
-                        ? ChatButton(jobRecord: widget.jobRecord)
+                    acceptorID != ""
+                        ? ChatButton(jobRecord: widget.jobRef)
                         : Container(),
                   ],
                 );
@@ -260,6 +264,7 @@ class _JobDetailScreenAcceptorWidgetState
           UsersRecord.addCurrJobsAccepted(
               currentUserReference!.id, columnJobRecord);
           await columnJobRecord.update(jobUpdateData);
+          setState(() {});
         },
         text: 'Accept This Job ',
         options: FFButtonOptions(
@@ -291,25 +296,27 @@ class JobAcceptedChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FFButtonWidget(
-      onPressed: () {
-        print('Button pressed ...');
-      },
-      text: "You have accepted the job.",
-      options: FFButtonOptions(
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      color: acceptorID != ""
+          ? Color(0xFF80D3A2)
+          : FlutterFlowTheme.of(context).secondaryText,
+      child: SizedBox(
         width: 300,
         height: 40,
-        color: acceptorID != ""
-            ? Color(0xFF80D3A2)
-            : FlutterFlowTheme.of(context).secondaryText,
-        textStyle: FlutterFlowTheme.of(context).subtitle2.override(
-              fontFamily: 'Poppins',
-              color: Colors.white,
-            ),
-        borderSide: BorderSide(
-          color: Colors.transparent,
+        child: Center(
+          child: Text(
+            acceptorID != ""
+                ? "You have accepted the job."
+                : "Job is still available",
+            style: FlutterFlowTheme.of(context).subtitle2.override(
+                  fontFamily: 'Poppins',
+                  color: Colors.white,
+                ),
+          ),
         ),
-        borderRadius: BorderRadius.circular(8),
       ),
     );
   }
@@ -344,7 +351,7 @@ class ChatButton extends StatelessWidget {
             );
           }
           //  List<JobRecord> columnJobRecordList = snapshot.data!;
-
+          print("JOBRECORD TO CHAT: $jobRecord");
           return FFButtonWidget(
             onPressed: () async {
               context.pushNamed(

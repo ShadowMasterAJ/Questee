@@ -502,6 +502,7 @@ class _SignupScreenWidgetState extends State<SignupScreenWidget> {
                           final usersCreateData = createUsersRecordData(
                             displayName: userNameController!.text,
                           );
+                          //TODO - Add gender, phone number etc (other attributes)
                           await UsersRecord.collection
                               .doc(user.uid)
                               .update(usersCreateData);

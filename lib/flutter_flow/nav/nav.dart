@@ -129,8 +129,8 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               name: 'JobDetailScreenAcceptor',
               path: 'jobDetailScreenAcceptor',
               builder: (context, params) => JobDetailScreenAcceptorWidget(
-                  jobRecord: params.getParam(
-                      'jobRecord', ParamType.DocumentReference)),
+                  jobRef:
+                      params.getParam('jobRef', ParamType.DocumentReference)),
             ),
             FFRoute(
               name: 'forgotPasswordScreen',

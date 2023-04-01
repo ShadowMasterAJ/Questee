@@ -3,6 +3,7 @@
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutterfire_ui/firestore.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:text_search/text_search.dart';
@@ -25,8 +26,9 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
   List<JobRecord> simpleSearchResults = [];
   TextEditingController? searchFieldController;
   PagingController<DocumentSnapshot?, JobRecord>? _pagingController;
-  Query? _pagingQuery;
+
   List<StreamSubscription?> _streamSubscriptions = [];
+  Query? _pagingQuery; // = FirebaseFirestore.instance.collection('job');
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -77,7 +79,8 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
   }
 
   Expanded JobList(BuildContext context) {
-    print(FFAppState().showFullList);
+    // .where('posterID', isNotEqualTo: currentUserReference)
+    // .where("acceptorID", isEqualTo: null));
     return Expanded(
       child: FFAppState().showFullList
           ? Padding(
@@ -85,112 +88,73 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
               child: PagedListView<DocumentSnapshot<Object?>?, JobRecord>(
                 pagingController: () {
                   final Query<Object?> Function(Query<Object?>) queryBuilder =
-                      (jobRecord) => jobRecord;
-                  if (_pagingController != null) {
-                    final query = queryBuilder(JobRecord.collection);
-                    if (query != _pagingQuery) {
-                      // The query has changed
-                      _pagingQuery = query;
-                      _streamSubscriptions.forEach((s) => s?.cancel());
-                      _streamSubscriptions.clear();
-                      _pagingController!.refresh();
-                    }
-                    return _pagingController!;
+                      (jobRecord) => jobRecord
+                          .where('posterID', isNotEqualTo: currentUserReference)
+                          .where("acceptorID", isEqualTo: null);
+
+                  _pagingController ??= PagingController(firstPageKey: null);
+
+                  final query = queryBuilder(JobRecord.collection);
+
+                  if (query != _pagingQuery) {
+                    // The query has changed
+                    _pagingQuery = query;
+                    _streamSubscriptions.forEach((s) => s?.cancel());
+                    _streamSubscriptions.clear();
+                    _pagingController!.refresh();
                   }
 
-                  _pagingController = PagingController(firstPageKey: null);
-                  _pagingQuery = queryBuilder(JobRecord.collection);
                   _pagingController!.addPageRequestListener((nextPageMarker) {
                     queryJobRecordPage(
                       queryBuilder: (jobRecord) => jobRecord,
                       nextPageMarker: nextPageMarker,
-                      pageSize: 10,
+                      pageSize: 3,
                       isStream: true,
                     ).then((page) {
-                      _pagingController!.appendPage(
-                        page.data,
-                        page.nextPageMarker,
-                      );
-                      final streamSubscription =
-                          page.dataStream?.listen((data) {
-                        final itemIndexes = _pagingController!.itemList!
-                            .asMap()
-                            .map((k, v) => MapEntry(v.reference.id, k));
+                      _pagingController!
+                          .appendPage(page.data, page.nextPageMarker);
+
+                      final itemIndexes = _pagingController!.itemList!
+                          .asMap()
+                          .map((k, v) => MapEntry(v.reference.id, k));
+
+                      page.dataStream?.listen((data) {
                         data.forEach((item) {
                           final index = itemIndexes[item.reference.id];
-                          final items = _pagingController!.itemList!;
                           if (index != null) {
+                            final items = _pagingController!.itemList!;
                             items.replaceRange(index, index + 1, [item]);
                             _pagingController!.itemList = {
-                              for (var item in items) item.reference: item
+                              for (final item in items) item.reference: item
                             }.values.toList();
                           }
                         });
                         setState(() {});
                       });
-                      _streamSubscriptions.add(streamSubscription);
                     });
                   });
+
                   return _pagingController!;
                 }(),
-                primary: false,
-                shrinkWrap: true,
+                primary: true,
                 scrollDirection: Axis.vertical,
                 builderDelegate: PagedChildBuilderDelegate<JobRecord>(
-                  // Customize what your widget looks like when it's loading the first page.
-                  firstPageProgressIndicatorBuilder: (_) => Center(
-                    child: SizedBox(
-                      width: 50,
-                      height: 50,
-                      child: CircularProgressIndicator(
-                        color: FlutterFlowTheme.of(context).primaryColor,
-                      ),
-                    ),
-                  ),
-                  noItemsFoundIndicatorBuilder: (_) => Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(30.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          SvgPicture.asset(
-                            'assets/illustrations/no_jobs.svg',
-                            width: MediaQuery.of(context).size.width * 0.7,
-                          ),
-                          Container(
-                            // margin: EdgeInsets.symmetric(vertical: 20, horizontal: 50),
-                            decoration: BoxDecoration(
-                                color: FlutterFlowTheme.of(context)
-                                    .secondaryBackground,
-                                borderRadius: BorderRadius.circular(20)),
-                            padding: EdgeInsets.all(10),
-                            child: Text(
-                              "No jobs found",
-                              textAlign: TextAlign.center,
-                              style: FlutterFlowTheme.of(context)
-                                  .bodyText1
-                                  .override(
-                                    fontFamily: 'Poppins',
-                                    fontSize: 16,
-                                  ),
+                    firstPageProgressIndicatorBuilder: (_) => Center(
+                          child: SizedBox(
+                            width: 50,
+                            height: 50,
+                            child: CircularProgressIndicator(
+                              color: FlutterFlowTheme.of(context).primaryColor,
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  itemBuilder: (context, _, listViewIndex) {
-                    final listViewJobRecord = // add if statement here
-                        _pagingController!.itemList![listViewIndex];
-
-                    return listViewJobRecord.acceptorID != null
-                        ? SizedBox.shrink()
-                        : JobCard(
-                            jobRecord: listViewJobRecord, index: listViewIndex);
-                  },
-                ),
-              ),
-            )
+                        ),
+                    noItemsFoundIndicatorBuilder: (_) => NoJobsIllustration(),
+                    itemBuilder: (context, _, listViewIndex) {
+                      final listViewJobRecord =
+                          _pagingController!.itemList![listViewIndex];
+                      return JobCard(jobRecord: listViewJobRecord.reference);
+                    }),
+              ))
           : SearchResults(simpleSearchResults: simpleSearchResults),
     );
   }
@@ -317,6 +281,45 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
   }
 }
 
+class NoJobsIllustration extends StatelessWidget {
+  const NoJobsIllustration({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(30.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            SvgPicture.asset(
+              'assets/illustrations/no_jobs.svg',
+              width: MediaQuery.of(context).size.width * 0.7,
+            ),
+            Container(
+              // margin: EdgeInsets.symmetric(vertical: 20, horizontal: 50),
+              decoration: BoxDecoration(
+                  color: FlutterFlowTheme.of(context).secondaryBackground,
+                  borderRadius: BorderRadius.circular(20)),
+              padding: EdgeInsets.all(10),
+              child: Text(
+                "No jobs found",
+                textAlign: TextAlign.center,
+                style: FlutterFlowTheme.of(context).bodyText1.override(
+                      fontFamily: 'Poppins',
+                      fontSize: 16,
+                    ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class SearchResults extends StatelessWidget {
   const SearchResults({
     Key? key,
@@ -371,7 +374,7 @@ class SearchResults extends StatelessWidget {
               itemCount: searcResults.length,
               itemBuilder: (context, index) {
                 final searcResultsItem = searcResults[index];
-                return JobCard(jobRecord: searcResultsItem, index: index);
+                return JobCard(jobRecord: searcResultsItem.reference);
               });
         },
       ),
@@ -422,98 +425,135 @@ class JobCard extends StatelessWidget {
   const JobCard({
     Key? key,
     required this.jobRecord,
-    required this.index,
   }) : super(key: key);
 
-  final JobRecord jobRecord;
-  final int index;
+  final DocumentReference jobRecord;
+
+  Future<Map<String, Object>> getJobData() async {
+    final DocumentSnapshot snapshot = await jobRecord.get();
+
+    final data = snapshot.data() as Map<String, dynamic>?;
+
+    return {
+      'del_location': data!['del_location'].toString(),
+      'del_time': data['del_time'].toDate(),
+      'items': data['items'],
+      'note': data['note'],
+      'posterID': data['posterID'],
+      'acceptorID': data.containsKey('acceptorID') ? data['acceptorID'] : "",
+      'store': data['store'],
+      'status': data['status'],
+      'type': data['type'],
+      'price': data['price'],
+    };
+  }
 
   @override
   Widget build(BuildContext context) {
-    int index = this.index;
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(10, 5, 10, 5),
-      child: InkWell(
-        onTap: () async {
-          String indexStr = index.toString();
+    return FutureBuilder<Map<String, Object>>(
+      future: getJobData(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
 
-          if ((jobRecord.posterID!.id) == (currentUserReference!.id)) {
-            context.pushNamed(
-              'JobDetailScreenPoster',
-              queryParams: {
-                'indexStr': serializeParam(indexStr, ParamType.String)!,
-              },
-            );
-          } else {
-            context.pushNamed(
-              'JobDetailScreenAcceptor',
-              queryParams: {
-                'indexStr': serializeParam(indexStr, ParamType.String)!,
-              },
-            );
-          }
-        },
-        child: Card(
-          clipBehavior: Clip.antiAliasWithSaveLayer,
-          color: FlutterFlowTheme.of(context).primaryColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(7, 7, 7, 7),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  //TODO - update with some specific image
-                  child: Image.asset(
-                    "assets/images/app_launcher_icon.png",
-                    width: 100,
-                    height: 100,
-                    fit: BoxFit.fill,
+        if (snapshot.hasError) {
+          print("Error: ${snapshot.error}");
+
+          return Center(
+            child: Text('Error fetching data'),
+          );
+        }
+
+        final jobData = snapshot.data!;
+        final location = jobData['del_location'].toString();
+        final delTime = jobData['del_time'] as DateTime;
+        final posterID = jobData['posterID'] as DocumentReference;
+        final store = jobData['store'].toString();
+        return Padding(
+          padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
+          child: InkWell(
+            onTap: () {
+              String indexStr = '1'; //index.toString();
+
+              if (posterID.id == currentUserUid) {
+                context.pushNamed(
+                  'JobDetailScreenPoster',
+                  queryParams: {
+                    'indexStr': serializeParam(indexStr, ParamType.String)!,
+                  },
+                );
+              } else {
+                context.pushNamed(
+                  'JobDetailScreenAcceptor',
+                  queryParams: {
+                    'jobRef':
+                        serializeParam(jobRecord, ParamType.DocumentReference)!,
+                  },
+                );
+              }
+            },
+            child: Card(
+              clipBehavior: Clip.antiAliasWithSaveLayer,
+              color: FlutterFlowTheme.of(context).primaryColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  JobCardImage(),
+                  Column(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      JobCardStore(store: store),
+                      JobCardDelTime(delTime: delTime),
+                      JobCardMoney(location: location),
+                    ],
                   ),
-                ),
+                ],
               ),
-              Flexible(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CardEntry(
-                      icon: Icons.shopping_cart,
-                      store: jobRecord.store!,
-                    ),
-                    CardEntry(
-                      icon: Icons.access_time,
-                      store: valueOrDefault<String>(
-                        dateTimeFormat('jm', jobRecord.delTime),
-                        'ASAP', //TODO - fix conditions to show 'ASAP'
-                      ),
-                    ),
-                    CardEntry(
-                      icon: FontAwesomeIcons.locationArrow,
-                      store: jobRecord.delLocation!,
-                      lines: 2,
-                    ),
-                  ],
-                ),
-              ),
-            ],
+            ),
           ),
+        );
+      },
+    );
+  }
+}
+
+class JobCardImage extends StatelessWidget {
+  const JobCardImage({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(7, 7, 7, 7),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: Image.asset(
+          'assets/images/app_launcher_icon.png', //TODO - change
+          width: 100,
+          height: 100,
+          fit: BoxFit.cover,
         ),
       ),
     );
   }
 }
 
-class CardEntry extends StatelessWidget {
-  const CardEntry(
-      {Key? key, required this.store, required this.icon, this.lines = 1})
-      : super(key: key);
+class JobCardMoney extends StatelessWidget {
+  const JobCardMoney({
+    Key? key,
+    required this.location,
+  }) : super(key: key);
 
-  final String store;
-  final IconData icon;
-  final int lines;
+  final String location;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -521,22 +561,89 @@ class CardEntry extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
+            child: FaIcon(
+              FontAwesomeIcons.moneyBill,
+              color: FlutterFlowTheme.of(context).secondaryBackground,
+              size: 22,
+            ),
+          ),
+          Text(
+            location,
+            style: FlutterFlowTheme.of(context).bodyText1,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class JobCardDelTime extends StatelessWidget {
+  const JobCardDelTime({
+    Key? key,
+    required this.delTime,
+  }) : super(key: key);
+
+  final DateTime delTime;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Padding(
             padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
             child: Icon(
-              icon,
+              Icons.access_time,
               color: FlutterFlowTheme.of(context).secondaryBackground,
               size: 24,
             ),
           ),
-          Flexible(
-            child: Text(
-              store,
-              style: FlutterFlowTheme.of(context).bodyText1,
-              maxLines: lines,
+          Text(
+            valueOrDefault<String>(
+              dateTimeFormat('jm', delTime),
+              'ASAP',
             ),
+            style: FlutterFlowTheme.of(context).bodyText1,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class JobCardStore extends StatelessWidget {
+  const JobCardStore({
+    Key? key,
+    required this.store,
+  }) : super(key: key);
+
+  final String store;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Padding(
+            padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
+            child: Icon(
+              Icons.shopping_cart,
+              color: FlutterFlowTheme.of(context).secondaryBackground,
+              size: 24,
+            ),
+          ),
+          Text(
+            store,
+            style: FlutterFlowTheme.of(context).bodyText1,
           ),
         ],
       ),

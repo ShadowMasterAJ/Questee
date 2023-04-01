@@ -156,7 +156,6 @@ class JobCard extends StatelessWidget {
   final int index;
 
   Future<Map<String, Object>> getJobData() async {
-    
     print("JOBRECORD: $jobRecord");
     final DocumentSnapshot snapshot = await jobRecord.get();
 
@@ -215,12 +214,11 @@ class JobCard extends StatelessWidget {
                   },
                 );
               } else {
-
                 print("PUSHING JOBRECORD: $jobRecord");
                 context.pushNamed(
                   'JobDetailScreenAcceptor',
                   queryParams: {
-                    'jobRecord':
+                    'jobRef':
                         serializeParam(jobRecord, ParamType.DocumentReference)!,
                   },
                 );

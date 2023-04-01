@@ -27,9 +27,6 @@ abstract class UsersRecord implements Built<UsersRecord, UsersRecordBuilder> {
   @BuiltValueField(wireName: 'phone_number')
   String? get phoneNumber;
 
-  // @BuiltValueField(wireName: 'past_jobs')
-  // BuiltList<DocumentReference>? get pastJobs;
-
   @BuiltValueField(wireName: 'curr_jobs_accepted')
   BuiltList<DocumentReference>? get currJobsAccepted;
 
@@ -98,38 +95,23 @@ abstract class UsersRecord implements Built<UsersRecord, UsersRecordBuilder> {
     });
   }
 
-  static Future<void> sendToPastJobsPosted(
+  static Future<void> addPastJobsAccepted(
       String userId, DocumentReference? jobRef) async {
     final userRef = FirebaseFirestore.instance.collection('users').doc(userId);
 
     await userRef.update({
-      'curr_jobs_posted': FieldValue.arrayRemove([jobRef])
+      'past_jobs_accepted': FieldValue.arrayUnion([jobRef])
     });
+  }
+
+  static Future<void> addPastJobsPosted(
+      String userId, DocumentReference? jobRef) async {
+    final userRef = FirebaseFirestore.instance.collection('users').doc(userId);
 
     await userRef.update({
       'past_jobs_posted': FieldValue.arrayUnion([jobRef])
     });
   }
-
-  static Future<void> sendToPastJobsAccepted(
-      String userId, DocumentReference? jobRef) async {
-    final userRef = FirebaseFirestore.instance.collection('users').doc(userId);
-
-    await userRef.update({
-      'curr_jobs_accepted': FieldValue.arrayRemove([jobRef])
-    });
-
-    await userRef.update({
-      'past_jobs_accpted': FieldValue.arrayUnion([jobRef])
-    });
-  }
-
-  // factory UsersRecord.fromSnapshot(DocumentSnapshot snapshot) {
-  //   return UsersRecord(
-  //     uid: snapshot.uid,
-  //     currJobsPosted: List<String>.from(snapshot.data()?['currJobsPosted'] ?? []),
-  //   );
-  // }
 }
 
 Map<String, dynamic> createUsersRecordData({
@@ -156,25 +138,24 @@ Map<String, dynamic> createUsersRecordData({
       ..phoneNumber = phoneNumber
       ..gender = gender;
 
-    List<DocumentReference<Object?>>? currJP = currJobsPosted;
-    List<DocumentReference<Object?>>? currJA = currJobsAccepted;
-    List<DocumentReference<Object?>>? pastJP = pastJobsPosted;
-    List<DocumentReference<Object?>>? pastJA = pastJobsAccepted;
-
-    for (int i = 0; i < currJP!.length; i++) {
+    int lenCJP = currJobsPosted != null ? currJobsPosted.length : 0;
+    for (int i = 0; i < lenCJP; i++) {
       u.currJobsPosted.add(currJobsPosted![i]);
     }
-
-    for (int i = 0; i < currJA!.length; i++) {
-      u.currJobsPosted.add(currJobsAccepted![i]);
+    
+    int lenCJA = currJobsAccepted != null ? currJobsAccepted.length : 0;
+    for (int i = 0; i < lenCJA; i++) {
+      u.currJobsAccepted.add(currJobsAccepted![i]);
     }
-
-    for (int i = 0; i < pastJP!.length; i++) {
-      u.currJobsPosted.add(pastJobsPosted![i]);
+    
+    int lenPJP = pastJobsPosted != null ? pastJobsPosted.length : 0;
+    for (int i = 0; i < lenPJP; i++) {
+      u.currJobsAccepted.add(pastJobsPosted![i]);
     }
-
-    for (int i = 0; i < pastJA!.length; i++) {
-      u.currJobsPosted.add(pastJobsAccepted![i]);
+    
+    int lenPJA = pastJobsAccepted != null ? pastJobsAccepted.length : 0;
+    for (int i = 0; i < lenPJA; i++) {
+      u.currJobsAccepted.add(pastJobsAccepted![i]);
     }
   }));
 
