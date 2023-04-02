@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable, non_constant_identifier_names
+
 import 'package:flutter/material.dart';
 
 import '../auth/auth_util.dart';
@@ -98,40 +100,9 @@ class _JobDetailScreenAcceptorWidgetState
                   children: [
                     Padding(
                       padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 8),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          FlutterFlowIconButton(
-                            borderColor: Colors.transparent,
-                            borderRadius: 30,
-                            borderWidth: 1,
-                            buttonSize: 50,
-                            icon: Icon(
-                              Icons.arrow_back_rounded,
-                              color: FlutterFlowTheme.of(context).primaryText,
-                              size: 30,
-                            ),
-                            onPressed: () async {
-                              context.pop();
-                            },
-                          ),
-                          Padding(
-                            padding:
-                                EdgeInsetsDirectional.fromSTEB(30, 0, 0, 0),
-                            child: Text(
-                              'Job Details.',
-                              textAlign: TextAlign.center,
-                              style:
-                                  FlutterFlowTheme.of(context).title1.override(
-                                        fontFamily: 'Poppins',
-                                        fontSize: 36,
-                                      ),
-                            ),
-                          ),
-                        ],
-                      ),
+                      child: Header(),
                     ),
-                    JobAcceptedChip(acceptorID: acceptorID),
+                    JobStatusChip(acceptorID: acceptorID),
                     DelItems(items, context),
                     Divider(
                       height: 1,
@@ -160,39 +131,7 @@ class _JobDetailScreenAcceptorWidgetState
                       thickness: 1,
                       color: FlutterFlowTheme.of(context).grayIcon,
                     ),
-                    Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(0, 20, 0, 20),
-                      child: StreamBuilder<List<UsersRecord>>(
-                          stream: queryUsersRecord(
-                            singleRecord: false,
-                          ),
-                          builder: (context, snapshot) {
-                            // Customize what your widget looks like when it's loading.
-                            if (!snapshot.hasData) {
-                              return Center(
-                                child: SizedBox(
-                                  width: 50,
-                                  height: 50,
-                                  child: CircularProgressIndicator(
-                                    color: FlutterFlowTheme.of(context)
-                                        .primaryColor,
-                                  ),
-                                ),
-                              );
-                            }
-
-                            List<UsersRecord> poster = snapshot.data!
-                                .where((element) =>
-                                    element.uid.toString() == posterID.id)
-                                .toList();
-                            return Text(
-                              poster.length > 0
-                                  ? "Posted by: ${poster[0].displayName.toString()}"
-                                  : "Error",
-                              style: FlutterFlowTheme.of(context).bodyText1,
-                            );
-                          }),
-                    ),
+                    PostedBy(posterID),
                     Spacer(),
                     acceptorID != ""
                         ? ChatButton(jobRecord: correctRef)
@@ -213,7 +152,40 @@ class _JobDetailScreenAcceptorWidgetState
     );
   }
 
-  // ignore: non_constant_identifier_names
+  Padding PostedBy(DocumentReference<Object?> posterID) {
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(0, 20, 0, 20),
+      child: StreamBuilder<List<UsersRecord>>(
+          stream: queryUsersRecord(
+            singleRecord: false,
+          ),
+          builder: (context, snapshot) {
+            // Customize what your widget looks like when it's loading.
+            if (!snapshot.hasData) {
+              return Center(
+                child: SizedBox(
+                  width: 50,
+                  height: 50,
+                  child: CircularProgressIndicator(
+                    color: FlutterFlowTheme.of(context).primaryColor,
+                  ),
+                ),
+              );
+            }
+
+            List<UsersRecord> poster = snapshot.data!
+                .where((element) => element.uid.toString() == posterID.id)
+                .toList();
+            return Text(
+              poster.length > 0
+                  ? "Posted by: ${poster[0].displayName.toString()}"
+                  : "Error",
+              style: FlutterFlowTheme.of(context).bodyText1,
+            );
+          }),
+    );
+  }
+
   Align DelItems(List<String> items, BuildContext context) {
     return Align(
       alignment: AlignmentDirectional(-0.1, 0.05),
@@ -286,8 +258,48 @@ class _JobDetailScreenAcceptorWidgetState
   }
 }
 
-class JobAcceptedChip extends StatelessWidget {
-  const JobAcceptedChip({
+class Header extends StatelessWidget {
+  const Header({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        FlutterFlowIconButton(
+          borderColor: Colors.transparent,
+          borderRadius: 30,
+          borderWidth: 1,
+          buttonSize: 50,
+          icon: Icon(
+            Icons.arrow_back_rounded,
+            color: FlutterFlowTheme.of(context).primaryText,
+            size: 30,
+          ),
+          onPressed: () async {
+            context.pop();
+          },
+        ),
+        Padding(
+          padding: EdgeInsetsDirectional.fromSTEB(30, 0, 0, 0),
+          child: Text(
+            'Job Details.',
+            textAlign: TextAlign.center,
+            style: FlutterFlowTheme.of(context).title1.override(
+                  fontFamily: 'Poppins',
+                  fontSize: 36,
+                ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class JobStatusChip extends StatelessWidget {
+  const JobStatusChip({
     Key? key,
     required this.acceptorID,
   }) : super(key: key);

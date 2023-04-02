@@ -55,10 +55,9 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
         child: GestureDetector(
           onTap: () => FocusScope.of(context).unfocus(),
           child: Column(
-            mainAxisSize: MainAxisSize.max,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Expanded(
-                flex: 7,
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -103,20 +102,24 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
                     _streamSubscriptions.clear();
                     _pagingController!.refresh();
                   }
-
+                  // print(
+                  //     '\nQUERY: ${query.parameters}\nPAGING QUERY: ${_pagingQuery!.parameters}');
                   _pagingController!.addPageRequestListener((nextPageMarker) {
                     queryJobRecordPage(
                       queryBuilder: (jobRecord) => jobRecord,
                       nextPageMarker: nextPageMarker,
-                      pageSize: 3,
-                      isStream: true,
+                      pageSize: 15,
+                      isStream: false,
                     ).then((page) {
+                      if (page.nextPageMarker != null)
+                        // print(
+                        //     'PAGE: ${page.dataStream}\nMARKER: ${page.nextPageMarker!.reference}');
                       _pagingController!
                           .appendPage(page.data, page.nextPageMarker);
-
                       final itemIndexes = _pagingController!.itemList!
                           .asMap()
                           .map((k, v) => MapEntry(v.reference.id, k));
+                      // print('ITEMLIST: ${_pagingController!.itemList}');
 
                       page.dataStream?.listen((data) {
                         data.forEach((item) {
@@ -152,7 +155,10 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
                     itemBuilder: (context, _, listViewIndex) {
                       final listViewJobRecord =
                           _pagingController!.itemList![listViewIndex];
-                      return JobCard(jobRecord: listViewJobRecord.reference);
+                      return listViewJobRecord.acceptorID == null &&
+                              listViewJobRecord.posterID != currentUserReference
+                          ? JobCard(jobRecord: listViewJobRecord.reference)
+                          : SizedBox.shrink();
                     }),
               ))
           : SearchResults(simpleSearchResults: simpleSearchResults),
@@ -343,9 +349,11 @@ class SearchResults extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    SvgPicture.asset(
-                      'assets/illustrations/no_jobs.svg',
-                      width: MediaQuery.of(context).size.width * 0.7,
+                    Expanded(
+                      child: SvgPicture.asset(
+                        'assets/illustrations/no_jobs.svg',
+                        width: MediaQuery.of(context).size.width * 0.7,
+                      ),
                     ),
                     Container(
                       // margin: EdgeInsets.symmetric(vertical: 20, horizontal: 50),
@@ -476,24 +484,13 @@ class JobCard extends StatelessWidget {
           padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
           child: InkWell(
             onTap: () {
-              String indexStr = '1'; //index.toString();
-
-              if (posterID.id == currentUserUid) {
-                context.pushNamed(
-                  'JobDetailScreenPoster',
-                  queryParams: {
-                    'indexStr': serializeParam(indexStr, ParamType.String)!,
-                  },
-                );
-              } else {
-                context.pushNamed(
-                  'JobDetailScreenAcceptor',
-                  queryParams: {
-                    'jobRef':
-                        serializeParam(jobRecord, ParamType.DocumentReference)!,
-                  },
-                );
-              }
+              context.pushNamed(
+                'JobDetailScreenAcceptor',
+                queryParams: {
+                  'jobRef':
+                      serializeParam(jobRecord, ParamType.DocumentReference)!,
+                },
+              );
             },
             child: Card(
               clipBehavior: Clip.antiAliasWithSaveLayer,

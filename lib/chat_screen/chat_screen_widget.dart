@@ -29,13 +29,18 @@ class _ChatScreenWidgetState extends State<ChatScreenWidget> {
   void initState() {
     super.initState();
     _chatDocRef = _chatRef.doc(widget.jobRef.id);
+    
     _messageRef = _chatDocRef.collection('messages');
     print("Message ref: $_messageRef");
     createChatDocument();
   }
 
   Future<void> createChatDocument() async {
-    final jobSnapshot = await widget.jobRef.get();
+    print("RECEIVED JOBRECORD: ${widget.jobRef}");
+    final DocumentReference correctRef =
+        FirebaseFirestore.instance.doc('job/${widget.jobRef.id}');
+    final DocumentSnapshot jobSnapshot = await correctRef.get();
+    print("CORRECTED JOBRECORD: $correctRef");
     final poster = jobSnapshot.get("posterID");
     final acceptor = jobSnapshot.get("acceptorID");
     _userType = currentUserReference == acceptor ? 'acceptor' : 'poster';

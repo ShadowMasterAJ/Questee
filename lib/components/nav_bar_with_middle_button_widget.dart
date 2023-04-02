@@ -47,8 +47,8 @@ class _NavBarWithMiddleButtonWidgetState
                       boxShadow: [
                         BoxShadow(
                           blurRadius: 10,
-                          color:
-                              FlutterFlowTheme.of(context).secondaryBackground,
+                          color: FlutterFlowTheme.of(context)
+                              .secondaryBackground,
                           offset: Offset(0, 0),
                           spreadRadius: 0.1,
                         )
@@ -101,14 +101,14 @@ class _NavBarWithMiddleButtonWidgetState
                             ParamType.DocumentReference,
                           ),
                         }.withoutNulls,
-                        // extra: {
-                        //   kTransitionInfoKey: TransitionInfo(
-                        //     hasTransition: true,
-                        //     transitionType: PageTransitionType.fade,
-                        //     alignment: Alignment.bottomCenter,
-                        //     duration: Duration(milliseconds: 1000),
-                        //   ),
-                        // },
+                        extra: {
+                          kTransitionInfoKey: TransitionInfo(
+                            hasTransition: true,
+                            transitionType: PageTransitionType.fade,
+                            alignment: Alignment.bottomCenter,
+                            duration: Duration(milliseconds: 400),
+                          ),
+                        },
                       );
                     },
                   ),
@@ -123,7 +123,8 @@ class _NavBarWithMiddleButtonWidgetState
                           borderRadius: 10,
                           borderWidth: 1,
                           buttonSize: 70,
-                          fillColor: FlutterFlowTheme.of(context).primaryColor,
+                          fillColor:
+                              FlutterFlowTheme.of(context).primaryColor,
                           icon: FaIcon(
                             FontAwesomeIcons.plus,
                             color: FlutterFlowTheme.of(context).gray200,

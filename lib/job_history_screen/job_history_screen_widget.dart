@@ -204,13 +204,12 @@ class JobCard extends StatelessWidget {
           padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
           child: InkWell(
             onTap: () {
-              String indexStr = index.toString();
-
               if (posterID.id == currentUserReference!.id) {
                 context.pushNamed(
                   'JobDetailScreenPoster',
                   queryParams: {
-                    'indexStr': serializeParam(indexStr, ParamType.String)!,
+                    'jobRef':
+                        serializeParam(jobRecord, ParamType.DocumentReference)!,
                   },
                 );
               } else {

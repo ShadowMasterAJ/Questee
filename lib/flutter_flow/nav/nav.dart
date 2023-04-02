@@ -122,8 +122,8 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
                 },
                 builder: (context, params) {
                   return JobDetailScreenPosterWidget(
-                    indexStr: params.getParam('indexStr', ParamType.String),
-                  );
+                      jobRef: params.getParam(
+                          'jobRef', ParamType.DocumentReference));
                 }),
             FFRoute(
               name: 'JobDetailScreenAcceptor',
