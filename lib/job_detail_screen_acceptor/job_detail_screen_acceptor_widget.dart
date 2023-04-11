@@ -224,7 +224,6 @@ class _JobDetailScreenAcceptorWidgetState
     );
   }
 
-  // ignore: non_constant_identifier_names
   Padding AcceptJobButton(
       DocumentReference columnJobRecord, BuildContext context) {
     return Padding(

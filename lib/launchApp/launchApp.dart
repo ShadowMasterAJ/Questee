@@ -11,7 +11,7 @@ Future launchApp(String appName) async{
       DeviceApps.openApp(appName);
    } 
    else {
-     ///if the app is not installed it lunches google play store so you can install it from there
+     ///if the app is not installed it launches google play store so you can install it from there
       launchUrl(Uri.parse("market://details?id=" +appName));
    }
 } catch (e) {

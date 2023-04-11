@@ -51,11 +51,13 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+      bottomNavigationBar: NavBarWithMiddleButtonWidget(),
+      extendBody: true,
       body: SafeArea(
         child: GestureDetector(
           onTap: () => FocusScope.of(context).unfocus(),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: MainAxisSize.max,
             children: [
               Expanded(
                 child: Column(
@@ -69,7 +71,6 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
                   ],
                 ),
               ),
-              NavBarWithMiddleButtonWidget(),
             ],
           ),
         ),
@@ -89,76 +90,72 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
                   final Query<Object?> Function(Query<Object?>) queryBuilder =
                       (jobRecord) => jobRecord
                           .where('posterID', isNotEqualTo: currentUserReference)
-                          .where("acceptorID", isEqualTo: null);
-
-                  _pagingController ??= PagingController(firstPageKey: null);
-
-                  final query = queryBuilder(JobRecord.collection);
-
-                  if (query != _pagingQuery) {
-                    // The query has changed
-                    _pagingQuery = query;
-                    _streamSubscriptions.forEach((s) => s?.cancel());
-                    _streamSubscriptions.clear();
-                    _pagingController!.refresh();
+                          .where('acceptorID', isNotEqualTo: null);
+                  if (_pagingController != null) {
+                    final query = queryBuilder(JobRecord.collection);
+                    if (query != _pagingQuery) {
+                      // The query has changed
+                      _pagingQuery = query;
+                      _streamSubscriptions.forEach((s) => s?.cancel());
+                      _streamSubscriptions.clear();
+                      _pagingController!.refresh();
+                    }
+                    return _pagingController!;
                   }
-                  // print(
-                  //     '\nQUERY: ${query.parameters}\nPAGING QUERY: ${_pagingQuery!.parameters}');
+                  _pagingController = PagingController(firstPageKey: null);
+                  _pagingQuery = queryBuilder(JobRecord.collection);
                   _pagingController!.addPageRequestListener((nextPageMarker) {
                     queryJobRecordPage(
                       queryBuilder: (jobRecord) => jobRecord,
                       nextPageMarker: nextPageMarker,
-                      pageSize: 15,
-                      isStream: false,
+                      pageSize: 4,
+                      isStream: true,
                     ).then((page) {
-                      if (page.nextPageMarker != null)
-                        // print(
-                        //     'PAGE: ${page.dataStream}\nMARKER: ${page.nextPageMarker!.reference}');
-                      _pagingController!
-                          .appendPage(page.data, page.nextPageMarker);
-                      final itemIndexes = _pagingController!.itemList!
-                          .asMap()
-                          .map((k, v) => MapEntry(v.reference.id, k));
-                      // print('ITEMLIST: ${_pagingController!.itemList}');
-
-                      page.dataStream?.listen((data) {
+                      _pagingController!.appendPage(
+                        page.data,
+                        page.nextPageMarker,
+                      );
+                      final streamSubscription =
+                          page.dataStream?.listen((data) {
                         data.forEach((item) {
+                          final itemIndexes = _pagingController!.itemList!
+                              .asMap()
+                              .map((k, v) => MapEntry(v.reference.id, k));
                           final index = itemIndexes[item.reference.id];
+                          final items = _pagingController!.itemList!;
                           if (index != null) {
-                            final items = _pagingController!.itemList!;
                             items.replaceRange(index, index + 1, [item]);
                             _pagingController!.itemList = {
-                              for (final item in items) item.reference: item
+                              for (var item in items) item.reference: item
                             }.values.toList();
                           }
                         });
                         setState(() {});
                       });
+                      _streamSubscriptions.add(streamSubscription);
                     });
                   });
-
                   return _pagingController!;
                 }(),
                 primary: true,
                 scrollDirection: Axis.vertical,
                 builderDelegate: PagedChildBuilderDelegate<JobRecord>(
-                    firstPageProgressIndicatorBuilder: (_) => Center(
-                          child: SizedBox(
-                            width: 50,
-                            height: 50,
-                            child: CircularProgressIndicator(
-                              color: FlutterFlowTheme.of(context).primaryColor,
-                            ),
-                          ),
-                        ),
+                    // firstPageProgressIndicatorBuilder: (_) => Center(
+                    //       child: SizedBox(
+                    //         width: 50,
+                    //         height: 50,
+                    //         child: CircularProgressIndicator(
+                    //           color: FlutterFlowTheme.of(context).primaryColor,
+                    //         ),
+                    //       ),
+                    //     ),
                     noItemsFoundIndicatorBuilder: (_) => NoJobsIllustration(),
-                    itemBuilder: (context, _, listViewIndex) {
-                      final listViewJobRecord =
-                          _pagingController!.itemList![listViewIndex];
-                      return listViewJobRecord.acceptorID == null &&
-                              listViewJobRecord.posterID != currentUserReference
-                          ? JobCard(jobRecord: listViewJobRecord.reference)
-                          : SizedBox.shrink();
+                    itemBuilder: (context, job, listViewIndex) {
+                      return JobCard(jobRecord: job.reference);
+                      // listViewJobRecord.acceptorID == null &&
+                      //         listViewJobRecord.posterID != currentUserReference
+                      //     ? JobCard(jobRecord: listViewJobRecord.reference)
+                      //     : SizedBox.shrink();
                     }),
               ))
           : SearchResults(simpleSearchResults: simpleSearchResults),
