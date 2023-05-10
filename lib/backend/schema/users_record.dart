@@ -1,12 +1,9 @@
 import 'dart:async';
 
-import 'index.dart';
 import 'serializers.dart';
 import 'package:built_value/built_value.dart';
 
 part 'users_record.g.dart';
-
-// TODO: implement attributes jobsAccepted and jobsPosted, pastJobsAccepted and pastJobsPosted
 
 abstract class UsersRecord implements Built<UsersRecord, UsersRecordBuilder> {
   static Serializer<UsersRecord> get serializer => _$usersRecordSerializer;

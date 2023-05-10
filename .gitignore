@@ -31,7 +31,7 @@
 .pub/
 /build/
 
-# Firebase – this is necessary if you use Firebase since it could otherwise 
+# Firebase – this is necessary if you use Firebase since it could otherwise
 # lead to leaking of private certificates to your repository, which is no bueno.
 .firebase/
 
@@ -48,3 +48,11 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+
+build/
+dist/
+node_modules/
+
+.secret-*
+**.sample

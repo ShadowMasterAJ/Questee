@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'index.dart';
 import 'serializers.dart';
 import 'package:built_value/built_value.dart';
 
@@ -8,30 +7,39 @@ part 'job_record.g.dart';
 
 abstract class JobRecord implements Built<JobRecord, JobRecordBuilder> {
   static Serializer<JobRecord> get serializer => _$jobRecordSerializer;
-
+  @BuiltValueField(wireName: 'type')
   String? get type;
 
+  @BuiltValueField(wireName: 'note')
   String? get note;
 
+  @BuiltValueField(wireName: 'store')
   String? get store;
 
   @BuiltValueField(wireName: 'del_location')
   String? get delLocation;
 
+  @BuiltValueField(wireName: 'price')
   double? get price;
 
+  @BuiltValueField(wireName: 'status')
   String? get status;
 
   @BuiltValueField(wireName: 'del_time')
   DateTime? get delTime;
 
+  @BuiltValueField(wireName: 'items')
   BuiltList<String>? get items;
+
+  @BuiltValueField(wireName: 'verificationImages')
+  BuiltList<String>? get verificationImages;
 
   @BuiltValueField(wireName: 'item_quantity')
   int? get itemQuantity;
 
+  @BuiltValueField(wireName: 'posterID')
   DocumentReference? get posterID;
-
+  @BuiltValueField(wireName: 'acceptorID')
   DocumentReference? get acceptorID;
 
   @BuiltValueField(wireName: kDocumentReferenceField)
@@ -46,7 +54,8 @@ abstract class JobRecord implements Built<JobRecord, JobRecordBuilder> {
     ..price = 0.0
     ..status = ''
     ..items = ListBuilder()
-    ..itemQuantity = 0;
+    ..itemQuantity = 0
+    ..verificationImages = ListBuilder();
 
   static CollectionReference get collection =>
       FirebaseFirestore.instance.collection('job');
@@ -80,6 +89,7 @@ Map<String, dynamic> createJobRecordData({
   List<String>? items,
   DocumentReference? posterID,
   DocumentReference? acceptorID,
+  List<String>? verificationImages,
 }) {
   final firestoreData =
       serializers.toFirestore(JobRecord.serializer, JobRecord((j) {
@@ -96,15 +106,13 @@ Map<String, dynamic> createJobRecordData({
       ..acceptorID = acceptorID;
 
     var s = items;
-    int len;
-    if (s != null) {
-      len = s.length; // Safe
-    } else {
-      len = 0;
-    }
-    for (int i = 0; i < len; i++) {
-      j.items.add(items![i]);
-    }
+    int len = s != null ? s.length : 0; // Safe
+    for (int i = 0; i < len; i++) j.items.add(items![i]);
+
+    var s2 = verificationImages;
+    int len2 = s2 != null ? s2.length : 0; // Safe
+    for (int i = 0; i < len2; i++)
+      j.verificationImages.add(verificationImages![i]);
   }));
 
   return firestoreData;

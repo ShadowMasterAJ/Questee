@@ -10,8 +10,6 @@ import '../../backend/backend.dart';
 import '../../auth/firebase_user_provider.dart';
 
 import '../../index.dart';
-import '../lat_lng.dart';
-import '../place.dart';
 import 'serialization_util.dart';
 
 export 'package:go_router/go_router.dart';

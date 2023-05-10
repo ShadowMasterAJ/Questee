@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
@@ -8,7 +6,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:mime_type/mime_type.dart';
 
 import '../auth/auth_util.dart';
-import 'flutter_flow_util.dart';
 
 const allowedFormats = {'image/png', 'image/jpeg', 'video/mp4', 'image/gif'};
 
@@ -129,7 +126,7 @@ Future<List<SelectedMedia>?> selectMedia({
   int? imageQuality,
   bool isVideo = false,
   MediaSource mediaSource = MediaSource.camera,
-  bool multiImage = false,
+  bool multiImage = true,
 }) async {
   final picker = ImagePicker();
 
@@ -140,7 +137,7 @@ Future<List<SelectedMedia>?> selectMedia({
       imageQuality: imageQuality,
     );
     final pickedMedia = await pickedMediaFuture;
-    if (pickedMedia == null || pickedMedia.isEmpty) {
+    if (pickedMedia.isEmpty) {
       return null;
     }
     return Future.wait(pickedMedia.asMap().entries.map((e) async {

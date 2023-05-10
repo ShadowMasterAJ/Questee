@@ -78,6 +78,8 @@ abstract class FlutterFlowTheme {
   late Color backgroundComponents;
   late Color backgroundComponentsDark;
   late Color backgroundComponentsLight;
+  late Color buttonGreen;
+  late Color buttonRed;
 
   String get title1Family => typography.title1Family;
   TextStyle get title1 => typography.title1;
@@ -129,6 +131,9 @@ class LightModeTheme extends FlutterFlowTheme {
   late Color secondaryText = const Color(0xFF95A1AC);
   late Color secondaryTextDark = const Color(0xFF74808A);
   late Color secondaryTextLight = const Color(0xFFA9B9C2);
+
+  late Color buttonGreen = Color(0xFF80D3A2);
+  late Color buttonRed = Color(0xFFC9685D);
 
   late Color primaryBtnText = Color(0xFFFFFFFF);
   late Color lineColor = Color(0xFF22282F);
@@ -183,6 +188,9 @@ class DarkModeTheme extends FlutterFlowTheme {
   late Color secondaryText = const Color(0xFF95A1AC);
   late Color secondaryTextDark = const Color(0xFF74808A);
   late Color secondaryTextLight = const Color(0xFFA9B9C2);
+
+  late Color buttonGreen = Color(0xFF80D3A2);
+  late Color buttonRed = Color(0xFFC9685D);
 
   late Color primaryBtnText = Color(0xFFFFFFFF);
   late Color lineColor = Color(0xFF22282F);

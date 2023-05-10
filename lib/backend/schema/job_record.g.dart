@@ -76,6 +76,14 @@ class _$JobRecordSerializer implements StructuredSerializer<JobRecord> {
             specifiedType:
                 const FullType(BuiltList, const [const FullType(String)])));
     }
+    value = object.verificationImages;
+    if (value != null) {
+      result
+        ..add('verificationImages')
+        ..add(serializers.serialize(value,
+            specifiedType:
+                const FullType(BuiltList, const [const FullType(String)])));
+    }
     value = object.itemQuantity;
     if (value != null) {
       result
@@ -98,7 +106,6 @@ class _$JobRecordSerializer implements StructuredSerializer<JobRecord> {
             specifiedType: const FullType(
                 DocumentReference, const [const FullType.nullable(Object)])));
     }
-   
     value = object.ffRef;
     if (value != null) {
       result
@@ -155,6 +162,12 @@ class _$JobRecordSerializer implements StructuredSerializer<JobRecord> {
                       BuiltList, const [const FullType(String)]))!
               as BuiltList<Object?>);
           break;
+        case 'verificationImages':
+          result.verificationImages.replace(serializers.deserialize(value,
+                  specifiedType: const FullType(
+                      BuiltList, const [const FullType(String)]))!
+              as BuiltList<Object?>);
+          break;
         case 'item_quantity':
           result.itemQuantity = serializers.deserialize(value,
               specifiedType: const FullType(int)) as int?;
@@ -171,7 +184,6 @@ class _$JobRecordSerializer implements StructuredSerializer<JobRecord> {
                 const FullType.nullable(Object)
               ])) as DocumentReference<Object?>?;
           break;
-       
         case 'Document__Reference__Field':
           result.ffRef = serializers.deserialize(value,
               specifiedType: const FullType(DocumentReference, const [
@@ -203,6 +215,8 @@ class _$JobRecord extends JobRecord {
   @override
   final BuiltList<String>? items;
   @override
+  final BuiltList<String>? verificationImages;
+  @override
   final int? itemQuantity;
   @override
   final DocumentReference<Object?>? posterID;
@@ -223,6 +237,7 @@ class _$JobRecord extends JobRecord {
       this.status,
       this.delTime,
       this.items,
+      this.verificationImages,
       this.itemQuantity,
       this.posterID,
       this.acceptorID,
@@ -248,6 +263,7 @@ class _$JobRecord extends JobRecord {
         status == other.status &&
         delTime == other.delTime &&
         items == other.items &&
+        verificationImages == other.verificationImages &&
         itemQuantity == other.itemQuantity &&
         posterID == other.posterID &&
         acceptorID == other.acceptorID &&
@@ -256,7 +272,7 @@ class _$JobRecord extends JobRecord {
 
   @override
   int get hashCode {
-    return $jf(
+    return $jf($jc(
         $jc(
             $jc(
                 $jc(
@@ -275,9 +291,10 @@ class _$JobRecord extends JobRecord {
                                     status.hashCode),
                                 delTime.hashCode),
                             items.hashCode),
-                        itemQuantity.hashCode),
-                    posterID.hashCode),
-                acceptorID.hashCode),
+                        verificationImages.hashCode),
+                    itemQuantity.hashCode),
+                posterID.hashCode),
+            acceptorID.hashCode),
         ffRef.hashCode));
   }
 
@@ -292,6 +309,7 @@ class _$JobRecord extends JobRecord {
           ..add('status', status)
           ..add('delTime', delTime)
           ..add('items', items)
+          ..add('verificationImages', verificationImages)
           ..add('itemQuantity', itemQuantity)
           ..add('posterID', posterID)
           ..add('acceptorID', acceptorID)
@@ -335,6 +353,12 @@ class JobRecordBuilder implements Builder<JobRecord, JobRecordBuilder> {
   ListBuilder<String> get items => _$this._items ??= new ListBuilder<String>();
   set items(ListBuilder<String>? items) => _$this._items = items;
 
+  ListBuilder<String>? _verificationImages;
+  ListBuilder<String> get verificationImages =>
+      _$this._verificationImages ??= new ListBuilder<String>();
+  set verificationImages(ListBuilder<String>? verificationImages) =>
+      _$this._verificationImages = verificationImages;
+
   int? _itemQuantity;
   int? get itemQuantity => _$this._itemQuantity;
   set itemQuantity(int? itemQuantity) => _$this._itemQuantity = itemQuantity;
@@ -368,6 +392,7 @@ class JobRecordBuilder implements Builder<JobRecord, JobRecordBuilder> {
       _status = $v.status;
       _delTime = $v.delTime;
       _items = $v.items?.toBuilder();
+      _verificationImages = $v.verificationImages?.toBuilder();
       _itemQuantity = $v.itemQuantity;
       _posterID = $v.posterID;
       _acceptorID = $v.acceptorID;
@@ -404,6 +429,7 @@ class JobRecordBuilder implements Builder<JobRecord, JobRecordBuilder> {
               status: status,
               delTime: delTime,
               items: _items?.build(),
+              verificationImages: _verificationImages?.build(),
               itemQuantity: itemQuantity,
               posterID: posterID,
               acceptorID: acceptorID,
@@ -413,6 +439,8 @@ class JobRecordBuilder implements Builder<JobRecord, JobRecordBuilder> {
       try {
         _$failedField = 'items';
         _items?.build();
+        _$failedField = 'verificationImages';
+        _verificationImages?.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             r'JobRecord', _$failedField, e.toString());

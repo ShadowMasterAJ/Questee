@@ -4,17 +4,15 @@ import 'package:flutter/material.dart';
 
 import '../backend/backend.dart';
 import '../components/AmountBottomSheet.dart';
-import '../flutter_flow/flutter_flow_checkbox_group.dart';
 import '../flutter_flow/flutter_flow_icon_button.dart';
 import '../flutter_flow/flutter_flow_theme.dart';
 import '../flutter_flow/flutter_flow_util.dart';
-import '../flutter_flow/flutter_flow_widgets.dart';
 
 class JobDetailScreenPosterWidget extends StatefulWidget {
   final DocumentReference jobRef;
   const JobDetailScreenPosterWidget({
     Key? key,
-    required this.jobRef, //TODO - better implementation, pass the jobID here and just access it's information instead of retrieving all the jobs again
+    required this.jobRef,
   }) : super(key: key);
 
   @override
@@ -165,8 +163,9 @@ class _JobDetailScreenPosterWidgetState
         ).then((value) => setState(() {}));
       },
       style: ElevatedButton.styleFrom(
-        backgroundColor:
-            acceptorID != "" ? Color(0xFF80D3A2) : Color(0xFFC0C0C0),
+        backgroundColor: acceptorID != ""
+            ? FlutterFlowTheme.of(context).buttonGreen
+            : Color(0xFFC0C0C0),
         textStyle: TextStyle(
           fontFamily: 'Poppins',
           color: Colors.white,
@@ -355,7 +354,7 @@ class JobStatusChip extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
       ),
       color: acceptorID != ""
-          ? Color(0xFF80D3A2)
+          ? FlutterFlowTheme.of(context).buttonGreen
           : FlutterFlowTheme.of(context).secondaryText,
       child: SizedBox(
         width: 300,
@@ -400,7 +399,7 @@ class DeleteJobButton extends StatelessWidget {
             ),
       ),
       style: ElevatedButton.styleFrom(
-        backgroundColor: Color(0xFFC9685D),
+        backgroundColor: FlutterFlowTheme.of(context).buttonRed,
         elevation: 5,
         minimumSize: Size(double.infinity, 50),
         shape: RoundedRectangleBorder(

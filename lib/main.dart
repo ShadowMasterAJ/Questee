@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -12,10 +13,12 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await FlutterFlowTheme.initialize();
+
   FFAppState(); // Initialize FFAppState
 
   runApp(MyApp());
 }
+
 
 class MyApp extends StatefulWidget {
   // This widget is the root of your application.
@@ -40,6 +43,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    // addFieldToDocuments();
     _appStateNotifier = AppStateNotifier();
     _router = createRouter(_appStateNotifier);
     userStream = uGrabv1FirebaseUserStream()

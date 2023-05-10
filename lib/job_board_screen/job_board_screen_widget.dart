@@ -3,7 +3,7 @@
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutterfire_ui/firestore.dart';
+
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:text_search/text_search.dart';
@@ -79,6 +79,8 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
   }
 
   Expanded JobList(BuildContext context) {
+    //FIXME - filter properly and fix pagination
+
     // .where('posterID', isNotEqualTo: currentUserReference)
     // .where("acceptorID", isEqualTo: null));
     return Expanded(
@@ -86,43 +88,72 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
           ? Padding(
               padding: EdgeInsetsDirectional.fromSTEB(0, 10, 0, 12),
               child: PagedListView<DocumentSnapshot<Object?>?, JobRecord>(
+                // Use the pagingController to load and display paginated data
                 pagingController: () {
+                  print('CURRENT USER REF: $currentUserReference');
+                  // Define a queryBuilder function to create Firestore queries
                   final Query<Object?> Function(Query<Object?>) queryBuilder =
-                      (jobRecord) => jobRecord
-                          .where('posterID', isNotEqualTo: currentUserReference)
-                          .where('acceptorID', isNotEqualTo: null);
+                      (jobRecordCollection) => jobRecordCollection;
+
+                  // If the pagingController already exists, refresh the data and return it
                   if (_pagingController != null) {
-                    final query = queryBuilder(JobRecord.collection);
+                    // Build the Firestore query for retrieving job records
+                    final query = queryBuilder(
+                      JobRecord.collection
+                          .where('posterID', isNotEqualTo: currentUserReference)
+                          .where('acceptorID', isEqualTo: null),
+                    );
+
+                    // If the query has changed since the last time the data was loaded, refresh the data
                     if (query != _pagingQuery) {
-                      // The query has changed
                       _pagingQuery = query;
+
+                      // Cancel any existing stream subscriptions and clear the list of subscriptions
                       _streamSubscriptions.forEach((s) => s?.cancel());
                       _streamSubscriptions.clear();
+
+                      // Refresh the data in the pagingController
                       _pagingController!.refresh();
                     }
+
+                    // Return the existing pagingController
                     return _pagingController!;
                   }
+
+                  // If the pagingController doesn't exist, create it
                   _pagingController = PagingController(firstPageKey: null);
-                  _pagingQuery = queryBuilder(JobRecord.collection);
+
+                  // Build the Firestore query for retrieving job records
+                  _pagingQuery = queryBuilder(JobRecord.collection
+                      .where('posterID', isNotEqualTo: currentUserReference)
+                      .where('acceptorID', isEqualTo: null));
+
+                  // Listen for page requests and load data from Firestore
                   _pagingController!.addPageRequestListener((nextPageMarker) {
                     queryJobRecordPage(
-                      queryBuilder: (jobRecord) => jobRecord,
+                      queryBuilder: queryBuilder,
                       nextPageMarker: nextPageMarker,
                       pageSize: 4,
                       isStream: true,
                     ).then((page) {
+                      // Append the new page of data to the list of items in the pagingController
                       _pagingController!.appendPage(
                         page.data,
                         page.nextPageMarker,
                       );
+
+                      // Listen for updates to the data stream and update the UI
                       final streamSubscription =
                           page.dataStream?.listen((data) {
                         data.forEach((item) {
+                          // Find the index of the item in the itemList
                           final itemIndexes = _pagingController!.itemList!
                               .asMap()
                               .map((k, v) => MapEntry(v.reference.id, k));
                           final index = itemIndexes[item.reference.id];
                           final items = _pagingController!.itemList!;
+
+                          // Replace the old version of the item with the new version in the itemList
                           if (index != null) {
                             items.replaceRange(index, index + 1, [item]);
                             _pagingController!.itemList = {
@@ -130,28 +161,41 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
                             }.values.toList();
                           }
                         });
+
+                        // Update the UI to reflect the changes
                         setState(() {});
                       });
+
+                      // Add the streamSubscription to the list of subscriptions
                       _streamSubscriptions.add(streamSubscription);
                     });
                   });
+
+                  // Return the newly created pagingController
                   return _pagingController!;
                 }(),
+
+                // Configure the PagedListView
                 primary: true,
                 scrollDirection: Axis.vertical,
                 builderDelegate: PagedChildBuilderDelegate<JobRecord>(
-                    // firstPageProgressIndicatorBuilder: (_) => Center(
-                    //       child: SizedBox(
-                    //         width: 50,
-                    //         height: 50,
-                    //         child: CircularProgressIndicator(
-                    //           color: FlutterFlowTheme.of(context).primaryColor,
-                    //         ),
-                    //       ),
-                    //     ),
+
+                    // Display a progress indicator while the first page of data is being loaded
+                    firstPageProgressIndicatorBuilder: (_) => Center(
+                          child: SizedBox(
+                            width: 50,
+                            height: 50,
+                            child: CircularProgressIndicator(
+                              color: FlutterFlowTheme.of(context).primaryColor,
+                            ),
+                          ),
+                        ),
+
+                    // Display a custom widget when there are
+
                     noItemsFoundIndicatorBuilder: (_) => NoJobsIllustration(),
                     itemBuilder: (context, job, listViewIndex) {
-                      return JobCard(jobRecord: job.reference);
+                      return JobCard(jobRef: job.reference);
                       // listViewJobRecord.acceptorID == null &&
                       //         listViewJobRecord.posterID != currentUserReference
                       //     ? JobCard(jobRecord: listViewJobRecord.reference)
@@ -176,7 +220,7 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
             child: Stack(
               children: [
                 Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(12, 0, 8, 0),
+                  padding: EdgeInsetsDirectional.fromSTEB(10, 0, 8, 0),
                   child: TextFormField(
                     controller: searchFieldController,
                     onChanged: (_) {
@@ -246,7 +290,7 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
 
   Padding SearchButton(BuildContext context) {
     return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(0, 0, 16, 0),
+      padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
       child: FlutterFlowIconButton(
         borderColor: Color(0x0096669E),
         borderRadius: 10,
@@ -379,7 +423,7 @@ class SearchResults extends StatelessWidget {
               itemCount: searcResults.length,
               itemBuilder: (context, index) {
                 final searcResultsItem = searcResults[index];
-                return JobCard(jobRecord: searcResultsItem.reference);
+                return JobCard(jobRef: searcResultsItem.reference);
               });
         },
       ),
@@ -429,13 +473,13 @@ class JobBoardHeader extends StatelessWidget {
 class JobCard extends StatelessWidget {
   const JobCard({
     Key? key,
-    required this.jobRecord,
+    required this.jobRef,
   }) : super(key: key);
 
-  final DocumentReference jobRecord;
+  final DocumentReference jobRef;
 
   Future<Map<String, Object>> getJobData() async {
-    final DocumentSnapshot snapshot = await jobRecord.get();
+    final DocumentSnapshot snapshot = await jobRef.get();
 
     final data = snapshot.data() as Map<String, dynamic>?;
 
@@ -450,6 +494,7 @@ class JobCard extends StatelessWidget {
       'status': data['status'],
       'type': data['type'],
       'price': data['price'],
+      'verificationImages': data['verificationImages']
     };
   }
 
@@ -459,9 +504,7 @@ class JobCard extends StatelessWidget {
       future: getJobData(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
+          return Center();
         }
 
         if (snapshot.hasError) {
@@ -475,7 +518,6 @@ class JobCard extends StatelessWidget {
         final jobData = snapshot.data!;
         final location = jobData['del_location'].toString();
         final delTime = jobData['del_time'] as DateTime;
-        final posterID = jobData['posterID'] as DocumentReference;
         final store = jobData['store'].toString();
         return Padding(
           padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
@@ -485,7 +527,7 @@ class JobCard extends StatelessWidget {
                 'JobDetailScreenAcceptor',
                 queryParams: {
                   'jobRef':
-                      serializeParam(jobRecord, ParamType.DocumentReference)!,
+                      serializeParam(jobRef, ParamType.DocumentReference)!,
                 },
               );
             },

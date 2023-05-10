@@ -5,7 +5,6 @@ import '../flutter_flow/flutter_flow_theme.dart';
 import '../flutter_flow/flutter_flow_util.dart';
 import '../flutter_flow/flutter_flow_widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class AuthScreenWidget extends StatefulWidget {
   const AuthScreenWidget({Key? key}) : super(key: key);
@@ -88,7 +87,11 @@ class _AuthScreenWidgetState extends State<AuthScreenWidget> {
                     ),
                   ),
                   ForgotPasswordButton(),
-                  LoginButton(formKey: formKey, userEmailController: userEmailController, userPasswordController: userPasswordController, mounted: mounted),
+                  LoginButton(
+                      formKey: formKey,
+                      userEmailController: userEmailController,
+                      userPasswordController: userPasswordController,
+                      mounted: mounted),
                   SwitchToSignUpButton(),
                 ],
               ),
@@ -101,185 +104,157 @@ class _AuthScreenWidgetState extends State<AuthScreenWidget> {
 
   Padding LoginPassword(BuildContext context) {
     return Padding(
-                          padding:
-                              EdgeInsetsDirectional.fromSTEB(20, 0, 20, 0),
-                          child: TextFormField(
-                            controller: userPasswordController,
-                            obscureText: !userPasswordVisibility,
-                            decoration: InputDecoration(
-                              labelText: 'Password',
-                              labelStyle: FlutterFlowTheme.of(context)
-                                  .bodyText2
-                                  .override(
-                                    fontFamily: 'Outfit',
-                                    color: FlutterFlowTheme.of(context)
-                                        .secondaryText,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.normal,
-                                  ),
-                              hintStyle: FlutterFlowTheme.of(context)
-                                  .bodyText2
-                                  .override(
-                                    fontFamily: 'Outfit',
-                                    color: Color(0xFF57636C),
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.normal,
-                                  ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: FlutterFlowTheme.of(context)
-                                      .secondaryText,
-                                  width: 0.5,
-                                ),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: FlutterFlowTheme.of(context)
-                                      .secondaryText,
-                                  width: 0.5,
-                                ),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              errorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color(0x00000000),
-                                  width: 0.5,
-                                ),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              focusedErrorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color(0x00000000),
-                                  width: 0.5,
-                                ),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              filled: true,
-                              fillColor: FlutterFlowTheme.of(context)
-                                  .secondaryBackground,
-                              contentPadding:
-                                  EdgeInsetsDirectional.fromSTEB(
-                                      20, 24, 0, 24),
-                              suffixIcon: InkWell(
-                                onTap: () => setState(
-                                  () => userPasswordVisibility =
-                                      !userPasswordVisibility,
-                                ),
-                                focusNode: FocusNode(skipTraversal: true),
-                                child: Icon(
-                                  userPasswordVisibility
-                                      ? Icons.visibility_outlined
-                                      : Icons.visibility_off_outlined,
-                                  color: Color(0xFF757575),
-                                  size: 22,
-                                ),
-                              ),
-                            ),
-                            style: FlutterFlowTheme.of(context)
-                                .bodyText1
-                                .override(
-                                  fontFamily: 'Outfit',
-                                  color: FlutterFlowTheme.of(context)
-                                      .primaryText,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.normal,
-                                ),
-                            validator: (val) {
-                              if (val == null || val.isEmpty) {
-                                return 'Field is required';
-                              }
+      padding: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 0),
+      child: TextFormField(
+        controller: userPasswordController,
+        obscureText: !userPasswordVisibility,
+        decoration: InputDecoration(
+          labelText: 'Password',
+          labelStyle: FlutterFlowTheme.of(context).bodyText2.override(
+                fontFamily: 'Outfit',
+                color: FlutterFlowTheme.of(context).secondaryText,
+                fontSize: 14,
+                fontWeight: FontWeight.normal,
+              ),
+          hintStyle: FlutterFlowTheme.of(context).bodyText2.override(
+                fontFamily: 'Outfit',
+                color: Color(0xFF57636C),
+                fontSize: 14,
+                fontWeight: FontWeight.normal,
+              ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: FlutterFlowTheme.of(context).secondaryText,
+              width: 0.5,
+            ),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: FlutterFlowTheme.of(context).secondaryText,
+              width: 0.5,
+            ),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Color(0x00000000),
+              width: 0.5,
+            ),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Color(0x00000000),
+              width: 0.5,
+            ),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          filled: true,
+          fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+          contentPadding: EdgeInsetsDirectional.fromSTEB(20, 24, 0, 24),
+          suffixIcon: InkWell(
+            onTap: () => setState(
+              () => userPasswordVisibility = !userPasswordVisibility,
+            ),
+            focusNode: FocusNode(skipTraversal: true),
+            child: Icon(
+              userPasswordVisibility
+                  ? Icons.visibility_outlined
+                  : Icons.visibility_off_outlined,
+              color: Color(0xFF757575),
+              size: 22,
+            ),
+          ),
+        ),
+        style: FlutterFlowTheme.of(context).bodyText1.override(
+              fontFamily: 'Outfit',
+              color: FlutterFlowTheme.of(context).primaryText,
+              fontSize: 14,
+              fontWeight: FontWeight.normal,
+            ),
+        validator: (val) {
+          if (val == null || val.isEmpty) {
+            return 'Field is required';
+          }
 
-                              return null;
-                            },
-                          ),
-                        );
+          return null;
+        },
+      ),
+    );
   }
 
   Padding LoginEmail(BuildContext context) {
     return Padding(
-                          padding:
-                              EdgeInsetsDirectional.fromSTEB(20, 0, 20, 16),
-                          child: TextFormField(
-                            controller: userEmailController,
-                            obscureText: false,
-                            decoration: InputDecoration(
-                              labelText: 'Email',
-                              labelStyle: FlutterFlowTheme.of(context)
-                                  .bodyText2
-                                  .override(
-                                    fontFamily: 'Outfit',
-                                    color: FlutterFlowTheme.of(context)
-                                        .secondaryText,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.normal,
-                                  ),
-                              hintStyle: FlutterFlowTheme.of(context)
-                                  .bodyText2
-                                  .override(
-                                    fontFamily: 'Outfit',
-                                    color: Color(0xFF57636C),
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.normal,
-                                  ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: FlutterFlowTheme.of(context)
-                                      .secondaryText,
-                                  width: 0.5,
-                                ),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: FlutterFlowTheme.of(context)
-                                      .secondaryText,
-                                  width: 0.5,
-                                ),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              errorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color(0x00000000),
-                                  width: 0.5,
-                                ),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              focusedErrorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color(0x00000000),
-                                  width: 0.5,
-                                ),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              filled: true,
-                              fillColor: FlutterFlowTheme.of(context)
-                                  .secondaryBackground,
-                              contentPadding: EdgeInsetsDirectional.fromSTEB(
-                                  20, 24, 0, 24),
-                            ),
-                            style: FlutterFlowTheme.of(context)
-                                .bodyText1
-                                .override(
-                                  fontFamily: 'Outfit',
-                                  color: FlutterFlowTheme.of(context)
-                                      .primaryText,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.normal,
-                                ),
-                            validator: (val) {
-                              if (val == null || val.isEmpty) {
-                                return 'Field is required';
-                              }
-
-                              if (!RegExp(kTextValidatorEmailRegex)
-                                  .hasMatch(val)) {
-                                return 'Please enter a valid email address';
-                              }
-                              return null;
-                            },
-                          ),
-                        );
+      padding: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 16),
+      child: TextFormField(
+        controller: userEmailController,
+        obscureText: false,
+        decoration: InputDecoration(
+          labelText: 'Username or Email',
+          labelStyle: FlutterFlowTheme.of(context).bodyText2.override(
+                fontFamily: 'Outfit',
+                color: FlutterFlowTheme.of(context).secondaryText,
+                fontSize: 14,
+                fontWeight: FontWeight.normal,
+              ),
+          hintStyle: FlutterFlowTheme.of(context).bodyText2.override(
+                fontFamily: 'Outfit',
+                color: Color(0xFF57636C),
+                fontSize: 14,
+                fontWeight: FontWeight.normal,
+              ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: FlutterFlowTheme.of(context).secondaryText,
+              width: 0.5,
+            ),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: FlutterFlowTheme.of(context).secondaryText,
+              width: 0.5,
+            ),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Color(0x00000000),
+              width: 0.5,
+            ),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Color(0x00000000),
+              width: 0.5,
+            ),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          filled: true,
+          fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+          contentPadding: EdgeInsetsDirectional.fromSTEB(20, 24, 0, 24),
+        ),
+        style: FlutterFlowTheme.of(context).bodyText1.override(
+              fontFamily: 'Outfit',
+              color: FlutterFlowTheme.of(context).primaryText,
+              fontSize: 14,
+              fontWeight: FontWeight.normal,
+            ),
+        validator: (val) {
+          if (val == null || val.isEmpty) {
+            return 'Field is required';
+          }
+          if (!val.contains('@') || !val.contains('.com')) {
+            return null;
+          } else if (!RegExp(kTextValidatorEmailRegex).hasMatch(val)) {
+            return 'Please enter a valid email address';
+          }
+          return null;
+        },
+      ),
+    );
   }
 }
 
@@ -309,8 +284,7 @@ class SwitchToSignUpButton extends StatelessWidget {
                   extra: <String, dynamic>{
                     kTransitionInfoKey: TransitionInfo(
                       hasTransition: true,
-                      transitionType:
-                          PageTransitionType.rightToLeft,
+                      transitionType: PageTransitionType.rightToLeft,
                       duration: Duration(milliseconds: 300),
                     ),
                   },
@@ -318,12 +292,9 @@ class SwitchToSignUpButton extends StatelessWidget {
               },
               child: Text(
                 'Sign up',
-                style: FlutterFlowTheme.of(context)
-                    .bodyText1
-                    .override(
+                style: FlutterFlowTheme.of(context).bodyText1.override(
                       fontFamily: 'Poppins',
-                      color: FlutterFlowTheme.of(context)
-                          .tertiary400,
+                      color: FlutterFlowTheme.of(context).tertiary400,
                     ),
               ),
             ),
@@ -362,7 +333,8 @@ class LoginButton extends StatelessWidget {
             }
 
             GoRouter.of(context).prepareAuthEvent();
-
+          
+            
             final user = await signInWithEmail(
               context,
               userEmailController!.text,
@@ -379,13 +351,12 @@ class LoginButton extends StatelessWidget {
             width: 270,
             height: 50,
             color: Color(0xFF96669E),
-            textStyle:
-                FlutterFlowTheme.of(context).subtitle1.override(
-                      fontFamily: 'Outfit',
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.normal,
-                    ),
+            textStyle: FlutterFlowTheme.of(context).subtitle1.override(
+                  fontFamily: 'Outfit',
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.normal,
+                ),
             elevation: 2,
             borderSide: BorderSide(
               color: Colors.transparent,
@@ -425,12 +396,9 @@ class ForgotPasswordButton extends StatelessWidget {
           },
           child: Text(
             'Forgot Password?',
-            style: FlutterFlowTheme.of(context)
-                .bodyText1
-                .override(
+            style: FlutterFlowTheme.of(context).bodyText1.override(
                   fontFamily: 'Poppins',
-                  color:
-                      FlutterFlowTheme.of(context).primaryColor,
+                  color: FlutterFlowTheme.of(context).primaryColor,
                 ),
           ),
         ),

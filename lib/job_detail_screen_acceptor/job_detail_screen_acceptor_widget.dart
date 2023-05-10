@@ -9,6 +9,7 @@ import '../flutter_flow/flutter_flow_icon_button.dart';
 import '../flutter_flow/flutter_flow_theme.dart';
 import '../flutter_flow/flutter_flow_util.dart';
 import '../flutter_flow/flutter_flow_widgets.dart';
+import 'bottom_modal_sheet.dart';
 
 class JobDetailScreenAcceptorWidget extends StatefulWidget {
   final DocumentReference jobRef;
@@ -28,12 +29,9 @@ class _JobDetailScreenAcceptorWidgetState
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   Future<Map<String, Object>> getJobData() async {
-    print("RECEIVED JOBRECORD: ${widget.jobRef}");
     final DocumentReference correctRef =
         FirebaseFirestore.instance.doc('job/${widget.jobRef.id}');
     final DocumentSnapshot snapshot = await correctRef.get();
-    print("CORRECTED JOBRECORD: $correctRef");
-
     final data = snapshot.data() as Map<String, dynamic>;
 
     return {
@@ -52,8 +50,9 @@ class _JobDetailScreenAcceptorWidgetState
 
   @override
   Widget build(BuildContext context) {
-    final DocumentReference correctRef =
+    final DocumentReference correctJobRef =
         FirebaseFirestore.instance.doc('job/${widget.jobRef.id}');
+
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -85,7 +84,6 @@ class _JobDetailScreenAcceptorWidgetState
                 final delTime = jobData['del_time'] as DateTime;
                 final posterID = jobData['posterID'] as DocumentReference;
                 final store = jobData['store'].toString();
-
                 final acceptorID = jobData['acceptorID'] != ""
                     ? (jobData['acceptorID'] as DocumentReference).id
                     : jobData['acceptorID'];
@@ -134,14 +132,12 @@ class _JobDetailScreenAcceptorWidgetState
                     PostedBy(posterID),
                     Spacer(),
                     acceptorID != ""
-                        ? ChatButton(jobRecord: correctRef)
-                        : AcceptJobButton(correctRef, context),
-
-                    //TODO - add verification functionality
-
-                    acceptorID != ""
-                        ? ChatButton(jobRecord: widget.jobRef)
-                        : Container(),
+                        ? ChatButton(jobRecord: correctJobRef)
+                        : AcceptJobButton(correctJobRef, context),
+                    if (acceptorID != "")
+                      UploadReceiptModalBottomSheet(
+                        jobRef: correctJobRef,
+                      ),
                   ],
                 );
               },
@@ -228,7 +224,7 @@ class _JobDetailScreenAcceptorWidgetState
       DocumentReference columnJobRecord, BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 20),
-      child: FFButtonWidget(
+      child: ElevatedButton(
         onPressed: () async {
           final jobUpdateData =
               createJobRecordData(acceptorID: currentUserReference);
@@ -237,20 +233,19 @@ class _JobDetailScreenAcceptorWidgetState
           await columnJobRecord.update(jobUpdateData);
           setState(() {});
         },
-        text: 'Accept This Job ',
-        options: FFButtonOptions(
-          width: 340,
-          height: 50,
-          color: Color(0xFF9ACDA1),
-          textStyle: FlutterFlowTheme.of(context).subtitle2.override(
+        child: Text(
+          'Accept This Job',
+          style: FlutterFlowTheme.of(context).subtitle2.override(
                 fontFamily: 'Poppins',
                 color: Colors.white,
               ),
-          borderSide: BorderSide(
-            color: Colors.transparent,
-            width: 1,
+        ),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: FlutterFlowTheme.of(context).primaryColor,
+          minimumSize: Size(340, 50),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
           ),
-          borderRadius: BorderRadius.circular(10),
         ),
       ),
     );
@@ -312,7 +307,7 @@ class JobStatusChip extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
       ),
       color: acceptorID != ""
-          ? Color(0xFF80D3A2)
+          ? FlutterFlowTheme.of(context).buttonGreen
           : FlutterFlowTheme.of(context).secondaryText,
       child: SizedBox(
         width: 300,
@@ -328,78 +323,6 @@ class JobStatusChip extends StatelessWidget {
                 ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class ChatButton extends StatelessWidget {
-  const ChatButton({
-    Key? key,
-    required this.jobRecord,
-  }) : super(key: key);
-
-  final DocumentReference jobRecord;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 10),
-      child: StreamBuilder<List<UsersRecord>>(
-        stream: queryUsersRecord(
-          singleRecord: true,
-        ),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Center(
-              child: SizedBox(
-                width: 50,
-                height: 50,
-                child: CircularProgressIndicator(
-                  color: FlutterFlowTheme.of(context).primaryColor,
-                ),
-              ),
-            );
-          }
-          //  List<JobRecord> columnJobRecordList = snapshot.data!;
-          print("JOBRECORD TO CHAT: $jobRecord");
-          return FFButtonWidget(
-            onPressed: () async {
-              context.pushNamed(
-                'ChatScreen',
-                queryParams: {
-                  'jobRef': serializeParam(
-                    jobRecord,
-                    ParamType.DocumentReference,
-                  ),
-                }.withoutNulls,
-                extra: {
-                  kTransitionInfoKey: TransitionInfo(
-                    hasTransition: true,
-                    transitionType: PageTransitionType.scale,
-                    alignment: Alignment.bottomCenter,
-                    duration: Duration(milliseconds: 400),
-                  ),
-                },
-              );
-            },
-            text: 'Chat with Job Poster',
-            options: FFButtonOptions(
-              width: 340,
-              height: 50,
-              color: FlutterFlowTheme.of(context).primaryColor,
-              textStyle: FlutterFlowTheme.of(context).subtitle2.override(
-                    fontFamily: 'Poppins',
-                    color: FlutterFlowTheme.of(context).primaryText,
-                  ),
-              borderSide: BorderSide(
-                color: Colors.transparent,
-                width: 1,
-              ),
-              borderRadius: BorderRadius.circular(10),
-            ),
-          );
-        },
       ),
     );
   }
@@ -523,9 +446,81 @@ class JobAcceptedText extends StatelessWidget {
         'Job Accepted!',
         style: FlutterFlowTheme.of(context).title2.override(
               fontFamily: 'Poppins',
-              color: Color(0xFF80D3A2),
+              color: FlutterFlowTheme.of(context).buttonGreen,
               fontSize: 30,
             ),
+      ),
+    );
+  }
+}
+
+class ChatButton extends StatelessWidget {
+  const ChatButton({
+    Key? key,
+    required this.jobRecord,
+  }) : super(key: key);
+
+  final DocumentReference jobRecord;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 10),
+      child: StreamBuilder<List<UsersRecord>>(
+        stream: queryUsersRecord(
+          singleRecord: true,
+        ),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Center(
+              child: SizedBox(
+                width: 50,
+                height: 50,
+                child: CircularProgressIndicator(
+                  color: FlutterFlowTheme.of(context).primaryColor,
+                ),
+              ),
+            );
+          }
+          //  List<JobRecord> columnJobRecordList = snapshot.data!;
+          print("JOBRECORD TO CHAT: $jobRecord");
+          return FFButtonWidget(
+            onPressed: () async {
+              context.pushNamed(
+                'ChatScreen',
+                queryParams: {
+                  'jobRef': serializeParam(
+                    jobRecord,
+                    ParamType.DocumentReference,
+                  ),
+                }.withoutNulls,
+                extra: {
+                  kTransitionInfoKey: TransitionInfo(
+                    hasTransition: true,
+                    transitionType: PageTransitionType.scale,
+                    alignment: Alignment.bottomCenter,
+                    duration: Duration(milliseconds: 400),
+                  ),
+                },
+              );
+            },
+            text: 'Chat with Job Poster',
+            options: FFButtonOptions(
+              width: 340,
+              height: 50,
+              color: FlutterFlowTheme.of(context).primaryColor,
+              textStyle: FlutterFlowTheme.of(context).subtitle2.override(
+                    fontFamily: 'Poppins',
+                    color: FlutterFlowTheme.of(context).primaryText,
+                  ),
+              borderSide: BorderSide(
+                color: Colors.transparent,
+                width: 1,
+              ),
+              borderRadius: BorderRadius.circular(10),
+            ),
+          );
+        },
       ),
     );
   }

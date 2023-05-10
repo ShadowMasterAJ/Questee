@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import '../auth/auth_util.dart';
 import '../backend/backend.dart';
@@ -17,7 +16,6 @@ class JobHistoryScreenWidget extends StatefulWidget {
 }
 
 class _JobHistoryScreenWidgetState extends State<JobHistoryScreenWidget> {
-  PagingController<DocumentSnapshot?, JobRecord>? _pagingController;
   List<StreamSubscription?> _streamSubscriptions = [];
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
