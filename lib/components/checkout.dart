@@ -107,6 +107,7 @@ class _CheckoutWidgetState extends State<CheckoutWidget> {
                             size: 24,
                           ),
                           onPressed: () {
+                            Navigator.of(context).pop();
                             print('IconButton pressed ...');
                           },
                         ),
@@ -362,8 +363,6 @@ class _CheckoutWidgetState extends State<CheckoutWidget> {
                         padding: EdgeInsetsDirectional.fromSTEB(0, 12, 0, 0),
                         child: FFButtonWidget(
                           onPressed: () async {
-                            
-                            
                             final paymentResponse = await processStripePayment(
                               context,
                               amount: widget.payAmount!.round(),
@@ -378,14 +377,13 @@ class _CheckoutWidgetState extends State<CheckoutWidget> {
                                   FlutterFlowTheme.of(context).primaryText,
                             );
                             Fluttertoast.showToast(
-                            msg: "Payment Successful!",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.CENTER,
-                            timeInSecForIosWeb: 1,
-                            backgroundColor: Color.fromARGB(255, 56, 1, 44),
-                            textColor: Colors.white,
-                            fontSize: 20.0
-                        );
+                                msg: "Payment Successful!",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.CENTER,
+                                timeInSecForIosWeb: 1,
+                                backgroundColor: Color.fromARGB(255, 56, 1, 44),
+                                textColor: Colors.white,
+                                fontSize: 20.0);
                             if (paymentResponse.paymentId == null) {
                               if (paymentResponse.errorMessage != null) {
                                 showSnackbar(
@@ -396,9 +394,6 @@ class _CheckoutWidgetState extends State<CheckoutWidget> {
                               return;
                             }
                             paymentId = paymentResponse.paymentId!;
-
-
-                          
 
                             setState(() {});
                           },

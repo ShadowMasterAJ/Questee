@@ -9,7 +9,7 @@ import '../flutter_flow/flutter_flow_icon_button.dart';
 import '../flutter_flow/flutter_flow_theme.dart';
 import '../flutter_flow/flutter_flow_util.dart';
 import '../flutter_flow/flutter_flow_widgets.dart';
-import 'bottom_modal_sheet.dart';
+import 'verification_bottom_modal_sheet.dart';
 
 class JobDetailScreenAcceptorWidget extends StatefulWidget {
   final DocumentReference jobRef;
@@ -35,6 +35,7 @@ class _JobDetailScreenAcceptorWidgetState
     final data = snapshot.data() as Map<String, dynamic>;
 
     return {
+      'ref': correctRef,
       'del_location': data['del_location'].toString(),
       'del_time': data['del_time'].toDate(),
       'items': data['items'],
@@ -50,8 +51,8 @@ class _JobDetailScreenAcceptorWidgetState
 
   @override
   Widget build(BuildContext context) {
-    final DocumentReference correctJobRef =
-        FirebaseFirestore.instance.doc('job/${widget.jobRef.id}');
+    // final DocumentReference correctJobRef =
+    //     FirebaseFirestore.instance.doc('job/${widget.jobRef.id}');
 
     return Scaffold(
       key: scaffoldKey,
@@ -79,19 +80,21 @@ class _JobDetailScreenAcceptorWidgetState
                 }
 
                 final jobData = snapshot.data!;
-
-                final location = jobData['del_location'].toString();
-                final delTime = jobData['del_time'] as DateTime;
-                final posterID = jobData['posterID'] as DocumentReference;
-                final store = jobData['store'].toString();
-                final acceptorID = jobData['acceptorID'] != ""
+                final DocumentReference correctJobRef =
+                    jobData['ref'] as DocumentReference;
+                final String location = jobData['del_location'].toString();
+                final DateTime delTime = jobData['del_time'] as DateTime;
+                final DocumentReference posterID =
+                    jobData['posterID'] as DocumentReference;
+                final String store = jobData['store'].toString();
+                final String acceptorID = jobData['acceptorID'] != ""
                     ? (jobData['acceptorID'] as DocumentReference).id
                     : jobData['acceptorID'];
-                final type = jobData['type'].toString();
-                final status = jobData['status'].toString();
-                final items = List<String>.from(jobData['items']);
-                final note = jobData['note'].toString();
-                final price = jobData['price'] as double;
+                final String type = jobData['type'].toString();
+                final String status = jobData['status'].toString();
+                final List<String> items = List<String>.from(jobData['items']);
+                final String note = jobData['note'].toString();
+                final double price = jobData['price'] as double;
 
                 return Column(
                   mainAxisSize: MainAxisSize.max,

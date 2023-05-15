@@ -130,46 +130,9 @@ class _CreateJobScreenWidgetState extends State<CreateJobScreenWidget> {
               type == null ||
               storeValue == null ||
               datePicked == null) {
-            // ScaffoldMessenger.of(context).showSnackBar(
-            //   SnackBar(
-            //     duration: Duration(seconds: 2),
-            //     backgroundColor:
-            //         FlutterFlowTheme.of(context)
-            //             .alternateDark,
-            //     shape: RoundedRectangleBorder(
-            //         borderRadius:
-            //             BorderRadius.circular(10)),
-            //     elevation: 10,
-            //     content: Center(
-            //       child: Text(
-            //         'Please fill in all fields',
-            //         style: FlutterFlowTheme.of(context)
-            //             .bodyText1
-            //             .override(
-            //                 fontFamily: 'Poppins',
-            //                 fontWeight: FontWeight.w500,
-            //                 fontSize: 16),
-            //       ),
-            //     ),
-            //   ),
-            // );
-
-            if (storeValue == null) {
-              setState(() {
-                storeIsNull = true;
-              });
-            }
-            if (datePicked == null) {
-              setState(() {
-                dateIsNull = true;
-              });
-            }
-            if (type == null) {
-              setState(() {
-                typeIsNull = true;
-              });
-            }
-
+            if (storeValue == null) setState(() => storeIsNull = true);
+            if (datePicked == null) setState(() => dateIsNull = true);
+            if (type == null) setState(() => typeIsNull = true);
             return;
           }
 
@@ -190,10 +153,8 @@ class _CreateJobScreenWidgetState extends State<CreateJobScreenWidget> {
             delTime: datePicked,
             posterID: currentUserReference,
           );
-          // await JobRecord.collection.doc().set(jobCreateData);
           final newJobRef = JobRecord.collection.doc();
           await newJobRef.set(jobCreateData);
-          // final jobId = '/job/' + newDocRef.id;
           UsersRecord.addCurrJobsPosted(currentUserReference!.id, newJobRef);
           context.pushNamed('JobBoardScreen');
         },
@@ -471,111 +432,6 @@ class _CreateJobScreenWidgetState extends State<CreateJobScreenWidget> {
           ),
         ),
       );
-}
-
-class CreateTaskButton extends StatelessWidget {
-  const CreateTaskButton({
-    Key? key,
-    required List<TextEditingController> controllers,
-    required List<String> items,
-    required this.type,
-    required this.noteController,
-    required this.storeValue,
-    required this.delLocationController,
-    required this.priceController,
-    required this.datePicked,
-    required this.formKey,
-  })  : _controllers = controllers,
-        _items = items,
-        super(key: key);
-
-  final List<TextEditingController> _controllers;
-  final List<String> _items;
-  final String? type;
-  final TextEditingController? noteController;
-  final String? storeValue;
-  final TextEditingController? delLocationController;
-  final TextEditingController? priceController;
-  final DateTime? datePicked;
-  final GlobalKey<FormState> formKey;
-  @override
-  Widget build(BuildContext context) {
-    print("Items: $_items");
-    print("Type: $type");
-    print("Store Value: $storeValue");
-    print("Date Picked: $datePicked");
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(0, 15, 0, 25),
-      child: FFButtonWidget(
-        onPressed: () async {
-          if (formKey.currentState == null ||
-              !formKey.currentState!.validate() ||
-              type == null ||
-              storeValue == null ||
-              datePicked == null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                duration: Duration(seconds: 2),
-                backgroundColor: FlutterFlowTheme.of(context).alternateDark,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
-                elevation: 10,
-                content: Center(
-                  child: Text(
-                    'Please fill in all fields',
-                    style: FlutterFlowTheme.of(context).bodyText1.override(
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16),
-                  ),
-                ),
-              ),
-            );
-            return;
-          }
-
-          for (int i = 0; i < _controllers.length; i++) {
-            _items.add(_controllers[i].text);
-          }
-          final jobCreateData = createJobRecordData(
-            type: type,
-            note: noteController!.text,
-            store: storeValue,
-            delLocation: delLocationController!.text,
-            price: valueOrDefault<double>(
-              double.parse(priceController!.text),
-              3.00,
-            ),
-            items: _items,
-            status: 'open',
-            delTime: datePicked,
-            posterID: currentUserReference,
-          );
-          // await JobRecord.collection.doc().set(jobCreateData);
-          final newJobRef = JobRecord.collection.doc();
-          await newJobRef.set(jobCreateData);
-          // final jobId = '/job/' + newDocRef.id;
-          UsersRecord.addCurrJobsPosted(currentUserReference!.id, newJobRef);
-          context.pushNamed('JobBoardScreen');
-        },
-        text: 'Create Task',
-        options: FFButtonOptions(
-          width: 270,
-          height: 50,
-          color: FlutterFlowTheme.of(context).primaryColor,
-          textStyle: FlutterFlowTheme.of(context).subtitle1.override(
-                fontFamily: 'Poppins',
-                color: Colors.white,
-              ),
-          elevation: 3,
-          borderSide: BorderSide(
-            color: Colors.transparent,
-            width: 1,
-          ),
-        ),
-      ),
-    );
-  }
 }
 
 class Header extends StatelessWidget {

@@ -34,12 +34,13 @@ class _UploadReceiptModalBottomSheetState
       isUploading = false,
       pickedInExcess = false,
       alreadyUploadedBefore = false;
+  final _formKey = GlobalKey<FormState>();
+
+  TextEditingController amountController = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     maxWidth = MediaQuery.of(context).size.width;
-
-    // if (_imageFile != null) print('IMAGE: ${_imageFile!.path}');
     return ElevatedButton(
       onPressed: () async {
         await CheckIfUploadedAlready();
@@ -70,82 +71,162 @@ class _UploadReceiptModalBottomSheetState
     print('WIDTH: $maxWidth');
 
     return showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      isDismissible: !isUploading,
-      useSafeArea: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (BuildContext context) {
-        print('FILES UPLOADED: $filesUploaded');
-        return DraggableScrollableSheet(
-          initialChildSize: filesUploaded
-              ? 0.45
-              : selectedImages
-                  ? 0.55
-                  : 0.6,
-          expand: false,
-          builder: (BuildContext context, ScrollController scrollController) {
-            return Container(
-              padding: EdgeInsets.all(5),
-              decoration: BoxDecoration(
-                  color: FlutterFlowTheme.of(context).primaryBackgroundLight,
-                  borderRadius:
-                      BorderRadius.vertical(top: Radius.circular(20))),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SheetLever(),
-                  Visibility(
-                    visible: alreadyUploadedBefore,
-                    child: UserReuploadOptions(context, maxWidth),
-                  ),
-                  Visibility(
-                    visible: !alreadyUploadedBefore && filesUploaded,
-                    child: UploadSuccessIllustration(maxWidth, context),
-                  ),
-                  Visibility(
-                    visible: !alreadyUploadedBefore &&
-                        !filesUploaded &&
-                        !selectedImages,
-                    child: PickImagesButton(context, maxWidth),
-                  ),
-                  Visibility(
-                      visible: !alreadyUploadedBefore &&
-                          !filesUploaded &&
-                          selectedImages,
-                      child: SizedBox(height: 20)),
-                  Visibility(
-                    visible: !alreadyUploadedBefore &&
-                        !filesUploaded &&
-                        selectedImages,
-                    child: Expanded(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Row(
+        context: context,
+        isScrollControlled: true,
+        isDismissible: !isUploading,
+        useSafeArea: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        builder: (BuildContext context) => DraggableScrollableSheet(
+              initialChildSize: filesUploaded
+                  ? 0.45
+                  : selectedImages
+                      ? 0.75
+                      : 0.6,
+              expand: false,
+              builder:
+                  (BuildContext context, ScrollController scrollController) {
+                return Container(
+                  padding: EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                      color:
+                          FlutterFlowTheme.of(context).primaryBackgroundLight,
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(20))),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SheetLever(),
+                      Visibility(
+                        visible: alreadyUploadedBefore,
+                        child: UserReuploadOptions(context, maxWidth),
+                      ),
+                      Visibility(
+                        visible: !alreadyUploadedBefore && filesUploaded,
+                        child: UploadSuccessIllustration(maxWidth, context),
+                      ),
+                      Visibility(
+                        visible: !alreadyUploadedBefore &&
+                            !filesUploaded &&
+                            !selectedImages,
+                        child: PickImagesButton(context, maxWidth),
+                      ),
+                      Visibility(
+                        visible: !alreadyUploadedBefore &&
+                            !filesUploaded &&
+                            selectedImages,
+                        child: Expanded(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              AddImageAfterSelectionButton(context),
-                              ImagesViewRow(context),
+                              const SizedBox(height: 10),
+                              Expanded(
+                                child: Row(
+                                  children: [
+                                    AddImageAfterSelectionButton(context),
+                                    ImagesViewRow(context),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                padding: EdgeInsets.only(
+                                    left: 10, top: 10, bottom: 10, right: 0),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      'Amount paid after taxes:',
+                                      maxLines: 2,
+                                      style: FlutterFlowTheme.of(context)
+                                          .subtitle2,
+                                    ),
+                                    const SizedBox(width: 15),
+                                    Text(
+                                      'SGD',
+                                      maxLines: 2,
+                                      style: FlutterFlowTheme.of(context)
+                                          .subtitle2,
+                                    ),
+                                    const SizedBox(width: 5),
+                                    Expanded(
+                                        child: Form(
+                                      autovalidateMode:
+                                          AutovalidateMode.onUserInteraction,
+                                      key: _formKey,
+                                      child: TextFormField(
+                                        controller: amountController,
+                                        validator: (value) {
+                                          if (value!.isEmpty)
+                                            return 'You cannot leave\nthis blank';
+
+                                          try {
+                                            if (double.parse(value) > 100)
+                                              return 'How so\nexpensive? Enter\na smaller value';
+                                            else
+                                              return null;
+                                          } catch (e) {
+                                            return 'Enter a number';
+                                          }
+                                        },
+                                        decoration: InputDecoration(
+                                          enabledBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                              color: Color(0x00000000),
+                                              width: 1,
+                                            ),
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                          focusedBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                              color: Color(0x00000000),
+                                              width: 1,
+                                            ),
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                          errorBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                              color: Color(0x00000000),
+                                              width: 1,
+                                            ),
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                          focusedErrorBorder:
+                                              UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                              color: Color(0x00000000),
+                                              width: 1,
+                                            ),
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                          ),
+                                          filled: true,
+                                          fillColor:
+                                              FlutterFlowTheme.of(context)
+                                                  .secondaryBackground,
+                                          contentPadding:
+                                              EdgeInsetsDirectional.all(10),
+                                        ),
+                                        style: FlutterFlowTheme.of(context)
+                                            .bodyText1,
+                                        maxLines: 1,
+                                      ),
+                                    )),
+                                  ],
+                                ),
+                              ),
+                              UploadImagesButton(context)
                             ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                  Visibility(
-                      visible: !alreadyUploadedBefore &&
-                          !filesUploaded &&
-                          selectedImages,
-                      child: UploadImagesButton(context))
-                ],
-              ),
-            );
-          },
-        );
-      },
-    );
+                );
+              },
+            ));
   }
 
   Expanded UserReuploadOptions(BuildContext context, double maxWidth) {
@@ -309,10 +390,9 @@ class _UploadReceiptModalBottomSheetState
     return GestureDetector(
       onTap: () async => await Choose_and_AddImages(context, maxWidth),
       child: Container(
-        height: 250,
         width: 50,
-        padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-        margin: EdgeInsets.all(5),
+        padding: EdgeInsets.symmetric(horizontal: 5),
+        margin: EdgeInsets.only(left: 10),
         decoration: BoxDecoration(
             color: FlutterFlowTheme.of(context).primaryBackgroundDark,
             borderRadius: BorderRadius.circular(10),
@@ -355,7 +435,6 @@ class _UploadReceiptModalBottomSheetState
                   }),
                   child: Container(
                     margin: EdgeInsets.symmetric(horizontal: 10),
-                    height: 250,
                     width: maxWidth * 0.40,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
@@ -371,6 +450,24 @@ class _UploadReceiptModalBottomSheetState
                 DeleteImageButton(context, index, maxWidth),
               ],
             ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  InteractiveViewer ImageExpandedViewHero(double maxWidth, int index) {
+    return InteractiveViewer(
+      panEnabled: true,
+      child: Container(
+        constraints: BoxConstraints(maxHeight: 500, maxWidth: maxWidth * 0.7),
+        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          image: DecorationImage(
+            image: FileImage(
+                File(_chosenImages[_chosenImages.length - index - 1].path)),
+            fit: BoxFit.fitHeight,
           ),
         ),
       ),
@@ -408,21 +505,6 @@ class _UploadReceiptModalBottomSheetState
     );
   }
 
-  Container ImageExpandedViewHero(double maxWidth, int index) {
-    return Container(
-      constraints: BoxConstraints(maxHeight: 500, maxWidth: maxWidth * 0.7),
-      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        image: DecorationImage(
-          image: FileImage(
-              File(_chosenImages[_chosenImages.length - index - 1].path)),
-          fit: BoxFit.fitHeight,
-        ),
-      ),
-    );
-  }
-
   Container SheetLever() {
     return Container(
       width: 40,
@@ -437,7 +519,7 @@ class _UploadReceiptModalBottomSheetState
 
   Container UploadImagesButton(BuildContext context) {
     return Container(
-      margin: EdgeInsets.fromLTRB(10, 0, 10, 20),
+      margin: EdgeInsets.fromLTRB(10, 0, 0, 10),
       child: FFButtonWidget(
         onPressed: () async {
           if (isUploading) return;
@@ -445,20 +527,27 @@ class _UploadReceiptModalBottomSheetState
           setState(() => isUploading = true);
 
           try {
-            List<String>? urls = await uploadImagesToFirebaseStorage(
-              fileNamePrefix: 'receipt',
-              imageFiles: _chosenImages,
-              storagePath: '${widget.jobRef.id}/verification_receipts',
-            );
+            if (_formKey.currentState!.validate()) {
+              print(amountController.text);
+              final jobUpdateData = createJobRecordData(
+                  price: double.parse(amountController.text));
+              await widget.jobRef.update(jobUpdateData);
 
-            if (urls != null) {
-              print('UPLOADED Images to firebase storage!');
-              await uploadImageUrlsToFirestore(urls);
-              print('UPLOADED image urls to firestore!');
+              List<String>? urls = await uploadImagesToFirebaseStorage(
+                fileNamePrefix: 'receipt',
+                imageFiles: _chosenImages,
+                storagePath: '${widget.jobRef.id}/verification_receipts',
+              );
 
-              setState(() => filesUploaded = true);
-              Navigator.of(context).pop();
-              ShowBottomSheet(maxWidth);
+              if (urls != null) {
+                print('UPLOADED Images to firebase storage!');
+                await uploadImageUrlsToFirestore(urls);
+                print('UPLOADED image urls to firestore!');
+
+                setState(() => filesUploaded = true);
+                Navigator.of(context).pop();
+                ShowBottomSheet(maxWidth);
+              }
             } else {
               throw Exception('Failed to upload images.');
             }
