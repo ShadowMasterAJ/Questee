@@ -26,6 +26,11 @@ public final class GeneratedPluginRegistrant {
       Log.e(TAG, "Error registering plugin cloud_functions, io.flutter.plugins.firebase.functions.FlutterFirebaseFunctionsPlugin", e);
     }
     try {
+      flutterEngine.getPlugins().add(new com.example.desktop_webview_auth.DesktopWebviewAuthPlugin());
+    } catch(Exception e) {
+      Log.e(TAG, "Error registering plugin desktop_webview_auth, com.example.desktop_webview_auth.DesktopWebviewAuthPlugin", e);
+    }
+    try {
       flutterEngine.getPlugins().add(new fr.g123k.deviceapps.DeviceAppsPlugin());
     } catch(Exception e) {
       Log.e(TAG, "Error registering plugin device_apps, fr.g123k.deviceapps.DeviceAppsPlugin", e);

@@ -3,11 +3,9 @@
 import 'package:flutter/material.dart';
 
 import '../backend/backend.dart';
-import '../components/AmountBottomSheet.dart';
 import '../flutter_flow/flutter_flow_icon_button.dart';
 import '../flutter_flow/flutter_flow_theme.dart';
 import '../flutter_flow/flutter_flow_util.dart';
-import '../job_detail_screen_acceptor/verification_bottom_modal_sheet.dart';
 import 'verification_bottom_modal_sheet.dart';
 
 class JobDetailScreenPosterWidget extends StatefulWidget {
