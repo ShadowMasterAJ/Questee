@@ -69,7 +69,7 @@ class _JobDetailScreenPosterWidgetState
               if (snapshot.hasError) {
                 print("Error: ${snapshot.error}");
 
-                return Center(child: Text('Error fetching data'));
+                return Center(child: Text('Error fetching data: ${snapshot.error}'));
               }
 
               final jobData = snapshot.data!;

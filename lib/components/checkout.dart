@@ -138,7 +138,7 @@ class _CheckoutWidgetState extends State<CheckoutWidget> {
                     autofocus: true,
                     obscureText: false,
                     decoration: InputDecoration(
-                      hintText: '  Card Number: ',
+                      hintText: 'Card Number: ',
                       hintStyle: FlutterFlowTheme.of(context).bodyText2,
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(
@@ -265,7 +265,7 @@ class _CheckoutWidgetState extends State<CheckoutWidget> {
                           autofocus: true,
                           obscureText: false,
                           decoration: InputDecoration(
-                            hintText: 'CVV:',
+                            hintText: 'CVV: ',
                             hintStyle: FlutterFlowTheme.of(context).bodyText2,
                             enabledBorder: UnderlineInputBorder(
                               borderSide: BorderSide(

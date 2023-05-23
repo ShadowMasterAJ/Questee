@@ -41,16 +41,16 @@ class _VerificationModalBottomSheetState
       stream: widget.jobRef.snapshots(),
       builder:
           (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-        if (!snapshot.hasData) {
-          return CircularProgressIndicator();
-        } else {
+        if (!snapshot.hasData)
+          return CircularProgressIndicator(
+            backgroundColor: FlutterFlowTheme.of(context).primaryColor,
+          );
+        else {
           Map<String, dynamic> data =
               snapshot.data!.data() as Map<String, dynamic>;
           verificationImages =
               List<String>.from(data['verificationImages'] ?? []);
           amountToBePaid = data['price'];
-          print('IMAGES:$verificationImages');
-          print('PRICE: $amountToBePaid');
           return ElevatedButton(
             style: ElevatedButton.styleFrom(
               shape: RoundedRectangleBorder(
@@ -61,10 +61,10 @@ class _VerificationModalBottomSheetState
               minimumSize: Size(double.infinity, 50),
             ),
             onPressed: verificationImages.isNotEmpty
-                ? () => ShowBottomSheet(context)
+                ? () => ShowBottomReceiptSheet(context)
                 : () => _showImageLimitDialog(context),
             child: Text(
-              'Verify Purchase',
+              'Verify Receipt',
               style: FlutterFlowTheme.of(context).subtitle2.override(
                     fontFamily: 'Poppins',
                     color: Colors.white,
@@ -76,7 +76,39 @@ class _VerificationModalBottomSheetState
     );
   }
 
-  Future ShowBottomSheet(BuildContext context) {
+Future ShowPaymentSheet(BuildContext context) {
+    return showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      isDismissible: true,
+      useSafeArea: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (BuildContext context) => DraggableScrollableSheet(
+        initialChildSize: 0.85,
+        expand: false,
+        builder: (BuildContext context, ScrollController scrollController) {
+          return Container(
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+              color: FlutterFlowTheme.of(context).primaryBackgroundLight,
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            child: Column(
+              children: [
+                SheetLever(),
+               
+               ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Future ShowBottomReceiptSheet(BuildContext context) {
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -139,6 +171,7 @@ class _VerificationModalBottomSheetState
                     SizedBox(height: 10),
                     Row(
                       children: [
+                        SizedBox(width: 10),
                         Expanded(
                           child: ChoiceButton(
                               context,
@@ -148,12 +181,13 @@ class _VerificationModalBottomSheetState
                                   : () {
                                       setState(() => verifiedReceipt = true);
                                       Navigator.of(context).pop();
-                                      ShowBottomSheet(context);
+                                      ShowBottomReceiptSheet(context);
                                     },
                               verifiedReceipt
                                   ? FlutterFlowTheme.of(context).primaryColor
                                   : FlutterFlowTheme.of(context).buttonGreen),
                         ),
+                        SizedBox(width: 10),
                         if (!verifiedReceipt)
                           Expanded(
                             child: ChoiceButton(
@@ -161,9 +195,11 @@ class _VerificationModalBottomSheetState
                                 'Clarify with Acceptor!',
                                 () => GoToChat(context, widget.jobRef),
                                 FlutterFlowTheme.of(context).buttonRed),
-                          )
+                          ),
+                        if (!verifiedReceipt) SizedBox(width: 10),
                       ],
                     ),
+                    SizedBox(height: 10),
                   ],
                 )
               ],
@@ -191,20 +227,17 @@ class _VerificationModalBottomSheetState
     ]);
   }
 
-  Container ChoiceButton(
+  FFButtonWidget ChoiceButton(
       BuildContext context, String text, Function() onTap, Color color) {
-    return Container(
-      margin: EdgeInsets.fromLTRB(10, 0, 0, 10),
-      child: FFButtonWidget(
-        onPressed: onTap,
-        text: text,
-        options: FFButtonOptions(
-          width: double.infinity,
-          height: 50,
-          color: color,
-          textStyle: FlutterFlowTheme.of(context).subtitle1,
-          borderRadius: BorderRadius.circular(10),
-        ),
+    return FFButtonWidget(
+      onPressed: onTap,
+      text: text,
+      options: FFButtonOptions(
+        width: double.infinity,
+        height: 50,
+        color: color,
+        textStyle: FlutterFlowTheme.of(context).subtitle1,
+        borderRadius: BorderRadius.circular(10),
       ),
     );
   }
@@ -316,7 +349,9 @@ class _VerificationModalBottomSheetState
           panEnabled: true,
           child: CachedNetworkImage(
             imageUrl: verificationImages[verificationImages.length - index - 1],
-            placeholder: (context, url) => CircularProgressIndicator(),
+            placeholder: (context, url) => CircularProgressIndicator(
+              backgroundColor: FlutterFlowTheme.of(context).primaryColor,
+            ),
             errorWidget: (context, url, error) => Icon(Icons.error),
             fit: BoxFit.fill,
             width: maxWidth * 0.80,
@@ -338,24 +373,24 @@ class _VerificationModalBottomSheetState
       ),
     );
   }
-}
 
-void GoToChat(BuildContext context, DocumentReference jobRef) {
-  context.pushNamed(
-    'ChatScreen',
-    queryParams: {
-      'jobRef': serializeParam(
-        jobRef,
-        ParamType.DocumentReference,
-      ),
-    }.withoutNulls,
-    extra: {
-      kTransitionInfoKey: TransitionInfo(
-        hasTransition: true,
-        transitionType: PageTransitionType.scale,
-        alignment: Alignment.bottomCenter,
-        duration: Duration(milliseconds: 400),
-      ),
-    },
-  );
+  void GoToChat(BuildContext context, DocumentReference jobRef) {
+    context.pushNamed(
+      'ChatScreen',
+      queryParams: {
+        'jobRef': serializeParam(
+          jobRef,
+          ParamType.DocumentReference,
+        ),
+      }.withoutNulls,
+      extra: {
+        kTransitionInfoKey: TransitionInfo(
+          hasTransition: true,
+          transitionType: PageTransitionType.scale,
+          alignment: Alignment.bottomCenter,
+          duration: Duration(milliseconds: 400),
+        ),
+      },
+    );
+  }
 }
