@@ -48,7 +48,7 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
-
+/lib/flutter_flow/chat
 
 build/
 dist/
@@ -56,3 +56,4 @@ node_modules/
 
 .secret-*
 **.sample
+
