@@ -32,7 +32,6 @@ dependencies:
   cloud_firestore: ^4.7.1
   cloud_firestore_platform_interface: ^5.14.1
   cloud_firestore_web: ^3.5.1
-  dash_chat: ^1.1.16
   easy_debounce: ^2.0.3
   firebase_auth: ^4.6.1
   firebase_auth_platform_interface: ^6.15.1
@@ -55,7 +54,7 @@ dependencies:
   google_sign_in_platform_interface: ^2.4.0
   google_sign_in_web: ^0.10.2+1
   infinite_scroll_pagination: ^3.2.0
-  intl: ^0.17.0
+  intl: ^0.18.0
   json_path: ^0.5.2
   mime_type: ^1.0.0
   page_transition: ^2.0.9
