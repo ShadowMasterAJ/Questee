@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
-import 'package:u_grabv1/flutter_flow/chat/index.dart';
+import 'package:u_grabv1/flutter_flow/index.dart';
 
 export 'dart:async' show StreamSubscription;
 export 'package:cloud_firestore/cloud_firestore.dart';

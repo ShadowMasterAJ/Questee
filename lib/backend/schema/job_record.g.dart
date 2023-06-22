@@ -84,6 +84,13 @@ class _$JobRecordSerializer implements StructuredSerializer<JobRecord> {
             specifiedType:
                 const FullType(BuiltList, const [const FullType(String)])));
     }
+    value = object.verifiedByPoster;
+    if (value != null) {
+      result
+        ..add('verifiedByPoster')
+        ..add(
+            serializers.serialize(value, specifiedType: const FullType(bool)));
+    }
     value = object.itemQuantity;
     if (value != null) {
       result
@@ -168,6 +175,10 @@ class _$JobRecordSerializer implements StructuredSerializer<JobRecord> {
                       BuiltList, const [const FullType(String)]))!
               as BuiltList<Object?>);
           break;
+        case 'verifiedByPoster':
+          result.verifiedByPoster = serializers.deserialize(value,
+              specifiedType: const FullType(bool)) as bool?;
+          break;
         case 'item_quantity':
           result.itemQuantity = serializers.deserialize(value,
               specifiedType: const FullType(int)) as int?;
@@ -217,6 +228,8 @@ class _$JobRecord extends JobRecord {
   @override
   final BuiltList<String>? verificationImages;
   @override
+  final bool? verifiedByPoster;
+  @override
   final int? itemQuantity;
   @override
   final DocumentReference<Object?>? posterID;
@@ -238,6 +251,7 @@ class _$JobRecord extends JobRecord {
       this.delTime,
       this.items,
       this.verificationImages,
+      this.verifiedByPoster,
       this.itemQuantity,
       this.posterID,
       this.acceptorID,
@@ -264,6 +278,7 @@ class _$JobRecord extends JobRecord {
         delTime == other.delTime &&
         items == other.items &&
         verificationImages == other.verificationImages &&
+        verifiedByPoster == other.verifiedByPoster &&
         itemQuantity == other.itemQuantity &&
         posterID == other.posterID &&
         acceptorID == other.acceptorID &&
@@ -272,30 +287,23 @@ class _$JobRecord extends JobRecord {
 
   @override
   int get hashCode {
-    return $jf($jc(
-        $jc(
-            $jc(
-                $jc(
-                    $jc(
-                        $jc(
-                            $jc(
-                                $jc(
-                                    $jc(
-                                        $jc(
-                                            $jc(
-                                                $jc($jc(0, type.hashCode),
-                                                    note.hashCode),
-                                                store.hashCode),
-                                            delLocation.hashCode),
-                                        price.hashCode),
-                                    status.hashCode),
-                                delTime.hashCode),
-                            items.hashCode),
-                        verificationImages.hashCode),
-                    itemQuantity.hashCode),
-                posterID.hashCode),
-            acceptorID.hashCode),
-        ffRef.hashCode));
+    var _$hash = 0;
+    _$hash = $jc(_$hash, type.hashCode);
+    _$hash = $jc(_$hash, note.hashCode);
+    _$hash = $jc(_$hash, store.hashCode);
+    _$hash = $jc(_$hash, delLocation.hashCode);
+    _$hash = $jc(_$hash, price.hashCode);
+    _$hash = $jc(_$hash, status.hashCode);
+    _$hash = $jc(_$hash, delTime.hashCode);
+    _$hash = $jc(_$hash, items.hashCode);
+    _$hash = $jc(_$hash, verificationImages.hashCode);
+    _$hash = $jc(_$hash, verifiedByPoster.hashCode);
+    _$hash = $jc(_$hash, itemQuantity.hashCode);
+    _$hash = $jc(_$hash, posterID.hashCode);
+    _$hash = $jc(_$hash, acceptorID.hashCode);
+    _$hash = $jc(_$hash, ffRef.hashCode);
+    _$hash = $jf(_$hash);
+    return _$hash;
   }
 
   @override
@@ -310,6 +318,7 @@ class _$JobRecord extends JobRecord {
           ..add('delTime', delTime)
           ..add('items', items)
           ..add('verificationImages', verificationImages)
+          ..add('verifiedByPoster', verifiedByPoster)
           ..add('itemQuantity', itemQuantity)
           ..add('posterID', posterID)
           ..add('acceptorID', acceptorID)
@@ -359,6 +368,11 @@ class JobRecordBuilder implements Builder<JobRecord, JobRecordBuilder> {
   set verificationImages(ListBuilder<String>? verificationImages) =>
       _$this._verificationImages = verificationImages;
 
+  bool? _verifiedByPoster;
+  bool? get verifiedByPoster => _$this._verifiedByPoster;
+  set verifiedByPoster(bool? verifiedByPoster) =>
+      _$this._verifiedByPoster = verifiedByPoster;
+
   int? _itemQuantity;
   int? get itemQuantity => _$this._itemQuantity;
   set itemQuantity(int? itemQuantity) => _$this._itemQuantity = itemQuantity;
@@ -393,6 +407,7 @@ class JobRecordBuilder implements Builder<JobRecord, JobRecordBuilder> {
       _delTime = $v.delTime;
       _items = $v.items?.toBuilder();
       _verificationImages = $v.verificationImages?.toBuilder();
+      _verifiedByPoster = $v.verifiedByPoster;
       _itemQuantity = $v.itemQuantity;
       _posterID = $v.posterID;
       _acceptorID = $v.acceptorID;
@@ -430,6 +445,7 @@ class JobRecordBuilder implements Builder<JobRecord, JobRecordBuilder> {
               delTime: delTime,
               items: _items?.build(),
               verificationImages: _verificationImages?.build(),
+              verifiedByPoster: verifiedByPoster,
               itemQuantity: itemQuantity,
               posterID: posterID,
               acceptorID: acceptorID,
@@ -452,4 +468,4 @@ class JobRecordBuilder implements Builder<JobRecord, JobRecordBuilder> {
   }
 }
 
-// ignore_for_file: always_put_control_body_on_new_line,always_specify_types,annotate_overrides,avoid_annotating_with_dynamic,avoid_as,avoid_catches_without_on_clauses,avoid_returning_this,deprecated_member_use_from_same_package,lines_longer_than_80_chars,no_leading_underscores_for_local_identifiers,omit_local_variable_types,prefer_expression_function_bodies,sort_constructors_first,test_types_in_equals,unnecessary_const,unnecessary_new,unnecessary_lambdas
+// ignore_for_file: deprecated_member_use_from_same_package,type=lint

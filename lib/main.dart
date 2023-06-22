@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -9,16 +8,14 @@ import 'flutter_flow/flutter_flow_theme.dart';
 import 'flutter_flow/flutter_flow_util.dart';
 import 'flutter_flow/internationalization.dart';
 
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await FlutterFlowTheme.initialize();
-
   FFAppState(); // Initialize FFAppState
-
   runApp(MyApp());
 }
-
 
 class MyApp extends StatefulWidget {
   // This widget is the root of your application.

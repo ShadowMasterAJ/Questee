@@ -2,8 +2,10 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:u_grabv1/flutter_flow/chat/index.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:u_grabv1/flutter_flow/index.dart';
 
+import '../backend/stripe/payment_manager.dart';
 import '../flutter_flow/flutter_flow_theme.dart';
 import '../flutter_flow/flutter_flow_widgets.dart';
 import '../utils/custom_rect_tween.dart';
@@ -27,15 +29,44 @@ class _VerificationModalBottomSheetState
   late List<String> verificationImages;
   late double amountToBePaid;
   late double maxHeight;
-
-  bool verifiedReceipt = false;
-
+  late bool verifiedReceipt;
+  late String acceptorEmail='';
+  final String posterEmail = currentUserEmail;
   bool payNow = false;
   @override
+  void initState() {
+    super.initState();
+    fetchAcceptorEmail();
+  }
+
+  Future<void> fetchAcceptorEmail() async {
+    try {
+      final email = await getAcceptorEmail();
+      setState(() => acceptorEmail = email);
+    } catch (e) {
+      print('Error fetching acceptor email: $e');
+    }
+  }
+
+  Future<String> getAcceptorEmail() async {
+    final DocumentSnapshot jobSnapshot = await widget.jobRef.get();
+    final jobData = jobSnapshot.data() as Map<String, dynamic>;
+    final DocumentReference acceptorId = jobData['acceptorID'];
+
+    String id = acceptorId.id;
+    print('ACCEPTOR ID: $id');
+    final DocumentSnapshot userSnapshot =
+        await FirebaseFirestore.instance.collection('users').doc(id).get();
+    final userData = userSnapshot.data() as Map<String, dynamic>;
+
+    return userData['email'];
+  }
+
+  @override
   Widget build(BuildContext context) {
+    print('USER EMAILS:\n\t$acceptorEmail\n\t$posterEmail');
     maxWidth = MediaQuery.of(context).size.width;
     maxHeight = MediaQuery.of(context).size.height;
-    // if (_imageFile != null) print('IMAGE: ${_imageFile!.path}');
     return StreamBuilder<DocumentSnapshot>(
       stream: widget.jobRef.snapshots(),
       builder:
@@ -50,6 +81,9 @@ class _VerificationModalBottomSheetState
           verificationImages =
               List<String>.from(data['verificationImages'] ?? []);
           amountToBePaid = data['price'];
+          verifiedReceipt = data['verifiedByPoster'] ?? false;
+
+          print('Verified by poster $verifiedReceipt');
           return ElevatedButton(
             style: ElevatedButton.styleFrom(
               shape: RoundedRectangleBorder(
@@ -75,7 +109,7 @@ class _VerificationModalBottomSheetState
     );
   }
 
-Future ShowPaymentSheet(BuildContext context) {
+  Future ShowPaymentSheet(BuildContext context) {
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -98,8 +132,7 @@ Future ShowPaymentSheet(BuildContext context) {
             child: Column(
               children: [
                 SheetLever(),
-               
-               ],
+              ],
             ),
           );
         },
@@ -176,9 +209,28 @@ Future ShowPaymentSheet(BuildContext context) {
                               context,
                               verifiedReceipt ? 'Pay Now' : 'Looks Good!',
                               verifiedReceipt
-                                  ? () => setState(() => payNow = true)
-                                  : () {
-                                      setState(() => verifiedReceipt = true);
+                                  ? () {
+                                      setState(() => payNow = true);
+                                      processStripePayment(
+                                        context,
+                                        amount: amountToBePaid * 1.05 + 0.6,
+                                        currency: 'sgd',
+                                        customerEmail: acceptorEmail,
+                                        allowGooglePay: true,
+                                        allowApplePay: true,
+                                      );
+                                    }
+                                  : () async {
+                                      try {
+                                        final jobUpdateData =
+                                            createJobRecordData(
+                                                verifiedByPoster: true);
+                                        await widget.jobRef
+                                            .update(jobUpdateData);
+                                        print('Verified successfully');
+                                      } catch (error) {
+                                        print('ERROR VERIFYING: $error');
+                                      }
                                       Navigator.of(context).pop();
                                       ShowBottomReceiptSheet(context);
                                     },

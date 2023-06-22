@@ -17,7 +17,7 @@ final _isProd = false;
 // Stripe Credentials
 const _kProdStripePublishableKey = '';
 const _kTestStripePublishableKey =
-    'pk_test_51LsI6ODFgOzjSZueE5qXxnS9XLYuNlKxyTBgmPTtJ6frFFmJhhlp9Yc6HJ1p3yBUT9FNhTXIz0uRXGZyoWtvKhs500VNy1l5Na';
+    'pk_test_51Ls8gLASsoBJK28l8tT4szzUcTtjLnscL40uoz4tfKjdkRy4wBtt4ANnTzjBnbRtcbNI95jSULIEphKBIPY8Dqhg008Y8fJqip';
 const _kAppleMerchantId = '';
 
 String stripePublishableKey() =>
@@ -92,7 +92,7 @@ Future<StripePaymentResponse> processStripePayment(
         paymentIntentClientSecret: response['paymentIntent'],
         customerEphemeralKeySecret: response['ephemeralKey'],
         customerId: response['customer'],
-        merchantDisplayName: 'uGrab',
+        merchantDisplayName: 'Questee',
         googlePay: allowGooglePay
             ? PaymentSheetGooglePay(
                 merchantCountryCode: 'SG',

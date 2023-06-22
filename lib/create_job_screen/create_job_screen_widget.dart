@@ -3,7 +3,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 
 import '../auth/auth_util.dart';
 import '../backend/backend.dart';

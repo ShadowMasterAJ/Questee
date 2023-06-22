@@ -34,11 +34,15 @@ abstract class JobRecord implements Built<JobRecord, JobRecordBuilder> {
   @BuiltValueField(wireName: 'verificationImages')
   BuiltList<String>? get verificationImages;
 
+  @BuiltValueField(wireName: 'verifiedByPoster')
+  bool? get verifiedByPoster;
+
   @BuiltValueField(wireName: 'item_quantity')
   int? get itemQuantity;
 
   @BuiltValueField(wireName: 'posterID')
   DocumentReference? get posterID;
+
   @BuiltValueField(wireName: 'acceptorID')
   DocumentReference? get acceptorID;
 
@@ -55,6 +59,7 @@ abstract class JobRecord implements Built<JobRecord, JobRecordBuilder> {
     ..status = ''
     ..items = ListBuilder()
     ..itemQuantity = 0
+    ..verifiedByPoster = false
     ..verificationImages = ListBuilder();
 
   static CollectionReference get collection =>
@@ -77,20 +82,21 @@ abstract class JobRecord implements Built<JobRecord, JobRecordBuilder> {
           {...mapFromFirestore(data), kDocumentReferenceField: reference})!;
 }
 
-Map<String, dynamic> createJobRecordData({
-  String? type,
-  String? note,
-  String? store,
-  String? delLocation,
-  double? price,
-  String? status,
-  DateTime? delTime,
-  int? itemQuantity,
-  List<String>? items,
-  DocumentReference? posterID,
-  DocumentReference? acceptorID,
-  List<String>? verificationImages,
-}) {
+Map<String, dynamic> createJobRecordData(
+    {String? type,
+    String? note,
+    String? store,
+    String? delLocation,
+    double? price,
+    String? status,
+    DateTime? delTime,
+    int? itemQuantity,
+    List<String>? items,
+    DocumentReference? posterID,
+    DocumentReference? acceptorID,
+    List<String>? verificationImages,
+    // ignore: non_constant_identifier_names
+    bool? verifiedByPoster}) {
   final firestoreData =
       serializers.toFirestore(JobRecord.serializer, JobRecord((j) {
     j
@@ -103,6 +109,8 @@ Map<String, dynamic> createJobRecordData({
       ..delTime = delTime
       ..itemQuantity = itemQuantity
       ..posterID = posterID
+      ..verifiedByPoster = verifiedByPoster
+      ..verificationImages = verificationImages as ListBuilder<String>?
       ..acceptorID = acceptorID;
 
     var s = items;
