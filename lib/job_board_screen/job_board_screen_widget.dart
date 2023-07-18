@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+// import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:text_search/text_search.dart';
 
 import '../auth/auth_util.dart';
@@ -25,10 +25,9 @@ class JobBoardScreenWidget extends StatefulWidget {
 class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
   List<JobRecord> simpleSearchResults = [];
   TextEditingController? searchFieldController;
-  PagingController<DocumentSnapshot?, JobRecord>? _pagingController;
 
   List<StreamSubscription?> _streamSubscriptions = [];
-  Query? _pagingQuery; // = FirebaseFirestore.instance.collection('job');
+  // Query? _pagingQuery; // = FirebaseFirestore.instance.collection('job');
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -78,130 +77,65 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
     );
   }
 
-  Expanded JobList(BuildContext context) {
-    //FIXME - filter properly and fix pagination
+  Flexible JobList(BuildContext context) {
+    // ... Your existing code ...
 
-    // .where('posterID', isNotEqualTo: currentUserReference)
-    // .where("acceptorID", isEqualTo: null));
-    return Expanded(
+    return Flexible(
       child: FFAppState().showFullList
           ? Padding(
               padding: EdgeInsetsDirectional.fromSTEB(0, 10, 0, 12),
-              child: PagedListView<DocumentSnapshot<Object?>?, JobRecord>(
-                // Use the pagingController to load and display paginated data
-                pagingController: () {
-                  print('CURRENT USER REF: $currentUserReference');
+              child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>?>(
+                stream: () {
                   // Define a queryBuilder function to create Firestore queries
-                  final Query<Object?> Function(Query<Object?>) queryBuilder =
+                  final Query<Map<String, dynamic>> Function(
+                          Query<Map<String, dynamic>>) queryBuilder =
                       (jobRecordCollection) => jobRecordCollection;
 
-                  // If the pagingController already exists, refresh the data and return it
-                  if (_pagingController != null) {
-                    // Build the Firestore query for retrieving job records
-                    final query = queryBuilder(
-                      JobRecord.collection
-                          .where('posterID', isNotEqualTo: currentUserReference)
-                          .where('acceptorID', isEqualTo: null),
-                    );
-
-                    // If the query has changed since the last time the data was loaded, refresh the data
-                    if (query != _pagingQuery) {
-                      _pagingQuery = query;
-
-                      // Cancel any existing stream subscriptions and clear the list of subscriptions
-                      _streamSubscriptions.forEach((s) => s?.cancel());
-                      _streamSubscriptions.clear();
-
-                      // Refresh the data in the pagingController
-                      _pagingController!.refresh();
-                    }
-
-                    // Return the existing pagingController
-                    return _pagingController!;
-                  }
-
-                  // If the pagingController doesn't exist, create it
-                  _pagingController = PagingController(firstPageKey: null);
-
                   // Build the Firestore query for retrieving job records
-                  _pagingQuery = queryBuilder(JobRecord.collection
-                      .where('posterID', isNotEqualTo: currentUserReference)
-                      .where('acceptorID', isEqualTo: null));
-
-                  // Listen for page requests and load data from Firestore
-                  _pagingController!.addPageRequestListener((nextPageMarker) {
-                    queryJobRecordPage(
-                      queryBuilder: queryBuilder,
-                      nextPageMarker: nextPageMarker,
-                      pageSize: 4,
-                      isStream: true,
-                    ).then((page) {
-                      // Append the new page of data to the list of items in the pagingController
-                      _pagingController!.appendPage(
-                        page.data,
-                        page.nextPageMarker,
+                  final query = queryBuilder(FirebaseFirestore.instance
+                          .collection('job')
+                          .where('posterID', isNotEqualTo: currentUserReference)
+                      // .where('acceptorID', isNull: true)
+                      // the above doesn't work, but if you ctrl-f 'dc tp',
+                      //you will find the condition that does
                       );
 
-                      // Listen for updates to the data stream and update the UI
-                      final streamSubscription =
-                          page.dataStream?.listen((data) {
-                        data.forEach((item) {
-                          // Find the index of the item in the itemList
-                          final itemIndexes = _pagingController!.itemList!
-                              .asMap()
-                              .map((k, v) => MapEntry(v.reference.id, k));
-                          final index = itemIndexes[item.reference.id];
-                          final items = _pagingController!.itemList!;
-
-                          // Replace the old version of the item with the new version in the itemList
-                          if (index != null) {
-                            items.replaceRange(index, index + 1, [item]);
-                            _pagingController!.itemList = {
-                              for (var item in items) item.reference: item
-                            }.values.toList();
-                          }
-                        });
-
-                        // Update the UI to reflect the changes
-                        setState(() {});
-                      });
-
-                      // Add the streamSubscription to the list of subscriptions
-                      _streamSubscriptions.add(streamSubscription);
-                    });
-                  });
-
-                  // Return the newly created pagingController
-                  return _pagingController!;
+                  return query.snapshots();
                 }(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        color: FlutterFlowTheme.of(context).primaryColor,
+                      ),
+                    );
+                  }
 
-                // Configure the PagedListView
-                primary: true,
-                scrollDirection: Axis.vertical,
-                builderDelegate: PagedChildBuilderDelegate<JobRecord>(
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Text('Error fetching data'),
+                    );
+                  }
 
-                    // Display a progress indicator while the first page of data is being loaded
-                    firstPageProgressIndicatorBuilder: (_) => Center(
-                          child: SizedBox(
-                            width: 50,
-                            height: 50,
-                            child: CircularProgressIndicator(
-                              color: FlutterFlowTheme.of(context).primaryColor,
-                            ),
-                          ),
-                        ),
+                  final jobSnapshot = snapshot.data;
+                  if (jobSnapshot == null || jobSnapshot.docs.isEmpty) {
+                    return NoJobsIllustration();
+                  }
 
-                    // Display a custom widget when there are
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.vertical,
+                    itemCount: jobSnapshot.docs.length,
+                    itemBuilder: (context, index) {
+                      final jobData = jobSnapshot.docs[index].data();
+                      final jobRef = jobSnapshot.docs[index].reference;
 
-                    noItemsFoundIndicatorBuilder: (_) => NoJobsIllustration(),
-                    itemBuilder: (context, job, listViewIndex) {
-                      return JobCard(jobRef: job.reference);
-                      // listViewJobRecord.acceptorID == null &&
-                      //         listViewJobRecord.posterID != currentUserReference
-                      //     ? JobCard(jobRecord: listViewJobRecord.reference)
-                      //     : SizedBox.shrink();
-                    }),
-              ))
+                      return JobCard(jobRef: jobRef);
+                    },
+                  );
+                },
+              ),
+            )
           : SearchResults(simpleSearchResults: simpleSearchResults),
     );
   }
@@ -489,7 +423,8 @@ class JobCard extends StatelessWidget {
       'items': data['items'],
       'note': data['note'],
       'posterID': data['posterID'],
-      'acceptorID': data.containsKey('acceptorID') ? data['acceptorID'] : "",
+      'acceptorID':
+          data.containsKey('acceptorID') ? data['acceptorID'] : "null",
       'store': data['store'],
       'status': data['status'],
       'type': data['type'],
@@ -519,6 +454,12 @@ class JobCard extends StatelessWidget {
         final location = jobData['del_location'].toString();
         final delTime = jobData['del_time'] as DateTime;
         final store = jobData['store'].toString();
+
+        if (jobData['acceptorID'] != "null") {
+          // condition for filtering
+          return Center();
+        } // dc tp
+
         return Padding(
           padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
           child: InkWell(
