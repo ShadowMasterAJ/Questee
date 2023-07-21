@@ -108,6 +108,13 @@ class _$UsersRecordSerializer implements StructuredSerializer<UsersRecord> {
         ..add(serializers.serialize(value,
             specifiedType: const FullType(String)));
     }
+    value = object.stripeAccountID;
+    if (value != null) {
+      result
+        ..add('stripeAccountID')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(String)));
+    }
     value = object.ffRef;
     if (value != null) {
       result
@@ -186,6 +193,10 @@ class _$UsersRecordSerializer implements StructuredSerializer<UsersRecord> {
           result.gender = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String?;
           break;
+        case 'stripeAccountID':
+          result.stripeAccountID = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String?;
+          break;
         case 'Document__Reference__Field':
           result.ffRef = serializers.deserialize(value,
               specifiedType: const FullType(DocumentReference, const [
@@ -223,6 +234,8 @@ class _$UsersRecord extends UsersRecord {
   @override
   final String? gender;
   @override
+  final String? stripeAccountID;
+  @override
   final DocumentReference<Object?>? ffRef;
 
   factory _$UsersRecord([void Function(UsersRecordBuilder)? updates]) =>
@@ -240,6 +253,7 @@ class _$UsersRecord extends UsersRecord {
       this.pastJobsAccepted,
       this.pastJobsPosted,
       this.gender,
+      this.stripeAccountID,
       this.ffRef})
       : super._();
 
@@ -265,6 +279,7 @@ class _$UsersRecord extends UsersRecord {
         pastJobsAccepted == other.pastJobsAccepted &&
         pastJobsPosted == other.pastJobsPosted &&
         gender == other.gender &&
+        stripeAccountID == other.stripeAccountID &&
         ffRef == other.ffRef;
   }
 
@@ -282,6 +297,7 @@ class _$UsersRecord extends UsersRecord {
     _$hash = $jc(_$hash, pastJobsAccepted.hashCode);
     _$hash = $jc(_$hash, pastJobsPosted.hashCode);
     _$hash = $jc(_$hash, gender.hashCode);
+    _$hash = $jc(_$hash, stripeAccountID.hashCode);
     _$hash = $jc(_$hash, ffRef.hashCode);
     _$hash = $jf(_$hash);
     return _$hash;
@@ -301,6 +317,7 @@ class _$UsersRecord extends UsersRecord {
           ..add('pastJobsAccepted', pastJobsAccepted)
           ..add('pastJobsPosted', pastJobsPosted)
           ..add('gender', gender)
+          ..add('stripeAccountID', stripeAccountID)
           ..add('ffRef', ffRef))
         .toString();
   }
@@ -365,6 +382,11 @@ class UsersRecordBuilder implements Builder<UsersRecord, UsersRecordBuilder> {
   String? get gender => _$this._gender;
   set gender(String? gender) => _$this._gender = gender;
 
+  String? _stripeAccountID;
+  String? get stripeAccountID => _$this._stripeAccountID;
+  set stripeAccountID(String? stripeAccountID) =>
+      _$this._stripeAccountID = stripeAccountID;
+
   DocumentReference<Object?>? _ffRef;
   DocumentReference<Object?>? get ffRef => _$this._ffRef;
   set ffRef(DocumentReference<Object?>? ffRef) => _$this._ffRef = ffRef;
@@ -387,6 +409,7 @@ class UsersRecordBuilder implements Builder<UsersRecord, UsersRecordBuilder> {
       _pastJobsAccepted = $v.pastJobsAccepted?.toBuilder();
       _pastJobsPosted = $v.pastJobsPosted?.toBuilder();
       _gender = $v.gender;
+      _stripeAccountID = $v.stripeAccountID;
       _ffRef = $v.ffRef;
       _$v = null;
     }
@@ -423,6 +446,7 @@ class UsersRecordBuilder implements Builder<UsersRecord, UsersRecordBuilder> {
               pastJobsAccepted: _pastJobsAccepted?.build(),
               pastJobsPosted: _pastJobsPosted?.build(),
               gender: gender,
+              stripeAccountID: stripeAccountID,
               ffRef: ffRef);
     } catch (_) {
       late String _$failedField;

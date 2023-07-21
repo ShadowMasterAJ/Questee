@@ -494,7 +494,6 @@ class JobCard extends StatelessWidget {
       'status': data['status'],
       'type': data['type'],
       'price': data['price'],
-      'verificationImages': data['verificationImages']
     };
   }
 

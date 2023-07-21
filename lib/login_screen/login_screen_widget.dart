@@ -1,19 +1,23 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:http/http.dart' as http;
+
 import '../auth/auth_util.dart';
+import '../backend/schema/users_record.dart';
 import '../flutter_flow/flutter_flow_theme.dart';
 import '../flutter_flow/flutter_flow_util.dart';
 import '../flutter_flow/flutter_flow_widgets.dart';
 import 'package:flutter/material.dart';
 
-class AuthScreenWidget extends StatefulWidget {
-  const AuthScreenWidget({Key? key}) : super(key: key);
+class LoginScreenWidget extends StatefulWidget {
+  const LoginScreenWidget({Key? key}) : super(key: key);
 
   @override
-  _AuthScreenWidgetState createState() => _AuthScreenWidgetState();
+  _LoginScreenWidgetState createState() => _LoginScreenWidgetState();
 }
 
-class _AuthScreenWidgetState extends State<AuthScreenWidget> {
+class _LoginScreenWidgetState extends State<LoginScreenWidget> {
   TextEditingController? userEmailController;
   TextEditingController? userPasswordController;
 
@@ -321,6 +325,7 @@ class LoginButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    late var usersCreateData;
     return Align(
       alignment: AlignmentDirectional(0, 0.05),
       child: Padding(
@@ -333,15 +338,32 @@ class LoginButton extends StatelessWidget {
             }
 
             GoRouter.of(context).prepareAuthEvent();
-          
-            
             final user = await signInWithEmail(
               context,
               userEmailController!.text,
               userPasswordController!.text,
             );
-            if (user == null) {
-              return;
+            if (user == null) return;
+            try {
+              final response = await http.post(
+                  Uri.parse(
+                      'https://us-central1-ugrab-17ad6.cloudfunctions.net/createOrRetrieveCustomer'),
+                  body: {
+                    'email': userEmailController!.text,
+                    'name': userEmailController!.text.split('@')[0]
+                  });
+              final jsonResponse = jsonDecode(response.body);
+              print(jsonResponse);
+              jsonResponse['stripeAccountExists']
+                  ? debugPrint(
+                      'STRIPE ACCOUNT EXISTS. Hence skipping updating firebase')
+                  : await UsersRecord.collection
+                      .doc(currentUserUid)
+                      .update({'stripeAccountID': jsonResponse['customer']});
+            } catch (e) {
+              e is StripeException
+                  ? print('Stripe error: ${e.error.localizedMessage}')
+                  : print('Error: $e');
             }
 
             context.goNamedAuth('JobBoardScreen', mounted);

@@ -1,6 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
 
-
+import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:http/http.dart' as http;
 import '../auth/auth_util.dart';
 import '../backend/backend.dart';
 import '../flutter_flow/flutter_flow_theme.dart';
@@ -245,7 +246,7 @@ class _SignupScreenWidgetState extends State<SignupScreenWidget> {
       ),
     );
   }
-  
+
   Align EmailField(BuildContext context) {
     return Align(
       alignment: AlignmentDirectional(0.3, 0),
@@ -302,7 +303,7 @@ class _SignupScreenWidgetState extends State<SignupScreenWidget> {
     );
   }
 
-InputDecoration FieldDecoration(
+  InputDecoration FieldDecoration(
     BuildContext context, {
     required String labelText,
     VoidCallback? onTap,
@@ -361,7 +362,6 @@ InputDecoration FieldDecoration(
           : null,
     );
   }
-
 }
 
 class SignupButton extends StatelessWidget {
@@ -384,6 +384,8 @@ class SignupButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    late var usersCreateData;
+
     return Align(
       alignment: AlignmentDirectional(0, 0.05),
       child: Padding(
@@ -407,20 +409,33 @@ class SignupButton extends StatelessWidget {
               );
               return;
             }
-
+            try {
+              final response = await http.post(
+                  Uri.parse(
+                      'https://us-central1-ugrab-17ad6.cloudfunctions.net/createOrRetrieveCustomer'),
+                  body: {
+                    'email': userEmailController!.text,
+                    'name': userNameController!.text
+                  });
+              final jsonResponse = jsonDecode(response.body);
+              print(jsonResponse);
+              usersCreateData = createUsersRecordData(
+                  displayName: userNameController!.text,
+                  stripeAccountID: jsonResponse['customer']);
+            } catch (e) {
+              if (e is StripeException)
+                print('Stripe error: ${e.error.localizedMessage}');
+              else
+                print('Error: $e');
+            }
             final user = await createAccountWithEmail(
               context,
               userEmailController!.text,
               userPasswordController!.text,
             );
-            if (user == null) {
-              return;
-            }
+            if (user == null) return;
 
-            final usersCreateData = createUsersRecordData(
-              displayName: userNameController!.text,
-            );
-            //TODO - Add gender, phone number etc (other attributes)
+            //TODO - Add gender, phone number fields to signup etc (other attributes)
             await UsersRecord.collection.doc(user.uid).update(usersCreateData);
 
             context.goNamedAuth('JobBoardScreen', mounted);

@@ -3,7 +3,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:u_grabv1/flutter_flow/index.dart';
+import 'package:http/http.dart' as http;
 
 import '../backend/stripe/payment_manager.dart';
 import '../flutter_flow/flutter_flow_theme.dart';
@@ -30,7 +32,7 @@ class _VerificationModalBottomSheetState
   late double amountToBePaid;
   late double maxHeight;
   late bool verifiedReceipt;
-  late String acceptorEmail='';
+  late String acceptorEmail = '';
   final String posterEmail = currentUserEmail;
   bool payNow = false;
   @override
@@ -140,6 +142,50 @@ class _VerificationModalBottomSheetState
     );
   }
 
+  // Future<void> initPayment(
+  //     {required String email,
+  //     required double amount,
+  //     required BuildContext context}) async {
+  //   try {
+  //     // 1. Create a payment intent on the server
+  //     final response = await http.post(Uri.parse('Your function'), body: {
+  //       'email': email,
+  //       'amount': amount.toString(),
+  //     });
+
+  //     final jsonResponse = jsonDecode(response.body);
+
+  //     // 2. Initialize the payment sheet
+  //     await Stripe.instance.initPaymentSheet(
+  //         paymentSheetParameters: SetupPaymentSheetParameters(
+  //       paymentIntentClientSecret: jsonResponse['paymentIntent'],
+  //       merchantDisplayName: 'Grocery Flutter course',
+  //       customerId: jsonResponse['customer'],
+  //       customerEphemeralKeySecret: jsonResponse['ephemeralKey'],
+  //     ));
+  //     await Stripe.instance.presentPaymentSheet();
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       const SnackBar(
+  //         content: Text('Payment is successful'),
+  //       ),
+  //     );
+  //   } catch (errorr) {
+  //     if (errorr is StripeException) {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(
+  //           content: Text('An error occured ${errorr.error.localizedMessage}'),
+  //         ),
+  //       );
+  //     } else {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(
+  //           content: Text('An error occured $errorr'),
+  //         ),
+  //       );
+  //     }
+  //   }
+  // }
+
   Future ShowBottomReceiptSheet(BuildContext context) {
     return showModalBottomSheet(
       context: context,
@@ -209,16 +255,39 @@ class _VerificationModalBottomSheetState
                               context,
                               verifiedReceipt ? 'Pay Now' : 'Looks Good!',
                               verifiedReceipt
-                                  ? () {
+                                  ? () async {
                                       setState(() => payNow = true);
-                                      processStripePayment(
+
+                                      final paymentResponse =
+                                          await processStripePayment(
                                         context,
                                         amount: amountToBePaid * 1.05 + 0.6,
                                         currency: 'sgd',
-                                        customerEmail: acceptorEmail,
+                                        customerEmail: posterEmail,
+                                        customerName: currentUserDisplayName,
                                         allowGooglePay: true,
                                         allowApplePay: true,
+                                        themeStyle: ThemeMode.dark,
                                       );
+                                      Fluttertoast.showToast(
+                                          msg: "Payment Successful!",
+                                          toastLength: Toast.LENGTH_SHORT,
+                                          gravity: ToastGravity.CENTER,
+                                          timeInSecForIosWeb: 1,
+                                          backgroundColor:
+                                              Color.fromARGB(255, 56, 1, 44),
+                                          textColor: Colors.white,
+                                          fontSize: 20.0);
+                                      if (paymentResponse.paymentId == null &&
+                                          paymentResponse.errorMessage !=
+                                              null) {
+                                        showSnackbar(
+                                          context,
+                                          'Error: ${paymentResponse.errorMessage}',
+                                        );
+
+                                        return;
+                                      }
                                     }
                                   : () async {
                                       try {

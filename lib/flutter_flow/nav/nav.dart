@@ -68,19 +68,19 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
       refreshListenable: appStateNotifier,
       errorBuilder: (context, _) => appStateNotifier.loggedIn
           ? JobBoardScreenWidget()
-          : AuthScreenWidget(),
+          : LoginScreenWidget(),
       routes: <GoRoute>[
         FFRoute(
           name: '_initialize',
           path: '/',
           builder: (context, _) => appStateNotifier.loggedIn
               ? JobBoardScreenWidget()
-              : AuthScreenWidget(),
+              : LoginScreenWidget(),
           routes: [
             FFRoute(
               name: 'AuthScreen',
               path: 'authScreen',
-              builder: (context, params) => AuthScreenWidget(),
+              builder: (context, params) => LoginScreenWidget(),
             ),
             FFRoute(
               name: 'JobBoardScreen',

@@ -1,5 +1,5 @@
 // Export pages
-export 'auth_screen/auth_screen_widget.dart' show AuthScreenWidget;
+export 'login_screen/login_screen_widget.dart' show LoginScreenWidget;
 export 'job_board_screen/job_board_screen_widget.dart'
     show JobBoardScreenWidget;
 export 'job_history_screen/job_history_screen_widget.dart'

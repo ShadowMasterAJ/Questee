@@ -8,6 +8,7 @@ part 'users_record.g.dart';
 abstract class UsersRecord implements Built<UsersRecord, UsersRecordBuilder> {
   static Serializer<UsersRecord> get serializer => _$usersRecordSerializer;
 
+  @BuiltValueField(wireName: 'email')
   String? get email;
 
   @BuiltValueField(wireName: 'display_name')
@@ -36,10 +37,15 @@ abstract class UsersRecord implements Built<UsersRecord, UsersRecordBuilder> {
   @BuiltValueField(wireName: 'past_jobs_posted')
   BuiltList<DocumentReference>? get pastJobsPosted;
 
+  @BuiltValueField(wireName: 'gender')
   String? get gender;
+
+  @BuiltValueField(wireName: 'stripeAccountID')
+  String? get stripeAccountID;
 
   @BuiltValueField(wireName: kDocumentReferenceField)
   DocumentReference? get ffRef;
+
   DocumentReference get reference => ffRef!;
 
   static void _initializeBuilder(UsersRecordBuilder builder) => builder
@@ -49,6 +55,7 @@ abstract class UsersRecord implements Built<UsersRecord, UsersRecordBuilder> {
     ..uid = ''
     ..phoneNumber = ''
     ..gender = ''
+    ..stripeAccountID = ''
     ..pastJobsAccepted = ListBuilder()
     ..pastJobsPosted = ListBuilder()
     ..currJobsAccepted = ListBuilder()
@@ -122,6 +129,7 @@ Map<String, dynamic> createUsersRecordData({
   List<DocumentReference>? currJobsAccepted,
   List<DocumentReference>? pastJobsPosted,
   List<DocumentReference>? pastJobsAccepted,
+  String? stripeAccountID,
   String? gender,
 }) {
   final firestoreData =
@@ -133,27 +141,22 @@ Map<String, dynamic> createUsersRecordData({
       ..uid = uid
       ..createdTime = createdTime
       ..phoneNumber = phoneNumber
+      ..stripeAccountID = stripeAccountID
       ..gender = gender;
 
     int lenCJP = currJobsPosted != null ? currJobsPosted.length : 0;
-    for (int i = 0; i < lenCJP; i++) {
-      u.currJobsPosted.add(currJobsPosted![i]);
-    }
-    
+    for (int i = 0; i < lenCJP; i++) u.currJobsPosted.add(currJobsPosted![i]);
+
     int lenCJA = currJobsAccepted != null ? currJobsAccepted.length : 0;
-    for (int i = 0; i < lenCJA; i++) {
+    for (int i = 0; i < lenCJA; i++)
       u.currJobsAccepted.add(currJobsAccepted![i]);
-    }
-    
+
     int lenPJP = pastJobsPosted != null ? pastJobsPosted.length : 0;
-    for (int i = 0; i < lenPJP; i++) {
-      u.currJobsAccepted.add(pastJobsPosted![i]);
-    }
-    
+    for (int i = 0; i < lenPJP; i++) u.currJobsAccepted.add(pastJobsPosted![i]);
+
     int lenPJA = pastJobsAccepted != null ? pastJobsAccepted.length : 0;
-    for (int i = 0; i < lenPJA; i++) {
+    for (int i = 0; i < lenPJA; i++)
       u.currJobsAccepted.add(pastJobsAccepted![i]);
-    }
   }));
 
   return firestoreData;
