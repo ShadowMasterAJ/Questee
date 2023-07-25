@@ -5,9 +5,10 @@ const stripe = require('stripe')('sk_test_51Ls8gLASsoBJK28ld8JRnCzqnHBLS0aRHphrA
 exports.createOrRetrieveCustomer = functions.https.onRequest(async (req, res) => {
   try {
     let customer;
+    let accountUrl;
     let customerId;
     let accountAlrExists = false;
-    const accountsList = await stripe.accounts.list({});
+    const accountsList = await stripe.accounts.list();
 
     if (accountsList.data.length > 0) {
       for (const account of accountsList.data) {
@@ -21,7 +22,6 @@ exports.createOrRetrieveCustomer = functions.https.onRequest(async (req, res) =>
     }
 
     if (!accountAlrExists) {
-      accountAlrExists = false;
       customer = await stripe.accounts.create({
         type: 'express',
         business_type: 'individual',
@@ -30,8 +30,24 @@ exports.createOrRetrieveCustomer = functions.https.onRequest(async (req, res) =>
           card_payments: { requested: true },
           transfers: { requested: true },
         },
-        business_profile: { name: req.body.name, mcc: 7278, url: 'arnavjaiswal.com' },
-        individual: { email: req.body.email }
+        business_profile: {
+          name: req.body.name, mcc: 7278, url: 'arnavjaiswal.com', product_description: '-',
+        },
+        individual: {
+          email: req.body.email, "address": {
+            "city": "Singapore",
+            "country": "SG",
+            "line1": "",
+            "postal_code": "",
+            "state": null
+          }, dob: { day: 14, month: 9, year: 2002 }
+        }
+      });
+      accountUrl = await stripe.accountLinks.create({
+        account: customer.id,
+        refresh_url: `https://api/stripe/account/reauth?account_id=${customer.id}`,
+        return_url: 'work',
+        type: 'account_onboarding',
       });
       customerId = customer.id;
 
@@ -39,6 +55,7 @@ exports.createOrRetrieveCustomer = functions.https.onRequest(async (req, res) =>
     res.status(200).send({
       details: customer,
       customer: customerId,
+      accountUrl: accountUrl ? accountUrl.url : 'NA',
       success: true,
       stripeAccountExists: accountAlrExists
     });
@@ -47,6 +64,7 @@ exports.createOrRetrieveCustomer = functions.https.onRequest(async (req, res) =>
     res.status(404).send({ success: false, error: error.message });
   }
 });
+
 exports.createPaymentIntent = functions.https.onRequest(async (req, res) => {
   try {
     // Creates a temporary secret key linked with the customer

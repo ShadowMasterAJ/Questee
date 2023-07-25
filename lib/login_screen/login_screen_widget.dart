@@ -345,6 +345,7 @@ class LoginButton extends StatelessWidget {
             );
             if (user == null) return;
             try {
+              //TODO - In the future implement the `makeCloudCall` method from lib/backend/cloud_functions.dart
               final response = await http.post(
                   Uri.parse(
                       'https://us-central1-ugrab-17ad6.cloudfunctions.net/createOrRetrieveCustomer'),

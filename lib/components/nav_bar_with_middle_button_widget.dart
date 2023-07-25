@@ -13,6 +13,7 @@ class NavBarWithMiddleButtonWidget extends StatefulWidget {
   _NavBarWithMiddleButtonWidgetState createState() =>
       _NavBarWithMiddleButtonWidgetState();
 }
+
 class BottomNavCurvePainter extends CustomPainter {
   BottomNavCurvePainter(
       {this.backgroundColor = Colors.white, this.insetRadius = 43});
@@ -99,7 +100,7 @@ class _NavBarWithMiddleButtonWidgetState
                   'ChatScreen',
                   queryParams: {
                     'jobRef': serializeParam(
-                      userCurrJobsAccepted!.first,
+                      currentUserCurrJobsAccepted!.first,
                       ParamType.DocumentReference,
                     ),
                   }.withoutNulls,

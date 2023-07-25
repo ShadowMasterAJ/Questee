@@ -18,8 +18,8 @@ export 'serialization_util.dart';
 const kTransitionInfoKey = '__transition_info__';
 
 class AppStateNotifier extends ChangeNotifier {
-  UGrabv1FirebaseUser? initialUser;
-  UGrabv1FirebaseUser? user;
+  QuesteeFirebaseUser? initialUser;
+  QuesteeFirebaseUser? user;
   bool showSplashImage = true;
   String? _redirectLocation;
 
@@ -44,7 +44,7 @@ class AppStateNotifier extends ChangeNotifier {
   /// to perform subsequent actions (such as navigation) afterwards.
   void updateNotifyOnAuthChange(bool notify) => notifyOnAuthChange = notify;
 
-  void update(UGrabv1FirebaseUser newUser) {
+  void update(QuesteeFirebaseUser newUser) {
     initialUser ??= newUser;
     user = newUser;
     // Refresh the app on auth change unless explicitly marked otherwise.
@@ -371,5 +371,5 @@ class TransitionInfo {
   final Duration duration;
   final Alignment? alignment;
 
-  static TransitionInfo appDefault() => TransitionInfo(hasTransition: false);
+  static TransitionInfo appDefault() => TransitionInfo(hasTransition: true);
 }

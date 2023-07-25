@@ -410,6 +410,7 @@ class SignupButton extends StatelessWidget {
               return;
             }
             try {
+              //TODO - In the future implement the `makeCloudCall` method from lib/backend/cloud_functions.dart
               final response = await http.post(
                   Uri.parse(
                       'https://us-central1-ugrab-17ad6.cloudfunctions.net/createOrRetrieveCustomer'),
@@ -419,6 +420,8 @@ class SignupButton extends StatelessWidget {
                   });
               final jsonResponse = jsonDecode(response.body);
               print(jsonResponse);
+              launchURL(jsonResponse['accountUrl']);
+
               usersCreateData = createUsersRecordData(
                   displayName: userNameController!.text,
                   stripeAccountID: jsonResponse['customer']);

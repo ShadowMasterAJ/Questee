@@ -93,15 +93,17 @@ String get currentUserPhoto =>
 String get currentPhoneNumber =>
     currentUserDocument?.phoneNumber ?? currentUser?.user?.phoneNumber ?? '';
 
+String get currentUserStripeAcc => currentUserDocument?.stripeAccountID ?? '';
+
 String get currentJwtToken => _currentJwtToken ?? '';
 
-List<DocumentReference<Object?>>? get userCurrJobsAccepted =>
+List<DocumentReference<Object?>>? get currentUserCurrJobsAccepted =>
     currentUserDocument?.currJobsAccepted!.asList();
-List<DocumentReference<Object?>>? get userCurrJobsPosted =>
+List<DocumentReference<Object?>>? get currentUserCurrJobsPosted =>
     currentUserDocument?.currJobsPosted!.asList();
-List<DocumentReference<Object?>>? get userPastJobsAccepted =>
+List<DocumentReference<Object?>>? get currentUserPastJobsAccepted =>
     currentUserDocument?.pastJobsAccepted!.asList();
-List<DocumentReference<Object?>>? get userPastJobsPosted =>
+List<DocumentReference<Object?>>? get currentUserPastJobsPosted =>
     currentUserDocument?.pastJobsPosted!.asList();
 
 bool get currentUserEmailVerified {

@@ -3,22 +3,22 @@ import 'package:rxdart/rxdart.dart';
 
 import 'auth_util.dart';
 
-class UGrabv1FirebaseUser {
-  UGrabv1FirebaseUser(this.user);
+class QuesteeFirebaseUser {
+  QuesteeFirebaseUser(this.user);
   User? user;
   bool get loggedIn => user != null;
 }
 
-UGrabv1FirebaseUser? currentUser;
+QuesteeFirebaseUser? currentUser;
 bool get loggedIn => currentUser?.loggedIn ?? false;
-Stream<UGrabv1FirebaseUser> uGrabv1FirebaseUserStream() => FirebaseAuth.instance
+Stream<QuesteeFirebaseUser> QuesteeFirebaseUserStream() => FirebaseAuth.instance
         .authStateChanges()
         .debounce((user) => user == null && !loggedIn
             ? TimerStream(true, const Duration(seconds: 1))
             : Stream.value(user))
-        .map<UGrabv1FirebaseUser>(
+        .map<QuesteeFirebaseUser>(
       (user) {
-        currentUser = UGrabv1FirebaseUser(user);
+        currentUser = QuesteeFirebaseUser(user);
         updateUserJwtTimer(user);
         return currentUser!;
       },
