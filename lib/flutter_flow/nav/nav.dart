@@ -230,23 +230,44 @@ extension _GoRouterStateExtensions on GoRouterState {
       : TransitionInfo.appDefault();
 }
 
+/// FFParameters class manages and provides access to the parameters passed through GoRouterState.
 class FFParameters {
+  /// Constructs an instance of FFParameters with the given [state] and optional [asyncParams].
+  /// [state]: The GoRouterState that contains the parameters.
+  /// [asyncParams]: A map of parameter names to functions that return Future<dynamic> for async parameter values.
   FFParameters(this.state, [this.asyncParams = const {}]);
 
+  /// The GoRouterState that contains the parameters.
   final GoRouterState state;
+
+  /// A map of parameter names to functions that return Future<dynamic> for async parameter values.
   final Map<String, Future<dynamic> Function(String)> asyncParams;
 
+  /// Map to store the resolved future parameter values for optimization purposes.
   Map<String, dynamic> futureParamValues = {};
 
-  // Parameters are empty if the params map is empty or if the only parameter
-  // present is the special extra parameter reserved for the transition info.
+  /// Checks if the parameters are empty.
+  ///
+  /// Parameters are considered empty if the params map is empty or if the only parameter
+  /// present is the special extra parameter reserved for the transition info.
   bool get isEmpty =>
       state.allParams.isEmpty ||
       (state.extraMap.length == 1 &&
           state.extraMap.containsKey(kTransitionInfoKey));
+
+  /// Checks if a specific parameter is an async parameter.
+  ///
+  /// * [param]: The parameter to check.
   bool isAsyncParam(MapEntry<String, dynamic> param) =>
       asyncParams.containsKey(param.key) && param.value is String;
+
+  /// Checks if there are any parameters that are async (Future) types.
   bool get hasFutures => state.allParams.entries.any(isAsyncParam);
+
+  /// Completes all the async (Future) parameters by executing their corresponding Future functions.
+  ///
+  /// Returns a Future<bool> indicating whether all the async parameter futures were completed successfully.
+  /// If any of the async futures fails, it returns false.
   Future<bool> completeFutures() => Future.wait(
         state.allParams.entries.where(isAsyncParam).map(
           (param) async {
@@ -261,29 +282,42 @@ class FFParameters {
         ),
       ).onError((_, __) => [false]).then((v) => v.every((e) => e));
 
+  /// Retrieves the parameter value with the specified type.
+  ///
+  /// * [paramName]: The name of the parameter to retrieve.
+  /// * [type]: The expected type of the parameter.
+  /// * [isList]: A flag to indicate if the parameter is a List type (default is false).
+  /// * [collectionName]: The name of the collection (only used for some types).
   dynamic getParam<T>(
     String paramName,
     ParamType type, [
     bool isList = false,
     String? collectionName,
   ]) {
-    if (futureParamValues.containsKey(paramName)) {
+    if (futureParamValues.containsKey(paramName))
       return futureParamValues[paramName];
-    }
-    if (!state.allParams.containsKey(paramName)) {
-      return null;
-    }
+
+    if (!state.allParams.containsKey(paramName)) return null;
+
     final param = state.allParams[paramName];
-    // Got parameter from `extras`, so just directly return it.
-    if (param is! String) {
-      return param;
-    }
+    // Got the parameter from `extras`, so just directly return it.
+    if (param is! String) return param;
+
     // Return serialized value.
     return deserializeParam<T>(param, type, isList, collectionName);
   }
 }
 
+/// FFRoute represents a FlutterFlow route that can be navigated within the app.
 class FFRoute {
+  /// Constructs an instance of FFRoute with the given properties.
+  ///
+  /// * `[name]`: The name of the route.
+  /// * `[path]`: The path of the route used for routing.
+  /// * `[builder]`: The builder function that returns the widget to be rendered for this route.
+  /// * `[requireAuth]`: A flag indicating if this route requires authentication (default is false).
+  /// * `[asyncParams]`: A map of parameter names to functions that return Future<dynamic> for async parameter values.
+  /// * `[routes]`: A list of GoRoute instances representing sub-routes under this route.
   const FFRoute({
     required this.name,
     required this.path,
@@ -293,13 +327,27 @@ class FFRoute {
     this.routes = const [],
   });
 
+  /// The name of the route.
   final String name;
+
+  /// The path of the route used for routing.
   final String path;
+
+  /// A flag indicating if this route requires authentication.
   final bool requireAuth;
+
+  /// A map of parameter names to functions that return Future<dynamic> for async parameter values.
   final Map<String, Future<dynamic> Function(String)> asyncParams;
+
+  /// The builder function that returns the widget to be rendered for this route.
   final Widget Function(BuildContext, FFParameters) builder;
+
+  /// A list of GoRoute instances representing sub-routes under this route.
   final List<GoRoute> routes;
 
+  /// Converts the FFRoute to a GoRoute to integrate with GoRouter.
+  ///
+  /// * [appStateNotifier]: The app state notifier to manage app-level state and authentication.
   GoRoute toRoute(AppStateNotifier appStateNotifier) => GoRoute(
         name: name,
         path: path,
@@ -324,6 +372,8 @@ class FFRoute {
                   builder: (context, _) => builder(context, ffParams),
                 )
               : builder(context, ffParams);
+
+          // Show a loading indicator or the actual page based on appStateNotifier.loading value.
           final child = appStateNotifier.loading
               ? Container(
                   color: FlutterFlowTheme.of(context).primaryBackground,
@@ -339,6 +389,8 @@ class FFRoute {
               : page;
 
           final transitionInfo = state.transitionInfo;
+
+          // Wrap the page with a custom transition if needed, otherwise use a MaterialPage.
           return transitionInfo.hasTransition
               ? CustomTransitionPage(
                   key: state.pageKey,

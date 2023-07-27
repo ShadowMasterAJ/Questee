@@ -14,9 +14,16 @@ abstract class UsersRecord implements Built<UsersRecord, UsersRecordBuilder> {
   @BuiltValueField(wireName: 'display_name')
   String? get displayName;
 
+  @BuiltValueField(wireName: 'first_name')
+  String? get firstName;
+
+  @BuiltValueField(wireName: 'last_name')
+  String? get lastName;
+
   @BuiltValueField(wireName: 'photo_url')
   String? get photoUrl;
 
+  @BuiltValueField(wireName: 'uid')
   String? get uid;
 
   @BuiltValueField(wireName: 'created_time')
@@ -51,6 +58,8 @@ abstract class UsersRecord implements Built<UsersRecord, UsersRecordBuilder> {
   static void _initializeBuilder(UsersRecordBuilder builder) => builder
     ..email = ''
     ..displayName = ''
+    ..firstName = ''
+    ..lastName = ''
     ..photoUrl = ''
     ..uid = ''
     ..phoneNumber = ''
@@ -120,23 +129,27 @@ abstract class UsersRecord implements Built<UsersRecord, UsersRecordBuilder> {
 
 Map<String, dynamic> createUsersRecordData({
   String? email,
-  String? displayName,
-  String? photoUrl,
-  String? uid,
+  displayName,
+  photoUrl,
+  uid,
+  phoneNumber,
+  stripeAccountID,
+  gender,
+  firstName,
+  lastName,
   DateTime? createdTime,
-  String? phoneNumber,
   List<DocumentReference>? currJobsPosted,
-  List<DocumentReference>? currJobsAccepted,
-  List<DocumentReference>? pastJobsPosted,
-  List<DocumentReference>? pastJobsAccepted,
-  String? stripeAccountID,
-  String? gender,
+  currJobsAccepted,
+  pastJobsPosted,
+  pastJobsAccepted,
 }) {
   final firestoreData =
       serializers.toFirestore(UsersRecord.serializer, UsersRecord((u) {
     u
       ..email = email
       ..displayName = displayName
+      ..firstName = firstName
+      ..lastName = lastName
       ..photoUrl = photoUrl
       ..uid = uid
       ..createdTime = createdTime

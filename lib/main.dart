@@ -10,8 +10,8 @@ import 'flutter_flow/internationalization.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  await FlutterFlowTheme.initialize();
+  await Firebase.initializeApp(); // Initialize Firebase.
+  await FlutterFlowTheme.initialize(); // Initialize FlutterFlowTheme.
   FFAppState(); // Initialize FFAppState
   runApp(MyApp());
 }
@@ -26,24 +26,29 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  Locale? _locale;
-  ThemeMode _themeMode = FlutterFlowTheme.themeMode;
+  Locale? _locale; // Holds the current app's locale for localization.
+  ThemeMode _themeMode =
+      FlutterFlowTheme.themeMode; // Holds the current theme mode.
 
-  late Stream<QuesteeFirebaseUser> userStream;
+  late Stream<QuesteeFirebaseUser>
+      userStream; // Stream to listen to Firebase user changes.
 
-  late AppStateNotifier _appStateNotifier;
-  late GoRouter _router;
+  late AppStateNotifier _appStateNotifier; // Notifier for app state changes.
+  late GoRouter _router; // Router for navigation.
 
-  final authUserSub = authenticatedUserStream.listen((_) {});
+  final authUserSub = authenticatedUserStream
+      .listen((_) {}); // Subscription to user authentication changes.
 
   @override
   void initState() {
     super.initState();
-    // addFieldToDocuments();
+    // Initialize app state notifier and router.
     _appStateNotifier = AppStateNotifier();
     _router = createRouter(_appStateNotifier);
+    // Listen to Firebase user changes and update the app state notifier accordingly.
     userStream = QuesteeFirebaseUserStream()
       ..listen((user) => _appStateNotifier.update(user));
+    // After 1 second delay, stop showing the splash image.
     Future.delayed(
       Duration(seconds: 1),
       () => _appStateNotifier.stopShowingSplashImage(),
@@ -52,12 +57,16 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void dispose() {
-    authUserSub.cancel();
+    authUserSub
+        .cancel(); // Cancel the user authentication stream subscription to prevent memory leaks.
     super.dispose();
   }
 
+  // Sets the app's locale for internationalization.
   void setLocale(String language) =>
       setState(() => _locale = createLocale(language));
+
+  // Sets the theme mode for the app.
   void setThemeMode(ThemeMode mode) => setState(() {
         _themeMode = mode;
         FlutterFlowTheme.saveThemeMode(mode);
@@ -68,18 +77,22 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp.router(
       title: 'Questee',
       localizationsDelegates: [
-        FFLocalizationsDelegate(),
+        FFLocalizationsDelegate(), // FlutterFlow Localizations delegate.
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      locale: _locale,
-      supportedLocales: const [Locale('en', '')],
-      theme: ThemeData(brightness: Brightness.light),
-      darkTheme: ThemeData(brightness: Brightness.dark),
-      themeMode: _themeMode,
-      routeInformationParser: _router.routeInformationParser,
-      routerDelegate: _router.routerDelegate,
+      locale: _locale, // Set the current locale for localization.
+      supportedLocales: const [
+        Locale('en', '')
+      ], // Supported locales for the app.
+      theme: ThemeData(brightness: Brightness.light), // Light theme.
+      darkTheme: ThemeData(brightness: Brightness.dark), // Dark theme.
+      themeMode: _themeMode, // Set the theme mode based on the current value.
+      routeInformationParser: _router
+          .routeInformationParser, // Parse route information for the router.
+      routerDelegate: _router
+          .routerDelegate, // Handle routing and navigation using the router.
     );
   }
 }

@@ -40,5 +40,7 @@ run the following command to run the app in emulator:
 ```
 flutter run
 ```
+If the following error arises: Gorouter NavigatorObserver is not a class/mixin or not found
+DO this: go to the gorouter library file through an import -> navigatorobserver -> and change 'class Naviga...' to 'mixin class Naviga...'
 
 Note: main source code is in lib/ directory.

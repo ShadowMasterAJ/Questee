@@ -26,27 +26,36 @@ exports.createOrRetrieveCustomer = functions.https.onRequest(async (req, res) =>
         type: 'express',
         business_type: 'individual',
         email: req.body.email,
+        country: 'SG',
         capabilities: {
           card_payments: { requested: true },
           transfers: { requested: true },
         },
         business_profile: {
-          name: req.body.name, mcc: 7278, url: 'arnavjaiswal.com', product_description: '-',
+          name: req.body.name, mcc: 7278,
+          product_description: '-',
+          support_phone: req.body.phone,
         },
         individual: {
-          email: req.body.email, "address": {
-            "city": "Singapore",
-            "country": "SG",
-            "line1": "",
-            "postal_code": "",
-            "state": null
+          email: req.body.email,
+          first_name: req.body.first_name,
+          last_name: req.body.last_name,
+          phone: req.body.phone,
+          gender: req.body.gender,
+          phone: req.body.phone,
+          address: {
+            city: "Singapore",
+            country: "SG",
+            line1: "",
+            postal_code: "",
+            state: null
           }, dob: { day: 14, month: 9, year: 2002 }
         }
       });
       accountUrl = await stripe.accountLinks.create({
         account: customer.id,
         refresh_url: `https://api/stripe/account/reauth?account_id=${customer.id}`,
-        return_url: 'work',
+        return_url: `https://api/stripe/account/reauth?account_id=${customer.id}`,
         type: 'account_onboarding',
       });
       customerId = customer.id;

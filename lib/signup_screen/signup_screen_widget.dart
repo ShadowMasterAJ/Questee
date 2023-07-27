@@ -1,13 +1,11 @@
 // ignore_for_file: non_constant_identifier_names
 
-import 'package:flutter_stripe/flutter_stripe.dart';
-import 'package:http/http.dart' as http;
-import '../auth/auth_util.dart';
-import '../backend/backend.dart';
 import '../flutter_flow/flutter_flow_theme.dart';
 import '../flutter_flow/flutter_flow_util.dart';
 import '../flutter_flow/flutter_flow_widgets.dart';
 import 'package:flutter/material.dart';
+
+import 'signup_button.dart';
 
 class SignupScreenWidget extends StatefulWidget {
   const SignupScreenWidget({Key? key}) : super(key: key);
@@ -20,10 +18,13 @@ class _SignupScreenWidgetState extends State<SignupScreenWidget> {
   TextEditingController? userCfmPasswordController;
 
   late bool userCfmPasswordVisibility;
-  TextEditingController? userEmailController;
-  TextEditingController? userNameController;
-  TextEditingController? userPasswordController;
-
+  TextEditingController? userEmailController,
+      displayNameController,
+      userPasswordController,
+      firstNameController,
+      lastNameController,
+      phoneController;
+  String gender = '';
   late bool userPasswordVisibility;
   final formKey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -34,7 +35,11 @@ class _SignupScreenWidgetState extends State<SignupScreenWidget> {
     userCfmPasswordController = TextEditingController();
     userCfmPasswordVisibility = false;
     userEmailController = TextEditingController();
-    userNameController = TextEditingController();
+    userPasswordController = TextEditingController();
+    displayNameController = TextEditingController();
+    firstNameController = TextEditingController();
+    lastNameController = TextEditingController();
+    phoneController = TextEditingController();
     userPasswordController = TextEditingController();
     userPasswordVisibility = false;
   }
@@ -43,7 +48,10 @@ class _SignupScreenWidgetState extends State<SignupScreenWidget> {
   void dispose() {
     userCfmPasswordController?.dispose();
     userEmailController?.dispose();
-    userNameController?.dispose();
+    firstNameController?.dispose();
+    lastNameController?.dispose();
+    displayNameController?.dispose();
+    phoneController?.dispose();
     userPasswordController?.dispose();
     super.dispose();
   }
@@ -93,7 +101,51 @@ class _SignupScreenWidgetState extends State<SignupScreenWidget> {
                       child: Column(
                         mainAxisSize: MainAxisSize.max,
                         children: [
-                          UsernameField(context),
+                          NameField(
+                              context,
+                              displayNameController,
+                              'Display Name',
+                              EdgeInsetsDirectional.fromSTEB(20, 0, 20, 16)),
+                          Row(
+                            children: [
+                              Expanded(
+                                  child: NameField(
+                                      context,
+                                      firstNameController,
+                                      'First Name',
+                                      EdgeInsetsDirectional.fromSTEB(
+                                          20, 0, 5, 16))),
+                              Expanded(
+                                  child: NameField(
+                                      context,
+                                      lastNameController,
+                                      'Last Name',
+                                      EdgeInsetsDirectional.fromSTEB(
+                                          5, 0, 20, 16))),
+                            ],
+                          ),
+                          Container(
+                            height: 80,
+                            child: Row(
+                              children: [
+                                Flexible(
+                                  flex: 4,
+                                  child: PhoneNumberField(
+                                      context,
+                                      phoneController,
+                                      'Phone Number',
+                                      EdgeInsetsDirectional.fromSTEB(
+                                          20, 0, 10, 16)),
+                                ),
+                                Flexible(
+                                    flex: 2,
+                                    child: GenderField(
+                                        context,
+                                        (val) =>
+                                            setState(() => gender = val!))),
+                              ],
+                            ),
+                          ),
                           EmailField(context),
                           PwdField(context),
                           CfmPwdField(context),
@@ -106,7 +158,11 @@ class _SignupScreenWidgetState extends State<SignupScreenWidget> {
                       userPasswordController: userPasswordController,
                       userCfmPasswordController: userCfmPasswordController,
                       userEmailController: userEmailController,
-                      userNameController: userNameController,
+                      displayNameController: displayNameController,
+                      firstNameController: firstNameController,
+                      lastNameController: lastNameController,
+                      phoneController: phoneController,
+                      gender: gender,
                       mounted: mounted),
                   SwitchToSignIn(context),
                 ],
@@ -204,88 +260,74 @@ class _SignupScreenWidgetState extends State<SignupScreenWidget> {
     );
   }
 
-  Align PwdField(BuildContext context) {
-    return Align(
-      alignment: AlignmentDirectional(0, 0),
-      child: Padding(
-        padding: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 16),
-        child: TextFormField(
-          controller: userPasswordController,
-          obscureText: !userPasswordVisibility,
-          decoration: FieldDecoration(context,
-              labelText: 'Password',
-              onTap: () => setState(
-                  () => userPasswordVisibility = !userPasswordVisibility),
-              icon: Icon(
-                userPasswordVisibility
-                    ? Icons.visibility_outlined
-                    : Icons.visibility_off_outlined,
-                color: userPasswordVisibility
-                    ? FlutterFlowTheme.of(context).primaryColorLight
-                    : FlutterFlowTheme.of(context).primaryColor,
-                size: userPasswordVisibility ? 26 : 22,
-              )),
-          style: FlutterFlowTheme.of(context).bodyText1.override(
-                fontFamily: 'Outfit',
-                color: FlutterFlowTheme.of(context).primaryText,
-                fontSize: 14,
-                fontWeight: FontWeight.normal,
-              ),
-          validator: (val) {
-            if (val == null || val.isEmpty) {
-              return 'Field is required';
-            }
-
-            if (val.length < 6) {
-              return 'Requires at least 6 characters.';
-            }
-
-            return null;
-          },
-        ),
-      ),
-    );
-  }
-
-  Align EmailField(BuildContext context) {
-    return Align(
-      alignment: AlignmentDirectional(0.3, 0),
-      child: Padding(
-        padding: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 16),
-        child: TextFormField(
-          controller: userEmailController,
-          obscureText: false,
-          decoration: FieldDecoration(context, labelText: 'Email'),
-          style: FlutterFlowTheme.of(context).bodyText1.override(
-                fontFamily: 'Outfit',
-                color: FlutterFlowTheme.of(context).primaryText,
-                fontSize: 14,
-                fontWeight: FontWeight.normal,
-              ),
-          validator: (val) {
-            if (val == null || val.isEmpty) {
-              return 'Field is required';
-            }
-            if (val.contains('cock')) {
-              return "No cocks pls";
-            }
-            if (!RegExp(kTextValidatorEmailRegex).hasMatch(val)) {
-              return 'Has to be a valid email address.';
-            }
-            return null;
-          },
-        ),
-      ),
-    );
-  }
-
-  Padding UsernameField(BuildContext context) {
+  Padding PwdField(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 16),
       child: TextFormField(
-        controller: userNameController,
+        controller: userPasswordController,
+        obscureText: !userPasswordVisibility,
+        decoration: FieldDecoration(context,
+            labelText: 'Password',
+            onTap: () => setState(
+                () => userPasswordVisibility = !userPasswordVisibility),
+            icon: Icon(
+              userPasswordVisibility
+                  ? Icons.visibility_outlined
+                  : Icons.visibility_off_outlined,
+              color: userPasswordVisibility
+                  ? FlutterFlowTheme.of(context).primaryColorLight
+                  : FlutterFlowTheme.of(context).primaryColor,
+              size: userPasswordVisibility ? 26 : 22,
+            )),
+        style: FlutterFlowTheme.of(context).bodyText1.override(
+              fontFamily: 'Outfit',
+              color: FlutterFlowTheme.of(context).primaryText,
+              fontSize: 14,
+              fontWeight: FontWeight.normal,
+            ),
+        validator: (val) {
+          if (val == null || val.isEmpty) return 'Field is required';
+          if (val.length < 6) return 'Requires at least 6 characters.';
+
+          return null;
+        },
+      ),
+    );
+  }
+
+  Padding EmailField(BuildContext context) {
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 16),
+      child: TextFormField(
+        controller: userEmailController,
         obscureText: false,
-        decoration: FieldDecoration(context, labelText: 'Username'),
+        decoration: FieldDecoration(context, labelText: 'Email'),
+        style: FlutterFlowTheme.of(context).bodyText1.override(
+              fontFamily: 'Outfit',
+              color: FlutterFlowTheme.of(context).primaryText,
+              fontSize: 14,
+              fontWeight: FontWeight.normal,
+            ),
+        validator: (val) {
+          if (val == null || val.isEmpty) return 'Field is required';
+
+          if (!RegExp(kTextValidatorEmailRegex).hasMatch(val))
+            return 'Has to be a valid email address.';
+
+          return null;
+        },
+      ),
+    );
+  }
+
+  Padding NameField(BuildContext context, TextEditingController? textController,
+      String labelText, EdgeInsetsDirectional padding) {
+    return Padding(
+      padding: padding,
+      child: TextFormField(
+        controller: textController,
+        obscureText: false,
+        decoration: FieldDecoration(context, labelText: labelText),
         style: FlutterFlowTheme.of(context).bodyText1.override(
               fontFamily: 'Outfit',
               color: FlutterFlowTheme.of(context).primaryText,
@@ -299,6 +341,81 @@ class _SignupScreenWidgetState extends State<SignupScreenWidget> {
 
           return null;
         },
+      ),
+    );
+  }
+
+  Padding PhoneNumberField(
+      BuildContext context,
+      TextEditingController? textController,
+      String labelText,
+      EdgeInsetsDirectional padding) {
+    return Padding(
+      padding: padding,
+      child: TextFormField(
+        controller: textController,
+        keyboardType:
+            TextInputType.phone, // Set the keyboard type to phone number.
+
+        decoration: FieldDecoration(context, labelText: labelText),
+        style: FlutterFlowTheme.of(context).bodyText1.override(
+              fontFamily: 'Outfit',
+              color: FlutterFlowTheme.of(context).primaryText,
+              fontSize: 14,
+              fontWeight: FontWeight.normal,
+            ),
+        validator: (val) {
+          if (val == null || val.isEmpty) return 'Field is required';
+
+          if (val.length != 8) return 'Number must have 8 digits';
+
+          return null;
+        },
+      ),
+    );
+  }
+
+  Padding GenderField(BuildContext context, Function(String?) onChanged) {
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(10, 0, 20, 16),
+      child: DropdownButtonFormField<String>(
+        borderRadius: BorderRadius.circular(15),
+        enableFeedback: true,
+        elevation: 0,
+        hint: Text(
+          'Gender',
+          style: TextStyle(
+            color: FlutterFlowTheme.of(context).secondaryText,
+            fontSize: 14,
+            fontWeight: FontWeight.normal,
+          ),
+        ),
+        decoration: FieldDecoration(context, labelText: ''),
+        items: [
+          'Male',
+          'Female',
+        ].map((gender) {
+          return DropdownMenuItem<String>(
+            value: gender,
+            child: Center(
+              child: Text(
+                gender,
+                style: TextStyle(
+                  color: FlutterFlowTheme.of(context).primaryText,
+                  fontSize: 14,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+            ),
+          );
+        }).toList(),
+        onChanged: onChanged,
+        validator: (val) {
+          if (val == null || val.isEmpty) return 'Please select a gender';
+
+          return null;
+        },
+        dropdownColor: FlutterFlowTheme.of(context).primaryBackgroundLight,
       ),
     );
   }
@@ -360,109 +477,6 @@ class _SignupScreenWidgetState extends State<SignupScreenWidget> {
               focusNode: FocusNode(skipTraversal: true),
               child: icon)
           : null,
-    );
-  }
-}
-
-class SignupButton extends StatelessWidget {
-  const SignupButton({
-    Key? key,
-    required this.formKey,
-    required this.userPasswordController,
-    required this.userCfmPasswordController,
-    required this.userEmailController,
-    required this.userNameController,
-    required this.mounted,
-  }) : super(key: key);
-
-  final GlobalKey<FormState> formKey;
-  final TextEditingController? userPasswordController;
-  final TextEditingController? userCfmPasswordController;
-  final TextEditingController? userEmailController;
-  final TextEditingController? userNameController;
-  final bool mounted;
-
-  @override
-  Widget build(BuildContext context) {
-    late var usersCreateData;
-
-    return Align(
-      alignment: AlignmentDirectional(0, 0.05),
-      child: Padding(
-        padding: EdgeInsetsDirectional.fromSTEB(0, 20, 0, 10),
-        child: FFButtonWidget(
-          onPressed: () async {
-            if (formKey.currentState == null ||
-                !formKey.currentState!.validate()) {
-              return;
-            }
-
-            GoRouter.of(context).prepareAuthEvent();
-            if (userPasswordController?.text !=
-                userCfmPasswordController?.text) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    'Passwords don\'t match!',
-                  ),
-                ),
-              );
-              return;
-            }
-            try {
-              //TODO - In the future implement the `makeCloudCall` method from lib/backend/cloud_functions.dart
-              final response = await http.post(
-                  Uri.parse(
-                      'https://us-central1-ugrab-17ad6.cloudfunctions.net/createOrRetrieveCustomer'),
-                  body: {
-                    'email': userEmailController!.text,
-                    'name': userNameController!.text
-                  });
-              final jsonResponse = jsonDecode(response.body);
-              print(jsonResponse);
-              launchURL(jsonResponse['accountUrl']);
-
-              usersCreateData = createUsersRecordData(
-                  displayName: userNameController!.text,
-                  stripeAccountID: jsonResponse['customer']);
-            } catch (e) {
-              if (e is StripeException)
-                print('Stripe error: ${e.error.localizedMessage}');
-              else
-                print('Error: $e');
-            }
-            final user = await createAccountWithEmail(
-              context,
-              userEmailController!.text,
-              userPasswordController!.text,
-            );
-            if (user == null) return;
-
-            //TODO - Add gender, phone number fields to signup etc (other attributes)
-            await UsersRecord.collection.doc(user.uid).update(usersCreateData);
-
-            context.goNamedAuth('JobBoardScreen', mounted);
-          },
-          text: 'Signup',
-          options: FFButtonOptions(
-            width: 270,
-            height: 50,
-            color: Color(0xFF96669E),
-            textStyle: FlutterFlowTheme.of(context).subtitle1.override(
-                  fontFamily: 'Outfit',
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.normal,
-                ),
-            elevation: 2,
-            borderSide: BorderSide(
-              color: Colors.transparent,
-              width: 1,
-            ),
-            borderRadius: BorderRadius.circular(15),
-          ),
-        ),
-      ),
     );
   }
 }
