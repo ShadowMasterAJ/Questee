@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../backend/backend.dart';
 import 'package:stream_transform/stream_transform.dart';
+import '../components/alert_dialog_box.dart';
 import 'firebase_user_provider.dart';
 
 export 'anonymous_auth.dart';
@@ -28,10 +29,7 @@ Future<User?> signInOrCreateAccount(
     }
     return userCredential?.user;
   } on FirebaseAuthException catch (e) {
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Error: ${e.message!}')),
-    );
+    showAlertDialog(context, 'Error', 'Error: ${e.message!}');
     return null;
   }
 }
@@ -50,12 +48,8 @@ Future deleteUser(BuildContext context) async {
     await currentUser?.user?.delete();
   } on FirebaseAuthException catch (e) {
     if (e.code == 'requires-recent-login') {
-      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text(
-                'Too long since most recent sign in. Sign in again before deleting your account.')),
-      );
+      showAlertDialog(context, 'Error',
+          'Too long since most recent sign in. Sign in again before deleting your account.');
     }
   }
 }
@@ -65,15 +59,13 @@ Future resetPassword(
   try {
     await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
   } on FirebaseAuthException catch (e) {
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Error: ${e.message!}')),
-    );
+        showAlertDialog(context, 'Error', 'Error: ${e.message!}');
+
     return null;
   }
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text('Password reset email sent')),
-  );
+  showAlertDialog(
+      context, 'Done', 'Password reset email sent\nMake sure to check spam');
+
 }
 
 Future sendEmailVerification() async =>

@@ -223,6 +223,7 @@ class _SignupScreenWidgetState extends State<SignupScreenWidget> {
       child: TextFormField(
         controller: userCfmPasswordController,
         obscureText: !userCfmPasswordVisibility,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         decoration: FieldDecoration(
           context,
           labelText: 'Retype Password',
@@ -253,6 +254,8 @@ class _SignupScreenWidgetState extends State<SignupScreenWidget> {
           if (val.length < 6) {
             return 'Requires at least 6 characters.';
           }
+          if (userPasswordController?.text != val)
+            return 'The passwords need to match';
 
           return null;
         },
@@ -266,6 +269,7 @@ class _SignupScreenWidgetState extends State<SignupScreenWidget> {
       child: TextFormField(
         controller: userPasswordController,
         obscureText: !userPasswordVisibility,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         decoration: FieldDecoration(context,
             labelText: 'Password',
             onTap: () => setState(
@@ -300,6 +304,7 @@ class _SignupScreenWidgetState extends State<SignupScreenWidget> {
       padding: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 16),
       child: TextFormField(
         controller: userEmailController,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         obscureText: false,
         decoration: FieldDecoration(context, labelText: 'Email'),
         style: FlutterFlowTheme.of(context).bodyText1.override(
@@ -327,6 +332,7 @@ class _SignupScreenWidgetState extends State<SignupScreenWidget> {
       child: TextFormField(
         controller: textController,
         obscureText: false,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         decoration: FieldDecoration(context, labelText: labelText),
         style: FlutterFlowTheme.of(context).bodyText1.override(
               fontFamily: 'Outfit',
@@ -356,6 +362,7 @@ class _SignupScreenWidgetState extends State<SignupScreenWidget> {
         controller: textController,
         keyboardType:
             TextInputType.phone, // Set the keyboard type to phone number.
+        autovalidateMode: AutovalidateMode.onUserInteraction,
 
         decoration: FieldDecoration(context, labelText: labelText),
         style: FlutterFlowTheme.of(context).bodyText1.override(
@@ -410,8 +417,9 @@ class _SignupScreenWidgetState extends State<SignupScreenWidget> {
           );
         }).toList(),
         onChanged: onChanged,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         validator: (val) {
-          if (val == null || val.isEmpty) return 'Please select a gender';
+          if (val == null || val.isEmpty) return 'Please select\na gender';
 
           return null;
         },

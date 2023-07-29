@@ -7,6 +7,7 @@ import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 
 import '../auth/auth_util.dart';
 import '../backend/backend.dart';
+import '../components/alert_dialog_box.dart';
 import '../flutter_flow/flutter_flow_drop_down.dart';
 import '../flutter_flow/flutter_flow_icon_button.dart';
 import '../flutter_flow/flutter_flow_theme.dart';
@@ -32,7 +33,7 @@ class _CreateJobScreenWidgetState extends State<CreateJobScreenWidget> {
   List<TextFormField> _fields = [];
   List<TextEditingController> _controllers = [];
   final List<String> _items = [];
-  final formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   bool storeIsNull = false;
@@ -68,7 +69,7 @@ class _CreateJobScreenWidgetState extends State<CreateJobScreenWidget> {
         child: GestureDetector(
           onTap: () => FocusScope.of(context).unfocus(),
           child: Form(
-            key: formKey,
+            key: _formKey,
             autovalidateMode: AutovalidateMode.disabled,
             child: Column(
               mainAxisSize: MainAxisSize.max,
@@ -125,8 +126,8 @@ class _CreateJobScreenWidgetState extends State<CreateJobScreenWidget> {
           print("Type: $type");
           print("Store Value: $storeValue");
           print("Date Picked: $datePicked");
-          if (formKey.currentState == null ||
-              !formKey.currentState!.validate() ||
+          if (_formKey.currentState == null ||
+              !_formKey.currentState!.validate() ||
               type == null ||
               storeValue == null ||
               datePicked == null) {
@@ -139,24 +140,29 @@ class _CreateJobScreenWidgetState extends State<CreateJobScreenWidget> {
           for (int i = 0; i < _controllers.length; i++) {
             _items.add(_controllers[i].text);
           }
-          final jobCreateData = createJobRecordData(
-            type: type,
-            note: noteController!.text,
-            store: storeValue,
-            delLocation: delLocationController!.text,
-            price: valueOrDefault<double>(
-              double.parse(priceController!.text),
-              3.00,
-            ),
-            items: _items,
-            status: 'open',
-            delTime: datePicked,
-            posterID: currentUserReference,
-          );
-          final newJobRef = JobRecord.collection.doc();
-          await newJobRef.set(jobCreateData);
-          UsersRecord.addCurrJobsPosted(currentUserReference!.id, newJobRef);
-          context.pushNamed('JobBoardScreen');
+          if (_items.isEmpty) {
+            showAlertDialog(context, 'No Items Added!',
+                'You must add atleast 1 item to create the task');
+          } else {
+            final jobCreateData = createJobRecordData(
+              type: type,
+              note: noteController!.text,
+              store: storeValue,
+              delLocation: delLocationController!.text,
+              price: valueOrDefault<double>(
+                double.parse(priceController!.text),
+                3.00,
+              ),
+              items: _items,
+              status: 'open',
+              delTime: datePicked,
+              posterID: currentUserReference,
+            );
+            final newJobRef = JobRecord.collection.doc();
+            await newJobRef.set(jobCreateData);
+            UsersRecord.addCurrJobsPosted(currentUserReference!.id, newJobRef);
+            context.pushNamed('JobBoardScreen');
+          }
         },
         text: 'Create Task',
         options: FFButtonOptions(
@@ -625,11 +631,7 @@ class _ItemsState extends State<Items> {
                   Icons.delete,
                   color: FlutterFlowTheme.of(context).primaryColorLight,
                 ),
-                onPressed: () {
-                  setState(() {
-                    widget._fields.removeLast();
-                  });
-                },
+                onPressed: () => setState(() => widget._fields.removeAt(index)),
                 iconSize: 30,
               )
             ],

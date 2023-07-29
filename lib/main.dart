@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
+import 'package:u_grabv1/providers/user_provider.dart';
 import 'auth/firebase_user_provider.dart';
 import 'auth/auth_util.dart';
 
@@ -74,25 +76,29 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'Questee',
-      localizationsDelegates: [
-        FFLocalizationsDelegate(), // FlutterFlow Localizations delegate.
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
+    return MultiProvider(providers: [
+        ChangeNotifierProvider(create: (_) => UserProvider()),
       ],
-      locale: _locale, // Set the current locale for localization.
-      supportedLocales: const [
-        Locale('en', '')
-      ], // Supported locales for the app.
-      theme: ThemeData(brightness: Brightness.light), // Light theme.
-      darkTheme: ThemeData(brightness: Brightness.dark), // Dark theme.
-      themeMode: _themeMode, // Set the theme mode based on the current value.
-      routeInformationParser: _router
-          .routeInformationParser, // Parse route information for the router.
-      routerDelegate: _router
-          .routerDelegate, // Handle routing and navigation using the router.
+      child: MaterialApp.router(
+        title: 'Questee',
+        localizationsDelegates: [
+          FFLocalizationsDelegate(), // FlutterFlow Localizations delegate.
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        locale: _locale, // Set the current locale for localization.
+        supportedLocales: const [
+          Locale('en', '')
+        ], // Supported locales for the app.
+        theme: ThemeData(brightness: Brightness.light), // Light theme.
+        darkTheme: ThemeData(brightness: Brightness.dark), // Dark theme.
+        themeMode: _themeMode, // Set the theme mode based on the current value.
+        routeInformationParser: _router
+            .routeInformationParser, // Parse route information for the router.
+        routerDelegate: _router
+            .routerDelegate, // Handle routing and navigation using the router.
+      ),
     );
   }
 }

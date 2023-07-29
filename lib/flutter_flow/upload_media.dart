@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:mime_type/mime_type.dart';
 
 import '../auth/auth_util.dart';
+import '../components/alert_dialog_box.dart';
 
 const allowedFormats = {'image/png', 'image/jpeg', 'video/mp4', 'image/gif'};
 
@@ -173,11 +174,9 @@ bool validateFileFormat(String filePath, BuildContext context) {
   if (allowedFormats.contains(mime(filePath))) {
     return true;
   }
-  ScaffoldMessenger.of(context)
-    ..hideCurrentSnackBar()
-    ..showSnackBar(SnackBar(
-      content: Text('Invalid file format: ${mime(filePath)}'),
-    ));
+      showAlertDialog(
+      context, 'Error', 'Invalid file format: ${mime(filePath)}');
+
   return false;
 }
 

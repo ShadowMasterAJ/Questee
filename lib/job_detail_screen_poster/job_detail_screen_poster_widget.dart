@@ -67,7 +67,8 @@ class _JobDetailScreenPosterWidgetState
               if (snapshot.hasError) {
                 print("Error: ${snapshot.error}");
 
-                return Center(child: Text('Error fetching data: ${snapshot.error}'));
+                return Center(
+                    child: Text('Error fetching data: ${snapshot.error}'));
               }
 
               final jobData = snapshot.data!;
@@ -122,8 +123,8 @@ class _JobDetailScreenPosterWidgetState
                   SectionDivider(),
                   Spacer(),
                   acceptorID == ""
-                      ? DeleteJobButton(jobRef: widget.jobRef)
-                      : ChatButton(jobRef: widget.jobRef),
+                      ? DeleteJobButton(jobRef: correctJobRef)
+                      : ChatButton(jobRef: correctJobRef),
                   Visibility(
                     visible: acceptorID != "",
                     child: Padding(
@@ -135,7 +136,7 @@ class _JobDetailScreenPosterWidgetState
                           Expanded(child: VerifyButton(context, correctJobRef)),
                           SizedBox(width: 10),
                           Expanded(
-                              child: DeleteJobButton(jobRef: widget.jobRef)),
+                              child: DeleteJobButton(jobRef: correctJobRef)),
                         ],
                       ),
                     ),
@@ -329,9 +330,12 @@ class DeleteJobButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () async {
+        print('DELETING JOBREF: $jobRef');
+
         try {
           await jobRef.delete();
           print('Job document deleted successfully');
+          Navigator.of(context).pop();
         } catch (e) {
           print('Error deleting job document: $e');
         }
@@ -382,7 +386,7 @@ class ChatButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () async {
-        GoToChat(context,jobRef);
+        GoToChat(context, jobRef);
       },
       child: Text(
         'Chat with Job Acceptor',
@@ -401,7 +405,7 @@ class ChatButton extends StatelessWidget {
     );
   }
 
-  void GoToChat(BuildContext context,DocumentReference jobRef) {
+  void GoToChat(BuildContext context, DocumentReference jobRef) {
     context.pushNamed(
       'ChatScreen',
       queryParams: {

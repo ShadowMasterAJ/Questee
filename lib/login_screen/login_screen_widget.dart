@@ -111,6 +111,7 @@ class _LoginScreenWidgetState extends State<LoginScreenWidget> {
       padding: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 0),
       child: TextFormField(
         controller: userPasswordController,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         obscureText: !userPasswordVisibility,
         decoration: InputDecoration(
           labelText: 'Password',
@@ -193,6 +194,7 @@ class _LoginScreenWidgetState extends State<LoginScreenWidget> {
       padding: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 16),
       child: TextFormField(
         controller: userEmailController,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         obscureText: false,
         decoration: InputDecoration(
           labelText: 'Username or Email',

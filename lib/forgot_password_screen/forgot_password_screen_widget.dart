@@ -17,6 +17,8 @@ class _ForgotPasswordScreenWidgetState
     extends State<ForgotPasswordScreenWidget> {
   TextEditingController? resetEmailController;
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  final _formKey =
+      GlobalKey<FormState>(); // Add form key for the form validation.
 
   @override
   void initState() {
@@ -40,133 +42,139 @@ class _ForgotPasswordScreenWidgetState
           onTap: () => FocusScope.of(context).unfocus(),
           child: Padding(
             padding: EdgeInsetsDirectional.fromSTEB(5, 50, 5, 5),
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Align(
-                  alignment: AlignmentDirectional(0, 0),
-                  child: Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 8),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(6, 0, 0, 0),
-                          child: FlutterFlowIconButton(
-                            borderColor: Colors.transparent,
-                            borderRadius: 30,
-                            borderWidth: 1,
-                            buttonSize: 50,
-                            icon: Icon(
-                              Icons.arrow_back_rounded,
-                              color: FlutterFlowTheme.of(context).primaryText,
-                              size: 30,
-                            ),
-                            onPressed: () async {
-                              context.pop();
-                            },
-                          ),
-                        ),
-                        Padding(
-                          padding:
-                              EdgeInsetsDirectional.fromSTEB(1, 26, 30, 12),
-                          child: Text(
-                            'Change Password',
-                            style: FlutterFlowTheme.of(context).title1.override(
-                                  fontFamily: 'Poppins',
-                                  fontSize: 30,
-                                ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
-                  child: TextFormField(
-                    controller: resetEmailController,
-                    autofocus: true,
-                    obscureText: false,
-                    decoration: InputDecoration(
-                      hintText: 'Enter Registered Email',
-                      hintStyle: FlutterFlowTheme.of(context).bodyText2,
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Color(0x00000000),
-                          width: 1,
-                        ),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Color(0x00000000),
-                          width: 1,
-                        ),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      errorBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Color(0x00000000),
-                          width: 1,
-                        ),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      focusedErrorBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Color(0x00000000),
-                          width: 1,
-                        ),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      filled: true,
-                      fillColor:
-                          FlutterFlowTheme.of(context).secondaryBackground,
-                    ),
-                    style: FlutterFlowTheme.of(context).bodyText1,
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(0, 20, 0, 0),
-                  child: FFButtonWidget(
-                    onPressed: () async {
-                      if (resetEmailController!.text.isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              'Email required!',
-                            ),
-                          ),
-                        );
-                        return;
-                      }
-                      await resetPassword(
-                        email: resetEmailController!.text,
-                        context: context,
-                      );
-                    },
-                    text: 'Send Reset Link',
-                    options: FFButtonOptions(
-                      width: 160,
-                      height: 40,
-                      color: FlutterFlowTheme.of(context).primaryColor,
-                      textStyle:
-                          FlutterFlowTheme.of(context).subtitle2.override(
-                                fontFamily: 'Poppins',
-                                color: Colors.white,
+            child: Form(
+              key: _formKey, // Assign the form key to the Form widget.
+
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Align(
+                    alignment: AlignmentDirectional(0, 0),
+                    child: Padding(
+                      padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 8),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: EdgeInsetsDirectional.fromSTEB(6, 0, 0, 0),
+                            child: FlutterFlowIconButton(
+                              borderColor: Colors.transparent,
+                              borderRadius: 30,
+                              borderWidth: 1,
+                              buttonSize: 50,
+                              icon: Icon(
+                                Icons.arrow_back_rounded,
+                                color: FlutterFlowTheme.of(context).primaryText,
+                                size: 30,
                               ),
-                      borderSide: BorderSide(
-                        color: Colors.transparent,
-                        width: 1,
+                              onPressed: () async {
+                                context.pop();
+                              },
+                            ),
+                          ),
+                          Padding(
+                            padding:
+                                EdgeInsetsDirectional.fromSTEB(1, 26, 30, 12),
+                            child: Text(
+                              'Change Password',
+                              style:
+                                  FlutterFlowTheme.of(context).title1.override(
+                                        fontFamily: 'Poppins',
+                                        fontSize: 30,
+                                      ),
+                            ),
+                          ),
+                        ],
                       ),
-                      borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                ),
-              ],
+                  Padding(
+                    padding: EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
+                    child: TextFormField(
+                      controller: resetEmailController,
+                      autofocus: true,
+                      obscureText: false,
+                      validator: (val) {
+                        if (val == null || val.isEmpty) {
+                          return 'Field is required';
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        hintText: 'Enter Registered Email',
+                        hintStyle: FlutterFlowTheme.of(context).bodyText2,
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color(0x00000000),
+                            width: 1,
+                          ),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color(0x00000000),
+                            width: 1,
+                          ),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        errorBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color(0x00000000),
+                            width: 1,
+                          ),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        focusedErrorBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color(0x00000000),
+                            width: 1,
+                          ),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        filled: true,
+                        fillColor:
+                            FlutterFlowTheme.of(context).secondaryBackground,
+                      ),
+                      style: FlutterFlowTheme.of(context).bodyText1,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsetsDirectional.fromSTEB(0, 20, 0, 0),
+                    child: FFButtonWidget(
+                      onPressed: () async {
+                        //TODO - Check if the validator is working
+                        if (_formKey.currentState == null ||
+                            !_formKey.currentState!.validate()) {
+                          return;
+                        }
+                        await resetPassword(
+                          email: resetEmailController!.text,
+                          context: context,
+                        );
+                      },
+                      text: 'Send Reset Link',
+                      options: FFButtonOptions(
+                        width: 160,
+                        height: 40,
+                        color: FlutterFlowTheme.of(context).primaryColor,
+                        textStyle:
+                            FlutterFlowTheme.of(context).subtitle2.override(
+                                  fontFamily: 'Poppins',
+                                  color: Colors.white,
+                                ),
+                        borderSide: BorderSide(
+                          color: Colors.transparent,
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

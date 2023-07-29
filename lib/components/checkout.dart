@@ -386,6 +386,7 @@ class _CheckoutWidgetState extends State<CheckoutWidget> {
                                 fontSize: 20.0);
                             if (paymentResponse.paymentId == null) {
                               if (paymentResponse.errorMessage != null) {
+                                
                                 showSnackbar(
                                   context,
                                   'Error: ${paymentResponse.errorMessage}',

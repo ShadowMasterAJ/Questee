@@ -4,7 +4,7 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:http/http.dart' as http;
 import '../auth/auth_util.dart';
 import '../backend/backend.dart';
-import '../backend/cloud_functions.dart';
+
 import '../flutter_flow/flutter_flow_theme.dart';
 import '../flutter_flow/flutter_flow_util.dart';
 import '../flutter_flow/flutter_flow_widgets.dart';
@@ -50,17 +50,7 @@ class SignupButton extends StatelessWidget {
             }
 
             GoRouter.of(context).prepareAuthEvent();
-            if (userPasswordController?.text !=
-                userCfmPasswordController?.text) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    'Passwords don\'t match!',
-                  ),
-                ),
-              );
-              return;
-            }
+           
             try {
               final response = await http.post(
                   Uri.parse(

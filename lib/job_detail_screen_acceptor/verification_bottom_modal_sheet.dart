@@ -8,6 +8,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../backend/backend.dart';
+import '../components/alert_dialog_box.dart';
 import '../flutter_flow/flutter_flow_theme.dart';
 import '../flutter_flow/flutter_flow_widgets.dart';
 import '../utils/custom_rect_tween.dart';
@@ -575,46 +576,6 @@ class _UploadReceiptModalBottomSheetState
     );
   }
 
-  /// Shows an [AlertDialog] with a message that informs the user that they can only choose up to 5 images.
-  Future<void> _showImageLimitDialog(BuildContext context) async {
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: FlutterFlowTheme.of(context).primaryBackgroundLight,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: Text(
-            'Too Many Images!',
-            style: FlutterFlowTheme.of(context).subtitle1,
-          ),
-          content: Text('You can only choose up to 5 images.',
-              style: FlutterFlowTheme.of(context)
-                  .bodyText1
-                  .copyWith(fontSize: 16)),
-          actionsAlignment: MainAxisAlignment.center,
-          elevation: 10,
-          shadowColor: FlutterFlowTheme.of(context).primaryColorLight,
-          actionsPadding: EdgeInsets.only(bottom: 15),
-          actions: [
-            FFButtonWidget(
-                text: "OK",
-                onPressed: () => Navigator.of(context).pop(),
-                options: FFButtonOptions(
-                    padding: EdgeInsets.all(10),
-                    width: 150,
-                    height: 50,
-                    borderRadius: BorderRadius.circular(10),
-                    textStyle: FlutterFlowTheme.of(context)
-                        .bodyText1
-                        .copyWith(fontSize: 16),
-                    color: FlutterFlowTheme.of(context).primaryColor))
-          ],
-        );
-      },
-    );
-  }
-
   /// This method allows the user to choose images from their device's storage and add them to the current list of chosen images.
   /// The method takes in two parameters: a [BuildContext] and a [double] representing the maximum width of the device screen.
   /// The method returns a [Future] of type [void].
@@ -630,7 +591,8 @@ class _UploadReceiptModalBottomSheetState
       debugPrint(
           'EXCESS IMAGES PRESENT: ${_chosenImages.length}(Chosen)+${currentlyPicked.length}(Picked)=${_chosenImages.length + currentlyPicked.length}');
       setState(() => pickedInExcess = true);
-      await _showImageLimitDialog(context);
+      await showAlertDialog(
+          context, 'Too Many Images!', 'You can only choose up to 5 images.');
     } else {
       setState(() {
         pickedInExcess = false;

@@ -66,7 +66,26 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
                   children: [
                     JobBoardHeader(),
                     SearchBar(context),
-                    JobList(context),
+                    Expanded(
+                      child: Stack(
+                        children: [
+                          JobList(context),
+                          Align(
+                            alignment: Alignment(0, 0.95),
+                            child: ElevatedButton(
+                              onPressed: () {},
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  'Verify to Receive Payouts',
+                                  style: FlutterFlowTheme.of(context).bodyText1,
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -77,67 +96,63 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
     );
   }
 
-  Flexible JobList(BuildContext context) {
-    // ... Your existing code ...
+  Widget JobList(BuildContext context) {
+    return FFAppState().showFullList
+        ? Padding(
+            padding: EdgeInsetsDirectional.fromSTEB(0, 10, 0, 12),
+            child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>?>(
+              stream: () {
+                // Define a queryBuilder function to create Firestore queries
+                final Query<Map<String, dynamic>> Function(
+                        Query<Map<String, dynamic>>) queryBuilder =
+                    (jobRecordCollection) => jobRecordCollection;
 
-    return Flexible(
-      child: FFAppState().showFullList
-          ? Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(0, 10, 0, 12),
-              child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>?>(
-                stream: () {
-                  // Define a queryBuilder function to create Firestore queries
-                  final Query<Map<String, dynamic>> Function(
-                          Query<Map<String, dynamic>>) queryBuilder =
-                      (jobRecordCollection) => jobRecordCollection;
-
-                  // Build the Firestore query for retrieving job records
-                  final query = queryBuilder(FirebaseFirestore.instance
-                          .collection('job')
-                          .where('posterID', isNotEqualTo: currentUserReference)
-                      // .where('acceptorID', isNull: true)
-                      // the above doesn't work, but if you ctrl-f 'dc tp',
-                      //you will find the condition that does
-                      );
-
-                  return query.snapshots();
-                }(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(
-                      child: CircularProgressIndicator(
-                        color: FlutterFlowTheme.of(context).primaryColor,
-                      ),
+                // Build the Firestore query for retrieving job records
+                final query = queryBuilder(FirebaseFirestore.instance
+                        .collection('job')
+                        .where('posterID', isNotEqualTo: currentUserReference)
+                    // .where('acceptorID', isNull: true)
+                    // the above doesn't work, but if you ctrl-f 'dc tp',
+                    //you will find the condition that does
                     );
-                  }
 
-                  if (snapshot.hasError) {
-                    return Center(
-                      child: Text('Error fetching data'),
-                    );
-                  }
-
-                  final jobSnapshot = snapshot.data;
-                  if (jobSnapshot == null || jobSnapshot.docs.isEmpty) {
-                    return NoJobsIllustration();
-                  }
-
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.vertical,
-                    itemCount: jobSnapshot.docs.length,
-                    itemBuilder: (context, index) {
-                      final jobData = jobSnapshot.docs[index].data();
-                      final jobRef = jobSnapshot.docs[index].reference;
-
-                      return JobCard(jobRef: jobRef);
-                    },
+                return query.snapshots();
+              }(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      color: FlutterFlowTheme.of(context).primaryColor,
+                    ),
                   );
-                },
-              ),
-            )
-          : SearchResults(simpleSearchResults: simpleSearchResults),
-    );
+                }
+
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text('Error fetching data'),
+                  );
+                }
+
+                final jobSnapshot = snapshot.data;
+                if (jobSnapshot == null || jobSnapshot.docs.isEmpty) {
+                  return NoJobsIllustration();
+                }
+
+                return ListView.builder(
+                  shrinkWrap: true,
+                  scrollDirection: Axis.vertical,
+                  itemCount: jobSnapshot.docs.length,
+                  itemBuilder: (context, index) {
+                    final jobData = jobSnapshot.docs[index].data();
+                    final jobRef = jobSnapshot.docs[index].reference;
+
+                    return JobCard(jobRef: jobRef);
+                  },
+                );
+              },
+            ),
+          )
+        : SearchResults(simpleSearchResults: simpleSearchResults);
   }
 
   Container SearchBar(BuildContext context) {

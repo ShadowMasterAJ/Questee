@@ -166,8 +166,6 @@ class _EditProfileScreenWidgetState extends State<EditProfileScreenWidget> {
                                         .map((u) => u!)
                                         .toList();
                                   } finally {
-                                    ScaffoldMessenger.of(context)
-                                        .hideCurrentSnackBar();
                                     isMediaUploading = false;
                                   }
                                   if (downloadUrls.length ==
