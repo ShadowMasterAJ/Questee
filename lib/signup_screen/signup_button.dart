@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:http/http.dart' as http;
@@ -74,7 +73,6 @@ class SignupButton extends StatelessWidget {
               //   'phone': phoneController!.texts
               // });
 
-              launchURL(jsonResponse['accountUrl']);
 
               final usersCreateData = createUsersRecordData(
                   displayName: displayNameController!.text,
@@ -82,7 +80,7 @@ class SignupButton extends StatelessWidget {
                   lastName: lastNameController!.text,
                   phoneNumber: phoneController!.text,
                   gender: gender,
-                  stripeAccountID: jsonResponse['customer']);
+                  stripeAccountID: jsonResponse['accountID']);
 
               if (jsonResponse['success']) {
                 final user = await createAccountWithEmail(

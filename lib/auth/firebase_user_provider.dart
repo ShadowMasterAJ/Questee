@@ -11,7 +11,8 @@ class QuesteeFirebaseUser {
 
 QuesteeFirebaseUser? currentUser;
 bool get loggedIn => currentUser?.loggedIn ?? false;
-Stream<QuesteeFirebaseUser> QuesteeFirebaseUserStream() => FirebaseAuth.instance
+
+Stream<QuesteeFirebaseUser> questeeFirebaseUserStream() => FirebaseAuth.instance
         .authStateChanges()
         .debounce((user) => user == null && !loggedIn
             ? TimerStream(true, const Duration(seconds: 1))

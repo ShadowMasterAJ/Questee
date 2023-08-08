@@ -50,6 +50,9 @@ abstract class UsersRecord implements Built<UsersRecord, UsersRecordBuilder> {
   @BuiltValueField(wireName: 'stripeAccountID')
   String? get stripeAccountID;
 
+  @BuiltValueField(wireName: 'stripeVerified')
+  bool get stripeVerified;
+
   @BuiltValueField(wireName: kDocumentReferenceField)
   DocumentReference? get ffRef;
 
@@ -65,6 +68,7 @@ abstract class UsersRecord implements Built<UsersRecord, UsersRecordBuilder> {
     ..phoneNumber = ''
     ..gender = ''
     ..stripeAccountID = ''
+    ..stripeVerified = false
     ..pastJobsAccepted = ListBuilder()
     ..pastJobsPosted = ListBuilder()
     ..currJobsAccepted = ListBuilder()
@@ -98,7 +102,14 @@ abstract class UsersRecord implements Built<UsersRecord, UsersRecordBuilder> {
       'curr_jobs_posted': FieldValue.arrayUnion([jobRef])
     });
   }
+static Future<void> removeFromCurrJobsPosted(
+      String userId, DocumentReference? jobRef) async {
+    final userRef = FirebaseFirestore.instance.collection('users').doc(userId);
 
+    await userRef.update({
+      'curr_jobs_posted': FieldValue.arrayRemove([jobRef])
+    });
+  }
   static Future<void> addCurrJobsAccepted(
       String userId, DocumentReference? jobRef) async {
     final userRef = FirebaseFirestore.instance.collection('users').doc(userId);
@@ -137,6 +148,7 @@ Map<String, dynamic> createUsersRecordData({
   gender,
   firstName,
   lastName,
+  bool stripeVerified = false,
   DateTime? createdTime,
   List<DocumentReference>? currJobsPosted,
   currJobsAccepted,
@@ -155,6 +167,7 @@ Map<String, dynamic> createUsersRecordData({
       ..createdTime = createdTime
       ..phoneNumber = phoneNumber
       ..stripeAccountID = stripeAccountID
+      ..stripeVerified = stripeVerified
       ..gender = gender;
 
     int lenCJP = currJobsPosted != null ? currJobsPosted.length : 0;

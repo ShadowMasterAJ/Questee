@@ -48,7 +48,7 @@ class _MyAppState extends State<MyApp> {
     _appStateNotifier = AppStateNotifier();
     _router = createRouter(_appStateNotifier);
     // Listen to Firebase user changes and update the app state notifier accordingly.
-    userStream = QuesteeFirebaseUserStream()
+    userStream = questeeFirebaseUserStream()
       ..listen((user) => _appStateNotifier.update(user));
     // After 1 second delay, stop showing the splash image.
     Future.delayed(
@@ -76,7 +76,8 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(providers: [
+    return MultiProvider(
+      providers: [
         ChangeNotifierProvider(create: (_) => UserProvider()),
       ],
       child: MaterialApp.router(

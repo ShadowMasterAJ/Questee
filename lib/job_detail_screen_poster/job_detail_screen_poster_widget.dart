@@ -1,6 +1,7 @@
 // ignore_for_file: non_constant_identifier_names, unused_local_variable
 
 import 'package:flutter/material.dart';
+import 'package:u_grabv1/auth/auth_util.dart';
 
 import '../backend/backend.dart';
 import '../flutter_flow/flutter_flow_icon_button.dart';
@@ -334,7 +335,9 @@ class DeleteJobButton extends StatelessWidget {
 
         try {
           await jobRef.delete();
+          UsersRecord.removeFromCurrJobsPosted(currentUserUid, jobRef);
           print('Job document deleted successfully');
+
           Navigator.of(context).pop();
         } catch (e) {
           print('Error deleting job document: $e');

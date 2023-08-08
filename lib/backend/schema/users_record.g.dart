@@ -17,7 +17,11 @@ class _$UsersRecordSerializer implements StructuredSerializer<UsersRecord> {
   @override
   Iterable<Object?> serialize(Serializers serializers, UsersRecord object,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = <Object?>[];
+    final result = <Object?>[
+      'stripeVerified',
+      serializers.serialize(object.stripeVerified,
+          specifiedType: const FullType(bool)),
+    ];
     Object? value;
     value = object.email;
     if (value != null) {
@@ -219,6 +223,10 @@ class _$UsersRecordSerializer implements StructuredSerializer<UsersRecord> {
           result.stripeAccountID = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String?;
           break;
+        case 'stripeVerified':
+          result.stripeVerified = serializers.deserialize(value,
+              specifiedType: const FullType(bool))! as bool;
+          break;
         case 'Document__Reference__Field':
           result.ffRef = serializers.deserialize(value,
               specifiedType: const FullType(DocumentReference, const [
@@ -262,6 +270,8 @@ class _$UsersRecord extends UsersRecord {
   @override
   final String? stripeAccountID;
   @override
+  final bool stripeVerified;
+  @override
   final DocumentReference<Object?>? ffRef;
 
   factory _$UsersRecord([void Function(UsersRecordBuilder)? updates]) =>
@@ -282,8 +292,12 @@ class _$UsersRecord extends UsersRecord {
       this.pastJobsPosted,
       this.gender,
       this.stripeAccountID,
+      required this.stripeVerified,
       this.ffRef})
-      : super._();
+      : super._() {
+    BuiltValueNullFieldError.checkNotNull(
+        stripeVerified, r'UsersRecord', 'stripeVerified');
+  }
 
   @override
   UsersRecord rebuild(void Function(UsersRecordBuilder) updates) =>
@@ -310,6 +324,7 @@ class _$UsersRecord extends UsersRecord {
         pastJobsPosted == other.pastJobsPosted &&
         gender == other.gender &&
         stripeAccountID == other.stripeAccountID &&
+        stripeVerified == other.stripeVerified &&
         ffRef == other.ffRef;
   }
 
@@ -330,6 +345,7 @@ class _$UsersRecord extends UsersRecord {
     _$hash = $jc(_$hash, pastJobsPosted.hashCode);
     _$hash = $jc(_$hash, gender.hashCode);
     _$hash = $jc(_$hash, stripeAccountID.hashCode);
+    _$hash = $jc(_$hash, stripeVerified.hashCode);
     _$hash = $jc(_$hash, ffRef.hashCode);
     _$hash = $jf(_$hash);
     return _$hash;
@@ -352,6 +368,7 @@ class _$UsersRecord extends UsersRecord {
           ..add('pastJobsPosted', pastJobsPosted)
           ..add('gender', gender)
           ..add('stripeAccountID', stripeAccountID)
+          ..add('stripeVerified', stripeVerified)
           ..add('ffRef', ffRef))
         .toString();
   }
@@ -429,6 +446,11 @@ class UsersRecordBuilder implements Builder<UsersRecord, UsersRecordBuilder> {
   set stripeAccountID(String? stripeAccountID) =>
       _$this._stripeAccountID = stripeAccountID;
 
+  bool? _stripeVerified;
+  bool? get stripeVerified => _$this._stripeVerified;
+  set stripeVerified(bool? stripeVerified) =>
+      _$this._stripeVerified = stripeVerified;
+
   DocumentReference<Object?>? _ffRef;
   DocumentReference<Object?>? get ffRef => _$this._ffRef;
   set ffRef(DocumentReference<Object?>? ffRef) => _$this._ffRef = ffRef;
@@ -454,6 +476,7 @@ class UsersRecordBuilder implements Builder<UsersRecord, UsersRecordBuilder> {
       _pastJobsPosted = $v.pastJobsPosted?.toBuilder();
       _gender = $v.gender;
       _stripeAccountID = $v.stripeAccountID;
+      _stripeVerified = $v.stripeVerified;
       _ffRef = $v.ffRef;
       _$v = null;
     }
@@ -493,6 +516,8 @@ class UsersRecordBuilder implements Builder<UsersRecord, UsersRecordBuilder> {
               pastJobsPosted: _pastJobsPosted?.build(),
               gender: gender,
               stripeAccountID: stripeAccountID,
+              stripeVerified: BuiltValueNullFieldError.checkNotNull(
+                  stripeVerified, r'UsersRecord', 'stripeVerified'),
               ffRef: ffRef);
     } catch (_) {
       late String _$failedField;

@@ -4,17 +4,16 @@ const stripe = require('stripe')('sk_test_51Ls8gLASsoBJK28ld8JRnCzqnHBLS0aRHphrA
 
 exports.createOrRetrieveCustomer = functions.https.onRequest(async (req, res) => {
   try {
-    let customer;
-    let accountUrl;
-    let customerId;
+    let account;
+    let accountId;
     let accountAlrExists = false;
     const accountsList = await stripe.accounts.list();
 
     if (accountsList.data.length > 0) {
       for (const account of accountsList.data) {
         if (account.email === req.body.email) {
-          customer = account;
-          customerId = account.id;
+          account = account;
+          accountId = account.id;
           accountAlrExists = true;
           break;
         }
@@ -22,7 +21,7 @@ exports.createOrRetrieveCustomer = functions.https.onRequest(async (req, res) =>
     }
 
     if (!accountAlrExists) {
-      customer = await stripe.accounts.create({
+      account = await stripe.accounts.create({
         type: 'express',
         business_type: 'individual',
         email: req.body.email,
@@ -32,7 +31,8 @@ exports.createOrRetrieveCustomer = functions.https.onRequest(async (req, res) =>
           transfers: { requested: true },
         },
         business_profile: {
-          name: req.body.name, mcc: 7278,
+          name: req.body.name,
+          mcc: 7278,
           product_description: '-',
           support_phone: req.body.phone,
         },
@@ -42,29 +42,22 @@ exports.createOrRetrieveCustomer = functions.https.onRequest(async (req, res) =>
           last_name: req.body.last_name,
           phone: req.body.phone,
           gender: req.body.gender,
-          phone: req.body.phone,
           address: {
             city: "Singapore",
             country: "SG",
             line1: "",
             postal_code: "",
             state: null
-          }, dob: { day: 14, month: 9, year: 2002 }
+          },
+          dob: { day: 14, month: 9, year: 2002 }
         }
       });
-      accountUrl = await stripe.accountLinks.create({
-        account: customer.id,
-        refresh_url: `https://api/stripe/account/reauth?account_id=${customer.id}`,
-        return_url: `https://api/stripe/account/reauth?account_id=${customer.id}`,
-        type: 'account_onboarding',
-      });
-      customerId = customer.id;
-
+      accountId = account.id;
     }
+
     res.status(200).send({
-      details: customer,
-      customer: customerId,
-      accountUrl: accountUrl ? accountUrl.url : 'NA',
+      details: account,
+      accountID: accountId,
       success: true,
       stripeAccountExists: accountAlrExists
     });
@@ -73,6 +66,26 @@ exports.createOrRetrieveCustomer = functions.https.onRequest(async (req, res) =>
     res.status(404).send({ success: false, error: error.message });
   }
 });
+exports.generateAccountLink = functions.https.onRequest(async (req, res) => {
+  try {
+    const accountUrl = await stripe.accountLinks.create({
+      account: req.body.stripeAccId,
+      refresh_url: `https://api/stripe/account/reauth?account_id=${req.body.stripeAccId}`,
+      return_url: `https://api/stripe/account/reauth?account_id=${req.body.stripeAccId}`,
+      type: 'account_onboarding',
+    });
+
+    res.status(200).send({
+      accountUrl: accountUrl.url,
+      success: true,
+    });
+
+  } catch (error) {
+    res.status(404).send({ success: false, error: error.message });
+  }
+});
+
+
 
 exports.createPaymentIntent = functions.https.onRequest(async (req, res) => {
   try {

@@ -3,13 +3,16 @@
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:http/http.dart' as http;
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:text_search/text_search.dart';
+import 'package:u_grabv1/components/alert_dialog_box.dart';
 
 import '../auth/auth_util.dart';
 import '../backend/backend.dart';
+
 import '../components/nav_bar_with_middle_button_widget.dart';
 import '../flutter_flow/flutter_flow_icon_button.dart';
 import '../flutter_flow/flutter_flow_theme.dart';
@@ -47,6 +50,21 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
 
   @override
   Widget build(BuildContext context) {
+    print('Current User Email:\t\t $currentUserEmail\n');
+    print('Current User UID:\t\t $currentUserUid\n');
+    print('Current User Display Name:\t\t $currentUserDisplayName\n');
+    print('Current User Photo URL:\t\t $currentUserPhoto\n');
+    print('Current User Phone Number:\t\t $currentPhoneNumber\n');
+    print('Current User Stripe Account ID:\t\t $currentUserStripeAcc\n');
+    print(
+        'Current User Stripe Verification Status:\t $currentUserStripeVerifiedStatus\n');
+    // print(
+    //     'Current User Current Jobs Accepted:\t $currentUserCurrJobsAccepted\n');
+    // print('Current User Current Jobs Posted:\t\t $currentUserCurrJobsPosted\n');
+    // print(
+    //     'Current User Past Jobs Accepted:\t\t $currentUserPastJobsAccepted\n');
+    // print('Current User Past Jobs Posted:\t\t $currentUserPastJobsPosted\n');
+
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -70,19 +88,47 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
                       child: Stack(
                         children: [
                           JobList(context),
-                          Align(
-                            alignment: Alignment(0, 0.95),
-                            child: ElevatedButton(
-                              onPressed: () {},
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  'Verify to Receive Payouts',
-                                  style: FlutterFlowTheme.of(context).bodyText1,
-                                ),
-                              ),
-                            ),
-                          )
+                          currentUserStripeVerifiedStatus
+                              ? Container()
+                              : Align(
+                                  alignment: Alignment(0, 0.95),
+                                  child: ElevatedButton(
+                                    onPressed: () async {
+                                      try {
+                                        print(currentUserStripeAcc);
+                                        final response = await http.post(
+                                            Uri.parse(
+                                                'https://us-central1-ugrab-17ad6.cloudfunctions.net/generateAccountLink'),
+                                            body: {
+                                              'stripeAccId':
+                                                  currentUserStripeAcc
+                                            });
+
+                                        final jsonResponse =
+                                            jsonDecode(response.body);
+                                        print(jsonResponse);
+                                        jsonResponse['success']
+                                            ? launchURL(
+                                                jsonResponse['accountUrl'])
+                                            : showAlertDialog(context, 'Error',
+                                                jsonResponse['error']);
+                                        //TODO - upon deeplinking, based on a some flag, show the below alert
+                                        showAlertDialog(context, 'Success!',
+                                            'You have been verified by Stripe and are now eligible to post/accept jobs');
+                                      } catch (e) {
+                                        showAlertDialog(context, 'Error', '$e');
+                                      }
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        'Verify to Receive Payouts',
+                                        style: FlutterFlowTheme.of(context)
+                                            .bodyText1,
+                                      ),
+                                    ),
+                                  ),
+                                )
                         ],
                       ),
                     ),
