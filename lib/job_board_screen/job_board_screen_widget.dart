@@ -68,7 +68,7 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
-      bottomNavigationBar: NavBarWithMiddleButtonWidget(),
+      // bottomNavigationBar: NavBarWithMiddleButtonWidget(),
       extendBody: true,
       body: SafeArea(
         child: GestureDetector(
@@ -91,7 +91,7 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
                           currentUserStripeVerifiedStatus
                               ? Container()
                               : Align(
-                                  alignment: Alignment(0, 0.95),
+                                  alignment: Alignment(0, 0.65),
                                   child: ElevatedButton(
                                     onPressed: () async {
                                       try {
@@ -128,7 +128,10 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
                                       ),
                                     ),
                                   ),
-                                )
+                                ),
+                          Align(
+                              alignment: Alignment(0, 1),
+                              child: NavBarWithMiddleButtonWidget()),
                         ],
                       ),
                     ),

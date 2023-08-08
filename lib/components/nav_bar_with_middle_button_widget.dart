@@ -16,7 +16,7 @@ class NavBarWithMiddleButtonWidget extends StatefulWidget {
 
 class BottomNavCurvePainter extends CustomPainter {
   BottomNavCurvePainter(
-      {this.backgroundColor = Colors.white, this.insetRadius = 43});
+      {this.backgroundColor = Colors.white, this.insetRadius = 38});
 
   Color backgroundColor;
   double insetRadius;
@@ -36,7 +36,7 @@ class BottomNavCurvePainter extends CustomPainter {
         insetCurveBeginnningX, 0, insetCurveBeginnningX, insetRadius / 2);
 
     path.arcToPoint(Offset(insetCurveEndX, insetRadius / 2),
-        radius: Radius.circular(10.0), clockwise: false);
+        radius: Radius.circular(40.0), clockwise: false);
 
     path.quadraticBezierTo(
         insetCurveEndX, 0, insetCurveEndX + transitionToInsetCurveWidth, 0);
@@ -60,107 +60,111 @@ class _NavBarWithMiddleButtonWidgetState
   @override
   Widget build(BuildContext context) {
     return BottomAppBar(
-      height: 70,
+      height: 72,
       color: Colors.transparent,
       child: CustomPaint(
         size: Size(double.infinity, 50),
         painter: BottomNavCurvePainter(
             backgroundColor: FlutterFlowTheme.of(context).secondaryBackground),
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            FlutterFlowIconButton(
-              borderColor: Colors.transparent,
-              borderRadius: 30,
-              borderWidth: 1,
-              buttonSize: 50,
-              icon: Icon(
-                Icons.home_rounded,
-                color: FlutterFlowTheme.of(context).grayIcon,
-                size: 30,
-              ),
-              onPressed: () async {
-                context.pushNamed('JobBoardScreen');
-              },
-            ),
-            FlutterFlowIconButton(
-              borderColor: Colors.transparent,
-              borderRadius: 30,
-              borderWidth: 1,
-              buttonSize: 50,
-              icon: Icon(
-                Icons.chat_bubble_rounded,
-                color: FlutterFlowTheme.of(context).grayIcon,
-                size: 24,
-              ),
-              onPressed: () async {
-                context.pushNamed(
-                  'ChatScreen',
-                  queryParams: {
-                    'jobRef': serializeParam(
-                      currentUserCurrJobsAccepted!.first,
-                      ParamType.DocumentReference,
-                    ),
-                  }.withoutNulls,
-                  extra: {
-                    kTransitionInfoKey: TransitionInfo(
-                      hasTransition: true,
-                      transitionType: PageTransitionType.fade,
-                      alignment: Alignment.bottomCenter,
-                      duration: Duration(milliseconds: 400),
-                    ),
-                  },
-                );
-              },
-            ),
-            Align(
-              alignment: Alignment(0, -5),
-              child: FlutterFlowIconButton(
-                borderColor: Colors.black,
+        child: Container(
+          color: Colors.transparent,
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              FlutterFlowIconButton(
+                borderColor: Colors.transparent,
                 borderRadius: 30,
-                buttonSize: 65,
-                fillColor: FlutterFlowTheme.of(context).primaryColor,
-                icon: FaIcon(
-                  FontAwesomeIcons.plus,
-                  color: FlutterFlowTheme.of(context).gray200,
+                borderWidth: 1,
+                buttonSize: 50,
+                icon: Icon(
+                  Icons.home_rounded,
+                  color: FlutterFlowTheme.of(context).grayIcon,
                   size: 30,
                 ),
                 onPressed: () async {
-                  context.pushNamed('createJobScreen');
+                  context.pushNamed('JobBoardScreen');
                 },
               ),
-            ),
-            FlutterFlowIconButton(
-              borderColor: Colors.transparent,
-              borderRadius: 30,
-              borderWidth: 1,
-              buttonSize: 50,
-              icon: Icon(
-                Icons.history,
-                color: FlutterFlowTheme.of(context).grayIcon,
-                size: 30,
+              FlutterFlowIconButton(
+                borderColor: Colors.transparent,
+                borderRadius: 30,
+                borderWidth: 1,
+                buttonSize: 50,
+                icon: Icon(
+                  Icons.chat_bubble_rounded,
+                  color: FlutterFlowTheme.of(context).grayIcon,
+                  size: 24,
+                ),
+                onPressed: () async {
+                  context.pushNamed(
+                    'ChatScreen',
+                    queryParams: {
+                      'jobRef': serializeParam(
+                        currentUserCurrJobsAccepted!.first,
+                        ParamType.DocumentReference,
+                      ),
+                    }.withoutNulls,
+                    extra: {
+                      kTransitionInfoKey: TransitionInfo(
+                        hasTransition: true,
+                        transitionType: PageTransitionType.fade,
+                        alignment: Alignment.bottomCenter,
+                        duration: Duration(milliseconds: 400),
+                      ),
+                    },
+                  );
+                },
               ),
-              onPressed: () async {
-                context.pushNamed('JobHistoryScreen');
-              },
-            ),
-            FlutterFlowIconButton(
-              borderColor: Colors.transparent,
-              borderRadius: 30,
-              borderWidth: 1,
-              buttonSize: 50,
-              icon: Icon(
-                Icons.face,
-                color: FlutterFlowTheme.of(context).grayIcon,
-                size: 30,
+              Align(
+                alignment: Alignment(0, -8),
+                child: FlutterFlowIconButton(
+                  borderColor: FlutterFlowTheme.of(context).primaryColorLight,
+                  borderRadius: 23,
+                  buttonSize: 70,
+                  borderWidth: 3,
+                  fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+                  icon: FaIcon(
+                    FontAwesomeIcons.plus,
+                    color: FlutterFlowTheme.of(context).gray200,
+                    size: 30,
+                  ),
+                  onPressed: () async {
+                    context.pushNamed('createJobScreen');
+                  },
+                ),
               ),
-              onPressed: () async {
-                context.pushNamed('editProfileScreen');
-              },
-            ),
-          ],
+              FlutterFlowIconButton(
+                borderColor: Colors.transparent,
+                borderRadius: 30,
+                borderWidth: 1,
+                buttonSize: 50,
+                icon: Icon(
+                  Icons.history,
+                  color: FlutterFlowTheme.of(context).grayIcon,
+                  size: 30,
+                ),
+                onPressed: () async {
+                  context.pushNamed('JobHistoryScreen');
+                },
+              ),
+              FlutterFlowIconButton(
+                borderColor: Colors.transparent,
+                borderRadius: 30,
+                borderWidth: 1,
+                buttonSize: 50,
+                icon: Icon(
+                  Icons.face,
+                  color: FlutterFlowTheme.of(context).grayIcon,
+                  size: 30,
+                ),
+                onPressed: () async {
+                  context.pushNamed('editProfileScreen');
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

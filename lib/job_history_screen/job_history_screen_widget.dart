@@ -51,34 +51,40 @@ class _JobHistoryScreenWidgetState extends State<JobHistoryScreenWidget> {
               ),
             ),
             Expanded(
-              child: DefaultTabController(
-                length: 2,
-                initialIndex: 0,
-                child: Column(
-                  children: [
-                    TabBar(
-                      labelColor: FlutterFlowTheme.of(context).primaryColor,
-                      labelStyle: FlutterFlowTheme.of(context).subtitle2,
-                      indicatorColor:
-                          FlutterFlowTheme.of(context).secondaryColor,
-                      tabs: [
-                        Tab(text: 'Jobs Accepted'),
-                        Tab(text: 'Jobs Posted'),
+              child: Stack(
+                children: [
+                  DefaultTabController(
+                    length: 2,
+                    initialIndex: 0,
+                    child: Column(
+                      children: [
+                        TabBar(
+                          labelColor: FlutterFlowTheme.of(context).primaryColor,
+                          labelStyle: FlutterFlowTheme.of(context).subtitle2,
+                          indicatorColor:
+                              FlutterFlowTheme.of(context).secondaryColor,
+                          tabs: [
+                            Tab(text: 'Jobs Accepted'),
+                            Tab(text: 'Jobs Posted'),
+                          ],
+                        ),
+                        Expanded(
+                          child: TabBarView(
+                            children: [
+                              AcceptedJobsTab(),
+                              PostedJobsTab(),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
-                    Expanded(
-                      child: TabBarView(
-                        children: [
-                          AcceptedJobsTab(),
-                          PostedJobsTab(),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                  Align(
+                      alignment: Alignment(0, 1),
+                      child: NavBarWithMiddleButtonWidget()),
+                ],
               ),
             ),
-            NavBarWithMiddleButtonWidget(),
           ],
         ),
       ),
