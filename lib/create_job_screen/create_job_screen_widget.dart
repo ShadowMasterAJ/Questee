@@ -60,6 +60,60 @@ class _CreateJobScreenWidgetState extends State<CreateJobScreenWidget> {
     super.dispose();
   }
 
+  // **FOR DUMMY USE ONLY!!! USE THE REFERENCES PRINTED TO DELETE AFTER USE **
+  // Function: Creates n jobs by users for load and stress test
+  // How to use: In the build() below, input own parameters, hot reload, and press button in-app
+  // Parameter: byWhom == "self" creates jobs with your current user. else it's created by other users
+  // ONLY PRESS THE BUTTON ONCE
+  // Only manual deletes as writing automatic deletes is too much hassle
+  void createTestDummyJobs(int num, String byWhom) async {
+    print("CREATING " + num.toString() + " DUMMY JOBS....");
+    var jobCreateData;
+    if (byWhom == "self") {
+      print("BY: SELF");
+      for (int i = 0; i < num; i++) {
+        jobCreateData = createJobRecordData(
+          type: "Buying",
+          note:
+              "dumTest " + i.toString() + " by User " + currentUserDisplayName,
+          store: "Cheers",
+          delLocation: "dumTest Loc " + i.toString(),
+          price: 42069,
+          items: ["dumTest 1", "dumTest 2", "dumTest 3"],
+          status: 'open',
+          delTime: DateTime.now(),
+          posterID: currentUserReference,
+        );
+        final newJobRef = JobRecord.collection.doc();
+        await newJobRef.set(jobCreateData);
+        print(newJobRef);
+      }
+    } else {
+      print("BY: OTHER USERS");
+      for (int i = 0; i < num; i++) {
+        jobCreateData = createJobRecordData(
+          type: "Buying",
+          note:
+              "dumTest " + i.toString() + " by User " + currentUserDisplayName,
+          store: "Cheers",
+          delLocation: "dumTest Loc " + i.toString(),
+          price: 42069,
+          items: ["dumTest 1", "dumTest 2", "dumTest 3"],
+          status: 'open',
+          delTime: DateTime.now(),
+          posterID: FirebaseFirestore.instance
+              .collection('users')
+              .doc("Yf1t3KjC83S5dEuFssgtCi7W0pR2"),
+        );
+        final newJobRef = JobRecord.collection.doc();
+        await newJobRef.set(jobCreateData);
+        print(newJobRef);
+      }
+    }
+    print("END OF DUMMY JOB CREATION");
+  }
+  // END OF EXTRA FUNCTION
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,7 +157,14 @@ class _CreateJobScreenWidgetState extends State<CreateJobScreenWidget> {
                           Note(noteController: noteController),
                           Items(fields: _fields),
                           AddItemButton(context),
-                          CreateJobButton(context)
+                          CreateJobButton(context),
+                          // DUMMY PRESS BUTTON
+                          // COMMENT OUT IF NOT IN USE
+                          // ElevatedButton(
+                          //   onPressed: () => createTestDummyJobs(4, "bbbb"),
+                          //   child: const Text(
+                          //       "WARNING: FOR DUMMY TEST CREATION ONLY"),
+                          // ),
                         ],
                       ),
                     ),

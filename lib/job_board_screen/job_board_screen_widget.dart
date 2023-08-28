@@ -34,11 +34,63 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
+  ScrollController _scrollController = ScrollController();
+  bool _isLoadingMore = false;
+  Query? _pagingQuery;
+  static const _pageSize = 24; // approx 3 units for one card
+  String? _lastDelLoc = '';
+
   @override
   void initState() {
     super.initState();
+
+    // _scrollController.addListener(() {
+    //   final position =
+    //       _scrollController.offset / _scrollController.position.maxScrollExtent;
+    //   if (position >= 0.8 && !_isLoadingMore) {
+    //     loadMoreData();
+    //   }
+    // });
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.atEdge &&
+          _scrollController.position.pixels != 0 &&
+          !_isLoadingMore) {
+        loadMoreData(); // reallly ideally this works but i can't confirm 100%
+      }
+    });
+
     searchFieldController = TextEditingController();
     FFAppState().showFullList = true;
+
+    _pagingQuery = FirebaseFirestore.instance
+        .collection('job')
+        .orderBy('del_location')
+        .limit(_pageSize); // Set initial limit
+  }
+
+  void loadMoreData() async {
+    if (_pagingQuery != null && !_isLoadingMore) {
+      setState(() {
+        _isLoadingMore = true;
+      });
+
+      final newDocs = await _pagingQuery!.startAfter([_lastDelLoc]).get();
+
+      setState(() {
+        _isLoadingMore = false;
+        if (newDocs.docs.isNotEmpty) {
+          final lastDoc = newDocs.docs.last;
+          final lastDocData = lastDoc.data() as Map<String, dynamic>?;
+
+          if (lastDocData != null) {
+            _lastDelLoc = lastDocData['del_location'] as String?;
+          }
+        } else {
+          _pagingQuery = null;
+        }
+      });
+    }
   }
 
   @override
@@ -68,8 +120,7 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
-      // bottomNavigationBar: NavBarWithMiddleButtonWidget(),
-      extendBody: true,
+      // extendBody: true,
       body: SafeArea(
         child: GestureDetector(
           onTap: () => FocusScope.of(context).unfocus(),
@@ -112,7 +163,7 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
                                                 jsonResponse['accountUrl'])
                                             : showAlertDialog(context, 'Error',
                                                 jsonResponse['error']);
-                                        //TODO - upon deeplinking, based on some flag, show the below alert
+                                        //TODO - upon deeplinking, based on a some flag, show the below alert
                                         showAlertDialog(context, 'Success!',
                                             'You have been verified by Stripe and are now eligible to post/accept jobs');
                                       } catch (e) {
@@ -130,8 +181,9 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
                                   ),
                                 ),
                           Align(
-                              alignment: Alignment(0, 1),
-                              child: NavBarWithMiddleButtonWidget()),
+                            alignment: Alignment(0, 1),
+                            child: NavBarWithMiddleButtonWidget(),
+                          ),
                         ],
                       ),
                     ),
@@ -159,12 +211,14 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
                 // Build the Firestore query for retrieving job records
                 final query = queryBuilder(FirebaseFirestore.instance
                         .collection('job')
-                        .where('posterID', isNotEqualTo: currentUserReference)
+                        // .where('posterID', isNotEqualTo: currentUserReference)
+                        .orderBy('del_location')
+                        .startAfter([_lastDelLoc]).limit(_pageSize)
+
                     // .where('acceptorID', isNull: true)
                     // the above doesn't work, but if you ctrl-f 'dc tp',
                     //you will find the condition that does
                     );
-
                 return query.snapshots();
               }(),
               builder: (context, snapshot) {
@@ -182,20 +236,34 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
                   );
                 }
 
+                final jobDocs = snapshot.data!.docs;
+
+                if (jobDocs.isNotEmpty) {
+                  final lastJobData = jobDocs[jobDocs.length - 1].data();
+                  _lastDelLoc = lastJobData['del_location'] as String;
+                }
+
                 final jobSnapshot = snapshot.data;
                 if (jobSnapshot == null || jobSnapshot.docs.isEmpty) {
                   return NoJobsIllustration();
                 }
 
                 return ListView.builder(
+                  // controller: _scrollController,
                   shrinkWrap: true,
                   scrollDirection: Axis.vertical,
-                  itemCount: jobSnapshot.docs.length,
+                  itemCount: jobSnapshot.docs.length + 1,
                   itemBuilder: (context, index) {
-                    final jobData = jobSnapshot.docs[index].data();
-                    final jobRef = jobSnapshot.docs[index].reference;
-
-                    return JobCard(jobRef: jobRef);
+                    // final jobData = jobSnapshot.docs[index].data();
+                    if (index < jobSnapshot.docs.length &&
+                        _pagingQuery != null) {
+                      // final jobData = jobSnapshot.docs[index].data();
+                      final jobRef = jobSnapshot.docs[index].reference;
+                      return JobCard(jobRef: jobRef);
+                    } else {
+                      return Container();
+                      // return Center(child: CircularProgressIndicator());
+                    }
                   },
                 );
               },
@@ -493,6 +561,9 @@ class JobCard extends StatelessWidget {
       'status': data['status'],
       'type': data['type'],
       'price': data['price'],
+      'verificationImages': data.containsKey('verificationImages')
+          ? data['verificationImages']
+          : "null"
     };
   }
 
@@ -507,7 +578,6 @@ class JobCard extends StatelessWidget {
 
         if (snapshot.hasError) {
           print("Error: ${snapshot.error}");
-
           return Center(
             child: Text('Error fetching data'),
           );
@@ -518,8 +588,15 @@ class JobCard extends StatelessWidget {
         final delTime = jobData['del_time'] as DateTime;
         final store = jobData['store'].toString();
 
-        if (jobData['acceptorID'] != "null") {
+        if (jobData['acceptorID'] != "null" ||
+            jobData['posterID'] == currentUserReference) {
           // condition for filtering
+
+          // print("posterID:");
+          // print(jobData['posterID']);
+          // print(jobData['del_location']);
+          // print("userref:");
+          // print(currentUserReference);
           return Center();
         } // dc tp
 
