@@ -112,7 +112,7 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
                                                 jsonResponse['accountUrl'])
                                             : showAlertDialog(context, 'Error',
                                                 jsonResponse['error']);
-                                        //TODO - upon deeplinking, based on a some flag, show the below alert
+                                        //TODO - upon deeplinking, based on some flag, show the below alert
                                         showAlertDialog(context, 'Success!',
                                             'You have been verified by Stripe and are now eligible to post/accept jobs');
                                       } catch (e) {

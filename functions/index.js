@@ -1,6 +1,25 @@
+import * as functions from 'firebase-functions';
+import * as admin from 'firebase-admin';
+
+admin.initializeApp();
+
 const functions = require("firebase-functions");
 
 const stripe = require('stripe')('sk_test_51Ls8gLASsoBJK28ld8JRnCzqnHBLS0aRHphrAOtkzKTVZJNItQNFxDN3DojFzFX7m8b9C4bEnBPqp5pBNkaEeZ3A00jBgNxw2r');
+
+
+export const scheduleDocumentDeletion = functions.https.onCall(async (data, context) => {
+  const documentPath = data.documentPath; // Extract the document path from the data parameter
+
+  try {
+    await admin.firestore().doc(documentPath).delete();
+    console.log(`Document at path ${documentPath} deleted.`);
+    return { success: true };
+  } catch (error) {
+    console.error(`Error deleting document: ${error}`);
+    return { success: false, error: error.message };
+  }
+});
 
 exports.createOrRetrieveCustomer = functions.https.onRequest(async (req, res) => {
   try {

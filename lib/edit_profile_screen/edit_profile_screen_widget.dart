@@ -1,4 +1,3 @@
-
 import '../auth/auth_util.dart';
 import '../backend/backend.dart';
 import '../backend/firebase_storage/storage.dart';
@@ -63,43 +62,13 @@ class _EditProfileScreenWidgetState extends State<EditProfileScreenWidget> {
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 8),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Padding(
-                              padding:
-                                  EdgeInsetsDirectional.fromSTEB(12, 0, 0, 0),
-                              child: FlutterFlowIconButton(
-                                borderColor: Colors.transparent,
-                                borderRadius: 30,
-                                borderWidth: 1,
-                                buttonSize: 50,
-                                icon: Icon(
-                                  Icons.arrow_back_rounded,
-                                  color:
-                                      FlutterFlowTheme.of(context).primaryText,
-                                  size: 30,
-                                ),
-                                onPressed: () async {
-                                  context.pop();
-                                },
+                        padding: EdgeInsetsDirectional.fromSTEB(24, 26, 30, 12),
+                        child: Text(
+                          'Edit Profile.',
+                          style: FlutterFlowTheme.of(context).title1.override(
+                                fontFamily: 'Poppins',
+                                fontSize: 36,
                               ),
-                            ),
-                            Padding(
-                              padding: EdgeInsetsDirectional.fromSTEB(
-                                  24, 26, 30, 12),
-                              child: Text(
-                                'Edit Profile.',
-                                style: FlutterFlowTheme.of(context)
-                                    .title1
-                                    .override(
-                                      fontFamily: 'Poppins',
-                                      fontSize: 36,
-                                    ),
-                              ),
-                            ),
-                          ],
                         ),
                       ),
                       Row(
@@ -212,47 +181,7 @@ class _EditProfileScreenWidgetState extends State<EditProfileScreenWidget> {
                           child: TextFormField(
                             controller: yourNameController,
                             obscureText: false,
-                            decoration: InputDecoration(
-                              labelText: 'Username',
-                              labelStyle:
-                                  FlutterFlowTheme.of(context).bodyText2,
-                              hintStyle: FlutterFlowTheme.of(context).bodyText2,
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: FlutterFlowTheme.of(context)
-                                      .primaryBackground,
-                                  width: 2,
-                                ),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: FlutterFlowTheme.of(context)
-                                      .primaryBackground,
-                                  width: 2,
-                                ),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              errorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color(0x00000000),
-                                  width: 2,
-                                ),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              focusedErrorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color(0x00000000),
-                                  width: 2,
-                                ),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              filled: true,
-                              fillColor: FlutterFlowTheme.of(context)
-                                  .secondaryBackground,
-                              contentPadding:
-                                  EdgeInsetsDirectional.fromSTEB(20, 24, 0, 24),
-                            ),
+                            decoration: InputDecorator(context, 'Display Name'),
                             style: FlutterFlowTheme.of(context).bodyText1,
                           ),
                         ),
@@ -261,47 +190,9 @@ class _EditProfileScreenWidgetState extends State<EditProfileScreenWidget> {
                         padding: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 12),
                         child: TextFormField(
                           controller: useEmailController,
+                          readOnly: true,
                           obscureText: false,
-                          decoration: InputDecoration(
-                            labelStyle: FlutterFlowTheme.of(context).bodyText2,
-                            hintText: 'Email',
-                            hintStyle: FlutterFlowTheme.of(context).bodyText2,
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: FlutterFlowTheme.of(context)
-                                    .primaryBackground,
-                                width: 2,
-                              ),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: FlutterFlowTheme.of(context)
-                                    .primaryBackground,
-                                width: 2,
-                              ),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            errorBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Color(0x00000000),
-                                width: 2,
-                              ),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            focusedErrorBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Color(0x00000000),
-                                width: 2,
-                              ),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            filled: true,
-                            fillColor: FlutterFlowTheme.of(context)
-                                .secondaryBackground,
-                            contentPadding:
-                                EdgeInsetsDirectional.fromSTEB(20, 24, 0, 24),
-                          ),
+                          decoration: InputDecorator(context, 'Email'),
                           style: FlutterFlowTheme.of(context).bodyText1,
                           textAlign: TextAlign.start,
                           maxLines: 1,
@@ -313,47 +204,7 @@ class _EditProfileScreenWidgetState extends State<EditProfileScreenWidget> {
                           child: TextFormField(
                             controller: genderController,
                             obscureText: false,
-                            decoration: InputDecoration(
-                              labelStyle:
-                                  FlutterFlowTheme.of(context).bodyText2,
-                              hintText: 'Gender',
-                              hintStyle: FlutterFlowTheme.of(context).bodyText2,
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: FlutterFlowTheme.of(context)
-                                      .primaryBackground,
-                                  width: 2,
-                                ),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: FlutterFlowTheme.of(context)
-                                      .primaryBackground,
-                                  width: 2,
-                                ),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              errorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color(0x00000000),
-                                  width: 2,
-                                ),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              focusedErrorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color(0x00000000),
-                                  width: 2,
-                                ),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              filled: true,
-                              fillColor: FlutterFlowTheme.of(context)
-                                  .secondaryBackground,
-                              contentPadding:
-                                  EdgeInsetsDirectional.fromSTEB(20, 24, 0, 24),
-                            ),
+                            decoration: InputDecorator(context, 'Gender'),
                             style: FlutterFlowTheme.of(context).bodyText1,
                             textAlign: TextAlign.start,
                             maxLines: 1,
@@ -378,7 +229,7 @@ class _EditProfileScreenWidgetState extends State<EditProfileScreenWidget> {
                             options: FFButtonOptions(
                               width: 340,
                               height: 45,
-                              color: FlutterFlowTheme.of(context).primaryColor,
+                              color: FlutterFlowTheme.of(context).buttonGreen,
                               textStyle: FlutterFlowTheme.of(context)
                                   .subtitle2
                                   .override(
@@ -409,7 +260,7 @@ class _EditProfileScreenWidgetState extends State<EditProfileScreenWidget> {
                           options: FFButtonOptions(
                             width: 130,
                             height: 45,
-                            color: FlutterFlowTheme.of(context).primaryColor,
+                            color: FlutterFlowTheme.of(context).buttonRed,
                             textStyle:
                                 FlutterFlowTheme.of(context).subtitle2.override(
                                       fontFamily: 'Poppins',
@@ -432,6 +283,45 @@ class _EditProfileScreenWidgetState extends State<EditProfileScreenWidget> {
           ),
         ),
       ),
+    );
+  }
+
+  InputDecoration InputDecorator(BuildContext context, String label) {
+    return InputDecoration(
+      labelStyle: FlutterFlowTheme.of(context).bodyText2,
+      labelText: label,
+      hintStyle: FlutterFlowTheme.of(context).bodyText2,
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: FlutterFlowTheme.of(context).primaryBackground,
+          width: 2,
+        ),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: FlutterFlowTheme.of(context).primaryBackground,
+          width: 2,
+        ),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: Color(0x00000000),
+          width: 2,
+        ),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: Color(0x00000000),
+          width: 2,
+        ),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      filled: true,
+      fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+      contentPadding: EdgeInsetsDirectional.fromSTEB(20, 24, 0, 24),
     );
   }
 }

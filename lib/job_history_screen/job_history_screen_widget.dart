@@ -229,8 +229,19 @@ class JobListWidget extends StatelessWidget {
                     shrinkWrap: true,
                     scrollDirection: Axis.vertical,
                     itemCount: jobList.length,
-                    itemBuilder: (context, i) =>
-                        JobCard(index: i, jobRecord: jobList[i]),
+                    itemBuilder: (context, i) {
+                      if (title.contains('past') && i == jobList.length - 1) {
+                        return Column(
+                          children: [
+                            JobCard(index: i, jobRecord: jobList[i]),
+                            SizedBox(
+                              height: 60,
+                            )
+                          ],
+                        );
+                      } else
+                        return JobCard(index: i, jobRecord: jobList[i]);
+                    },
                   ),
                 ),
       ],
