@@ -28,68 +28,75 @@ class JobBoardScreenWidget extends StatefulWidget {
 class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
   List<JobRecord> simpleSearchResults = [];
   TextEditingController? searchFieldController;
-
   List<StreamSubscription?> _streamSubscriptions = [];
-  // Query? _pagingQuery; // = FirebaseFirestore.instance.collection('job');
-
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
-  ScrollController _scrollController = ScrollController();
-  bool _isLoadingMore = false;
-  Query? _pagingQuery;
-  static const _pageSize = 24; // approx 3 units for one card
-  String? _lastDelLoc = '';
+  static const _pageSize = 4;
+  late ScrollController controller;
 
+  bool _isLoading = false;
+  List _fetchedJobs = [];
+  DocumentSnapshot? _lastVisible;
+  int totalCount = 0;
   @override
   void initState() {
     super.initState();
 
-    // _scrollController.addListener(() {
-    //   final position =
-    //       _scrollController.offset / _scrollController.position.maxScrollExtent;
-    //   if (position >= 0.8 && !_isLoadingMore) {
-    //     loadMoreData();
-    //   }
-    // });
-
-    _scrollController.addListener(() {
-      if (_scrollController.position.atEdge &&
-          _scrollController.position.pixels != 0 &&
-          !_isLoadingMore) {
-        loadMoreData(); // reallly ideally this works but i can't confirm 100%
-      }
-    });
-
+    controller = new ScrollController()..addListener(_scrollListener);
+    _isLoading = true;
+    getTotalItemCount();
+    loadData();
     searchFieldController = TextEditingController();
     FFAppState().showFullList = true;
-
-    _pagingQuery = FirebaseFirestore.instance
-        .collection('job')
-        .orderBy('del_location')
-        .limit(_pageSize); // Set initial limit
   }
 
-  void loadMoreData() async {
-    if (_pagingQuery != null && !_isLoadingMore) {
-      setState(() {
-        _isLoadingMore = true;
-      });
+  Future<Null> getTotalItemCount() async {
+    QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection('job').get();
+    totalCount = querySnapshot.size;
+  }
 
-      final newDocs = await _pagingQuery!.startAfter([_lastDelLoc]).get();
+  Future<Null> loadData() async {
+    QuerySnapshot? data;
+    if (_lastVisible == null)
+      data = await FirebaseFirestore.instance
+          .collection('job')
+          .orderBy('del_time', descending: true)
+          .limit(_pageSize)
+          .get();
+    else {
+      data = await FirebaseFirestore.instance
+          .collection('job')
+          .orderBy('del_time', descending: true)
+          .startAfter([_lastVisible!['del_time']])
+          .limit(_pageSize)
+          .get();
+    }
+    List p = [];
+    for (var doc in data.docs) p.add(doc.id);
+    print('FETCHED DATA: $p');
+    if (data.docs.length > 0) {
+      _lastVisible = data.docs[data.docs.length - 1];
 
-      setState(() {
-        _isLoadingMore = false;
-        if (newDocs.docs.isNotEmpty) {
-          final lastDoc = newDocs.docs.last;
-          final lastDocData = lastDoc.data() as Map<String, dynamic>?;
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _fetchedJobs.addAll(data!.docs);
+        });
+      }
+    }
 
-          if (lastDocData != null) {
-            _lastDelLoc = lastDocData['del_location'] as String?;
-          }
-        } else {
-          _pagingQuery = null;
-        }
-      });
+    return null;
+  }
+
+  void _scrollListener() {
+    if (!_isLoading) {
+      // print('CURRENT SCROLL: ${controller.position.pixels}');
+      // print('MAX SCROLL: ${controller.position.maxScrollExtent}');
+      if (controller.position.pixels >= controller.position.maxScrollExtent) {
+        setState(() => _isLoading = true);
+        loadData();
+      }
     }
   }
 
@@ -102,14 +109,16 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
 
   @override
   Widget build(BuildContext context) {
-    print('Current User Email:\t\t $currentUserEmail\n');
-    print('Current User UID:\t\t $currentUserUid\n');
-    print('Current User Display Name:\t\t $currentUserDisplayName\n');
-    print('Current User Photo URL:\t\t $currentUserPhoto\n');
-    print('Current User Phone Number:\t\t $currentPhoneNumber\n');
-    print('Current User Stripe Account ID:\t\t $currentUserStripeAcc\n');
-    print(
-        'Current User Stripe Verification Status:\t $currentUserStripeVerifiedStatus\n');
+    print('Total jobs:\t$totalCount');
+
+    // print('Current User Email:\t\t $currentUserEmail\n');
+    // print('Current User UID:\t\t $currentUserUid\n');
+    // print('Current User Display Name:\t\t $currentUserDisplayName\n');
+    // print('Current User Photo URL:\t\t $currentUserPhoto\n');
+    // print('Current User Phone Number:\t\t $currentPhoneNumber\n');
+    // print('Current User Stripe Account ID:\t\t $currentUserStripeAcc\n');
+    // print(
+    //     'Current User Stripe Verification Status:\t $currentUserStripeVerifiedStatus\n');
     // print(
     //     'Current User Current Jobs Accepted:\t $currentUserCurrJobsAccepted\n');
     // print('Current User Current Jobs Posted:\t\t $currentUserCurrJobsPosted\n');
@@ -134,52 +143,14 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     JobBoardHeader(),
+                    currentUserStripeVerifiedStatus
+                        ? Container()
+                        : VerifyAccountButton(),
                     SearchBar(context),
                     Expanded(
                       child: Stack(
                         children: [
                           JobList(context),
-                          currentUserStripeVerifiedStatus
-                              ? Container()
-                              : Align(
-                                  alignment: Alignment(0, 0.65),
-                                  child: ElevatedButton(
-                                    onPressed: () async {
-                                      try {
-                                        print(currentUserStripeAcc);
-                                        final response = await http.post(
-                                            Uri.parse(
-                                                'https://us-central1-ugrab-17ad6.cloudfunctions.net/generateAccountLink'),
-                                            body: {
-                                              'stripeAccId':
-                                                  currentUserStripeAcc
-                                            });
-
-                                        final jsonResponse =
-                                            jsonDecode(response.body);
-                                        print(jsonResponse);
-                                        jsonResponse['success']
-                                            ? launchURL(
-                                                jsonResponse['accountUrl'])
-                                            : showAlertDialog(context, 'Error',
-                                                jsonResponse['error']);
-                                        //TODO - upon deeplinking, based on a some flag, show the below alert
-                                        showAlertDialog(context, 'Success!',
-                                            'You have been verified by Stripe and are now eligible to post/accept jobs');
-                                      } catch (e) {
-                                        showAlertDialog(context, 'Error', '$e');
-                                      }
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text(
-                                        'Verify to Receive Payouts',
-                                        style: FlutterFlowTheme.of(context)
-                                            .bodyText1,
-                                      ),
-                                    ),
-                                  ),
-                                ),
                           Align(
                             alignment: Alignment(0, 1),
                             child: NavBarWithMiddleButtonWidget(),
@@ -198,73 +169,73 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
   }
 
   Widget JobList(BuildContext context) {
+    print("--------------------------------");
+    print("JOBS FETCHED: ${_fetchedJobs.length}");
+    for (int i = 0; i < _fetchedJobs.length; i++)
+      print('JOB ${i + 1}:\t${_fetchedJobs[i].id}');
+
+    _lastVisible != null
+        ? print('LAST VISIBLE:${_lastVisible!.id}')
+        : print('LAST VISIBLE: NULL');
+    print("--------------------------------");
+
     return FFAppState().showFullList
         ? Padding(
             padding: EdgeInsetsDirectional.fromSTEB(0, 10, 0, 12),
             child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>?>(
-              stream: () {
-                // Define a queryBuilder function to create Firestore queries
-                final Query<Map<String, dynamic>> Function(
-                        Query<Map<String, dynamic>>) queryBuilder =
-                    (jobRecordCollection) => jobRecordCollection;
-
-                // Build the Firestore query for retrieving job records
-                final query = queryBuilder(FirebaseFirestore.instance
-                        .collection('job')
-                        // .where('posterID', isNotEqualTo: currentUserReference)
-                        .orderBy('del_location')
-                        .startAfter([_lastDelLoc]).limit(_pageSize)
-
-                    // .where('acceptorID', isNull: true)
-                    // the above doesn't work, but if you ctrl-f 'dc tp',
-                    //you will find the condition that does
-                    );
-                return query.snapshots();
-              }(),
+              stream: FirebaseFirestore.instance.collection('job').snapshots(),
               builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
+                if (snapshot.connectionState == ConnectionState.waiting)
                   return Center(
                     child: CircularProgressIndicator(
-                      color: FlutterFlowTheme.of(context).primaryColor,
-                    ),
+                        color: FlutterFlowTheme.of(context).primaryColor),
                   );
-                }
 
-                if (snapshot.hasError) {
-                  return Center(
-                    child: Text('Error fetching data'),
-                  );
-                }
+                if (snapshot.hasError)
+                  return Center(child: Text('Error fetching data'));
 
-                final jobDocs = snapshot.data!.docs;
+                if (_fetchedJobs.isEmpty) return NoJobsIllustration();
 
-                if (jobDocs.isNotEmpty) {
-                  final lastJobData = jobDocs[jobDocs.length - 1].data();
-                  _lastDelLoc = lastJobData['del_location'] as String;
-                }
-
-                final jobSnapshot = snapshot.data;
-                if (jobSnapshot == null || jobSnapshot.docs.isEmpty) {
-                  return NoJobsIllustration();
-                }
-
-                return ListView.builder(
-                  // controller: _scrollController,
-                  shrinkWrap: true,
-                  scrollDirection: Axis.vertical,
-                  itemCount: jobSnapshot.docs.length + 1,
-                  itemBuilder: (context, index) {
-                    // final jobData = jobSnapshot.docs[index].data();
-                    if (index < jobSnapshot.docs.length &&
-                        _pagingQuery != null) {
-                      // final jobData = jobSnapshot.docs[index].data();
-                      final jobRef = jobSnapshot.docs[index].reference;
-                      return JobCard(jobRef: jobRef);
-                    } else {
-                      return Container();
-                      // return Center(child: CircularProgressIndicator());
-                    }
+                return RefreshIndicator(
+                  onRefresh: () async {
+                    // _fetchedJobs.clear();
+                    // _lastVisible = null;
+                    await loadData();
                   },
+                  child: ListView.builder(
+                    controller: controller,
+                    shrinkWrap: true,
+                    scrollDirection: Axis.vertical,
+                    itemCount: _fetchedJobs.length,
+                    itemBuilder: (_, index) {
+                      final jobRef = _fetchedJobs[index].reference;
+                      final jobKey =
+                          Key('job_${jobRef.id}'); // Unique key for each job
+
+                      if (index == _fetchedJobs.length - 1) {
+                        return Container(
+                          color: Colors.amber,
+                          margin: EdgeInsets.only(bottom: 65),
+                          child: JobCard(
+                            key: jobKey, // Assign the unique key to the JobCard
+                            jobRef: jobRef,
+                          ),
+                        );
+                      } else if ((index + 1) % _pageSize == 0) {
+                        return Container(
+                          color: Colors.green,
+                          child: JobCard(
+                            key: jobKey, // Assign the unique key to the JobCard
+                            jobRef: jobRef,
+                          ),
+                        );
+                      } else
+                        return JobCard(
+                          key: jobKey, // Assign the unique key to the JobCard
+                          jobRef: jobRef,
+                        );
+                    },
+                  ),
                 );
               },
             ),
@@ -394,6 +365,48 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
   }
 }
 
+class VerifyAccountButton extends StatelessWidget {
+  const VerifyAccountButton({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment(0, 0.65),
+      child: ElevatedButton(
+        onPressed: () async {
+          try {
+            print(currentUserStripeAcc);
+            final response = await http.post(
+                Uri.parse(
+                    'https://us-central1-ugrab-17ad6.cloudfunctions.net/generateAccountLink'),
+                body: {'stripeAccId': currentUserStripeAcc});
+
+            final jsonResponse = jsonDecode(response.body);
+            print(jsonResponse);
+            jsonResponse['success']
+                ? launchURL(jsonResponse['accountUrl'])
+                : showAlertDialog(context, 'Error', jsonResponse['error']);
+            //TODO - upon deeplinking, based on a some flag, show the below alert
+            showAlertDialog(context, 'Success!',
+                'You have been verified by Stripe and are now eligible to post/accept jobs');
+          } catch (e) {
+            showAlertDialog(context, 'Error', '$e');
+          }
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            'Verify to Receive Payouts',
+            style: FlutterFlowTheme.of(context).bodyText1,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class NoJobsIllustration extends StatelessWidget {
   const NoJobsIllustration({
     Key? key,
@@ -468,7 +481,7 @@ class SearchResults extends StatelessWidget {
                           color:
                               FlutterFlowTheme.of(context).secondaryBackground,
                           borderRadius: BorderRadius.circular(20)),
-                      padding: EdgeInsets.all(10),
+                      padding: EdgeInsets.only(left: 10, bottom: 10, right: 10),
                       child: Text(
                         "No jobs found",
                         textAlign: TextAlign.center,
@@ -587,18 +600,18 @@ class JobCard extends StatelessWidget {
         final location = jobData['del_location'].toString();
         final delTime = jobData['del_time'] as DateTime;
         final store = jobData['store'].toString();
+        final price = jobData['price'].toString();
+        // if (jobData['acceptorID'] != "null" ||
+        //     jobData['posterID'] == currentUserReference) {
+        //   // condition for filtering
 
-        if (jobData['acceptorID'] != "null" ||
-            jobData['posterID'] == currentUserReference) {
-          // condition for filtering
-
-          // print("posterID:");
-          // print(jobData['posterID']);
-          // print(jobData['del_location']);
-          // print("userref:");
-          // print(currentUserReference);
-          return Center();
-        } // dc tp
+        //   // print("posterID:");
+        //   // print(jobData['posterID']);
+        //   // print(jobData['del_location']);
+        //   // print("userref:");
+        //   // print(currentUserReference);
+        //   return Center();
+        // } // dc tp
 
         return Padding(
           padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
@@ -628,7 +641,7 @@ class JobCard extends StatelessWidget {
                     children: [
                       JobCardStore(store: store),
                       JobCardDelTime(delTime: delTime),
-                      JobCardMoney(location: location),
+                      JobCardMoney(amount: price),
                     ],
                   ),
                 ],
@@ -666,10 +679,10 @@ class JobCardImage extends StatelessWidget {
 class JobCardMoney extends StatelessWidget {
   const JobCardMoney({
     Key? key,
-    required this.location,
+    required this.amount,
   }) : super(key: key);
 
-  final String location;
+  final String amount;
 
   @override
   Widget build(BuildContext context) {
@@ -688,7 +701,7 @@ class JobCardMoney extends StatelessWidget {
             ),
           ),
           Text(
-            location,
+            amount,
             style: FlutterFlowTheme.of(context).bodyText1,
           ),
         ],

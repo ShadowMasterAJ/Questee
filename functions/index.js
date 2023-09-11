@@ -1,14 +1,14 @@
-import * as functions from 'firebase-functions';
-import * as admin from 'firebase-admin';
+// import * as functions from 'firebase-functions';
+// import * as admin from 'firebase-admin';
 
-admin.initializeApp();
-
+const admin = require('firebase-admin')
 const functions = require("firebase-functions");
+admin.initializeApp();
 
 const stripe = require('stripe')('sk_test_51Ls8gLASsoBJK28ld8JRnCzqnHBLS0aRHphrAOtkzKTVZJNItQNFxDN3DojFzFX7m8b9C4bEnBPqp5pBNkaEeZ3A00jBgNxw2r');
 
 
-export const scheduleDocumentDeletion = functions.https.onCall(async (data, context) => {
+exports.scheduleDocumentDeletion = functions.https.onCall(async (data, context) => {
   const documentPath = data.documentPath; // Extract the document path from the data parameter
 
   try {
@@ -130,3 +130,61 @@ exports.createPaymentIntent = functions.https.onRequest(async (req, res) => {
     res.status(404).send({ success: false, error: error.message });
   }
 });
+
+exports.StripePayEndpointMethodId = functions.https.onRequest(async (req, res) => {
+  const { paymentMethodId, items, currency, useStripeSdk } = req.body;
+  const orderAmount = 1;
+
+  try {
+    if (paymentMethodId) {
+      const params = {
+        amount: orderAmount,
+        confirm: true,
+        confirmation_method: 'manual',
+        currency: currency,
+        use_stripe_sdk: useStripeSdk
+      }
+
+      const intent = await stripe.paymentIntents.create(params);
+      console.log(`Intent: ${intent}`)
+      return res.send(generateResponse(intent));
+    }
+    return res.sendStatus(400);
+  } catch (e) {
+    return res.send({ error: e.message })
+  }
+})
+
+exports.StripePayEndpointIntentId = functions.https.onRequest(async (req, res) => {
+  const { paymentIntentId } = req.body;
+  try {
+    if (paymentIntentId) {
+      const intent = await stripe.paymentIntents.confirm(paymentIntentId);
+      return res.send(generateResponse(intent));
+    }
+    return res.sendStatus(400)
+  } catch (e) {
+    return res.send({ error: e.message })
+  }
+})
+
+const generateResponse = function (intent) {
+  switch (intent.status) {
+    case 'requires_action':
+      return {
+        clientSecret: intent.clientSecret,
+        requiresAction: true,
+        status: intent.status
+      };
+
+    case 'requires_payment_method':
+      return {
+        'error': 'Your card was denied, please provide a new payment method',
+      };
+
+    case 'succeeded':
+      return { clientSecret: intent.clientSecret, status: intent.status };
+  }
+
+  return { error: 'Failed' }
+}
