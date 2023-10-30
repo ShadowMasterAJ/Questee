@@ -95,7 +95,7 @@ class _JobDetailScreenAcceptorWidgetState
                 final String status = jobData['status'].toString();
                 final List<String> items = List<String>.from(jobData['items']);
                 final String note = jobData['note'].toString();
-                final double price = jobData['price'] as double;
+                final double price = jobData['price'];
 
                 return Column(
                   mainAxisSize: MainAxisSize.max,

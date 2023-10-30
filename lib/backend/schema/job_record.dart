@@ -7,6 +7,7 @@ part 'job_record.g.dart';
 
 abstract class JobRecord implements Built<JobRecord, JobRecordBuilder> {
   static Serializer<JobRecord> get serializer => _$jobRecordSerializer;
+
   @BuiltValueField(wireName: 'type')
   String? get type;
 
@@ -48,6 +49,7 @@ abstract class JobRecord implements Built<JobRecord, JobRecordBuilder> {
 
   @BuiltValueField(wireName: kDocumentReferenceField)
   DocumentReference? get ffRef;
+
   DocumentReference get reference => ffRef!;
 
   static void _initializeBuilder(JobRecordBuilder builder) => builder
@@ -77,9 +79,14 @@ abstract class JobRecord implements Built<JobRecord, JobRecordBuilder> {
   factory JobRecord([void Function(JobRecordBuilder) updates]) = _$JobRecord;
 
   static JobRecord getDocumentFromData(
-          Map<String, dynamic> data, DocumentReference reference) =>
-      serializers.deserializeWith(serializer,
-          {...mapFromFirestore(data), kDocumentReferenceField: reference})!;
+      Map<String, dynamic> data, DocumentReference reference) {
+    if (data['del_time'] is Timestamp) {
+      final Timestamp timestamp = data['del_time'] as Timestamp;
+      data['del_time'] = timestamp.toDate();
+    }
+    return serializers.deserializeWith(serializer,
+        {...mapFromFirestore(data), kDocumentReferenceField: reference})!;
+  }
 }
 
 Map<String, dynamic> createJobRecordData(
@@ -110,17 +117,12 @@ Map<String, dynamic> createJobRecordData(
       ..itemQuantity = itemQuantity
       ..posterID = posterID
       ..verifiedByPoster = verifiedByPoster
-      ..verificationImages = verificationImages as ListBuilder<String>?
       ..acceptorID = acceptorID;
 
-    var s = items;
-    int len = s != null ? s.length : 0; // Safe
-    for (int i = 0; i < len; i++) j.items.add(items![i]);
+    if (items != null) j.items.addAll(items);
 
-    var s2 = verificationImages;
-    int len2 = s2 != null ? s2.length : 0; // Safe
-    for (int i = 0; i < len2; i++)
-      j.verificationImages.add(verificationImages![i]);
+    if (verificationImages != null)
+      j.verificationImages.addAll(verificationImages);
   }));
 
   return firestoreData;

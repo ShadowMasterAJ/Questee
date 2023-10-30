@@ -13,6 +13,7 @@ import 'package:u_grabv1/components/alert_dialog_box.dart';
 import '../auth/auth_util.dart';
 import '../backend/backend.dart';
 
+import '../backend/cache_handler.dart';
 import '../components/nav_bar_with_middle_button_widget.dart';
 import '../flutter_flow/flutter_flow_icon_button.dart';
 import '../flutter_flow/flutter_flow_theme.dart';
@@ -28,68 +29,109 @@ class JobBoardScreenWidget extends StatefulWidget {
 class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
   List<JobRecord> simpleSearchResults = [];
   TextEditingController? searchFieldController;
-
   List<StreamSubscription?> _streamSubscriptions = [];
-  // Query? _pagingQuery; // = FirebaseFirestore.instance.collection('job');
-
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
-  ScrollController _scrollController = ScrollController();
-  bool _isLoadingMore = false;
-  Query? _pagingQuery;
-  static const _pageSize = 24; // approx 3 units for one card
-  String? _lastDelLoc = '';
+  static const _pageSize = 4;
+  late ScrollController controller;
+
+  bool _isLoading = false;
+  List<JobRecord> _fetchedJobs = [];
+  DocumentSnapshot? _lastVisible;
+  int totalCount = 0;
+  bool jobsFetchedFromCache = false;
 
   @override
   void initState() {
     super.initState();
-
-    // _scrollController.addListener(() {
-    //   final position =
-    //       _scrollController.offset / _scrollController.position.maxScrollExtent;
-    //   if (position >= 0.8 && !_isLoadingMore) {
-    //     loadMoreData();
-    //   }
-    // });
-
-    _scrollController.addListener(() {
-      if (_scrollController.position.atEdge &&
-          _scrollController.position.pixels != 0 &&
-          !_isLoadingMore) {
-        loadMoreData(); // reallly ideally this works but i can't confirm 100%
-      }
-    });
-
+    controller = new ScrollController()..addListener(_scrollListener);
+    _isLoading = true;
+    getTotalItemCount();
+    loadData();
     searchFieldController = TextEditingController();
     FFAppState().showFullList = true;
-
-    _pagingQuery = FirebaseFirestore.instance
-        .collection('job')
-        .orderBy('del_location')
-        .limit(_pageSize); // Set initial limit
   }
 
-  void loadMoreData() async {
-    if (_pagingQuery != null && !_isLoadingMore) {
-      setState(() {
-        _isLoadingMore = true;
-      });
+  Future<Null> getTotalItemCount() async {
+    print('Current user id: $currentUserUid');
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('job')
+        .where('posterID', isNotEqualTo: currentUserUid)
+        .where('acceptorID', isNull: true)
+        .get();
+    totalCount = querySnapshot.size;
+  }
 
-      final newDocs = await _pagingQuery!.startAfter([_lastDelLoc]).get();
+  Future<void> loadData() async {
+    // Try to get cached jobs first
+    if (_lastVisible == null) {
+      List<JobRecord>? cachedJobs = await CacheHandler.getCachedJobs();
+      print("\nCached Jobs:\n-------------------");
+      if (cachedJobs != null)
+        for (JobRecord rec in cachedJobs) print(rec.reference);
 
-      setState(() {
-        _isLoadingMore = false;
-        if (newDocs.docs.isNotEmpty) {
-          final lastDoc = newDocs.docs.last;
-          final lastDocData = lastDoc.data() as Map<String, dynamic>?;
+      if (cachedJobs != null && cachedJobs.length >= 4) {
+        print("\n|---LOADED JOBS FROM CACHE---|\n");
+        setState(() {
+          _fetchedJobs = cachedJobs;
+          _isLoading = false;
+        });
+        if (totalCount > cachedJobs.length) return;
+      }
+    }
 
-          if (lastDocData != null) {
-            _lastDelLoc = lastDocData['del_location'] as String?;
-          }
-        } else {
-          _pagingQuery = null;
-        }
-      });
+    QuerySnapshot? data;
+    if (_lastVisible == null) {
+      print("\n|---LOADED JOBS FROM CACHE---|\n");
+      jobsFetchedFromCache = true;
+      data = await FirebaseFirestore.instance
+          .collection('job')
+          .orderBy('del_time', descending: true)
+          .limit(_pageSize)
+          .get();
+    } else {
+      print("\n|---LOADED JOBS FROM SERVER---|\n");
+
+      data = await FirebaseFirestore.instance
+          .collection('job')
+          .orderBy('del_time', descending: true)
+          .startAfter([_lastVisible!['del_time']])
+          .limit(_pageSize)
+          .get();
+    }
+
+    List<JobRecord> jobsToCache = [];
+    for (var doc in data.docs) {
+      JobRecord jobRecord = JobRecord.getDocumentFromData(
+          doc.data() as Map<String, dynamic>, doc.reference);
+      if (jobRecord.posterID!.id == currentUserUid ||
+          jobRecord.status != 'open') continue;
+      jobsToCache.add(jobRecord);
+    }
+    if (data.docs.length > 0) {
+      _lastVisible = data.docs[data.docs.length - 1];
+
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _fetchedJobs.addAll(jobsToCache);
+        });
+      }
+    }
+
+    if (!jobsFetchedFromCache) await CacheHandler.cacheJobs(jobsToCache);
+
+    return;
+  }
+
+  void _scrollListener() {
+    if (!_isLoading && _fetchedJobs.length < totalCount) {
+      if (controller.position.pixels >= controller.position.maxScrollExtent) {
+        print(
+            'Scroll reached max (${controller.position.pixels}==${controller.position.maxScrollExtent})');
+        setState(() => _isLoading = true);
+        loadData();
+      }
     }
   }
 
@@ -102,14 +144,16 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
 
   @override
   Widget build(BuildContext context) {
-    print('Current User Email:\t\t $currentUserEmail\n');
-    print('Current User UID:\t\t $currentUserUid\n');
-    print('Current User Display Name:\t\t $currentUserDisplayName\n');
-    print('Current User Photo URL:\t\t $currentUserPhoto\n');
-    print('Current User Phone Number:\t\t $currentPhoneNumber\n');
-    print('Current User Stripe Account ID:\t\t $currentUserStripeAcc\n');
-    print(
-        'Current User Stripe Verification Status:\t $currentUserStripeVerifiedStatus\n');
+    print('Total jobs:\t$totalCount');
+
+    // print('Current User Email:\t\t $currentUserEmail\n');
+    // print('Current User UID:\t\t $currentUserUid\n');
+    // print('Current User Display Name:\t\t $currentUserDisplayName\n');
+    // print('Current User Photo URL:\t\t $currentUserPhoto\n');
+    // print('Current User Phone Number:\t\t $currentPhoneNumber\n');
+    // print('Current User Stripe Account ID:\t\t $currentUserStripeAcc\n');
+    // print(
+    //     'Current User Stripe Verification Status:\t $currentUserStripeVerifiedStatus\n');
     // print(
     //     'Current User Current Jobs Accepted:\t $currentUserCurrJobsAccepted\n');
     // print('Current User Current Jobs Posted:\t\t $currentUserCurrJobsPosted\n');
@@ -134,52 +178,14 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     JobBoardHeader(),
+                    // currentUserStripeVerifiedStatus
+                    //     ? Container()
+                    //     : VerifyAccountButton(),
                     SearchBar(context),
                     Expanded(
                       child: Stack(
                         children: [
                           JobList(context),
-                          currentUserStripeVerifiedStatus
-                              ? Container()
-                              : Align(
-                                  alignment: Alignment(0, 0.65),
-                                  child: ElevatedButton(
-                                    onPressed: () async {
-                                      try {
-                                        print(currentUserStripeAcc);
-                                        final response = await http.post(
-                                            Uri.parse(
-                                                'https://us-central1-ugrab-17ad6.cloudfunctions.net/generateAccountLink'),
-                                            body: {
-                                              'stripeAccId':
-                                                  currentUserStripeAcc
-                                            });
-
-                                        final jsonResponse =
-                                            jsonDecode(response.body);
-                                        print(jsonResponse);
-                                        jsonResponse['success']
-                                            ? launchURL(
-                                                jsonResponse['accountUrl'])
-                                            : showAlertDialog(context, 'Error',
-                                                jsonResponse['error']);
-                                        //TODO - upon deeplinking, based on a some flag, show the below alert
-                                        showAlertDialog(context, 'Success!',
-                                            'You have been verified by Stripe and are now eligible to post/accept jobs');
-                                      } catch (e) {
-                                        showAlertDialog(context, 'Error', '$e');
-                                      }
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text(
-                                        'Verify to Receive Payouts',
-                                        style: FlutterFlowTheme.of(context)
-                                            .bodyText1,
-                                      ),
-                                    ),
-                                  ),
-                                ),
                           Align(
                             alignment: Alignment(0, 1),
                             child: NavBarWithMiddleButtonWidget(),
@@ -198,77 +204,70 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
   }
 
   Widget JobList(BuildContext context) {
+    print("--------------------------------");
+    print("JOBS FETCHED: ${_fetchedJobs.length}");
+    for (int i = 0; i < _fetchedJobs.length; i++)
+      print('JOB ${i + 1}:\t${_fetchedJobs[i].reference}');
+
+    _lastVisible != null
+        ? print('LAST VISIBLE:${_lastVisible!.id}')
+        : print('LAST VISIBLE: NULL');
+    print("--------------------------------");
+
     return FFAppState().showFullList
         ? Padding(
             padding: EdgeInsetsDirectional.fromSTEB(0, 10, 0, 12),
-            child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>?>(
-              stream: () {
-                // Define a queryBuilder function to create Firestore queries
-                final Query<Map<String, dynamic>> Function(
-                        Query<Map<String, dynamic>>) queryBuilder =
-                    (jobRecordCollection) => jobRecordCollection;
-
-                // Build the Firestore query for retrieving job records
-                final query = queryBuilder(FirebaseFirestore.instance
-                        .collection('job')
-                        // .where('posterID', isNotEqualTo: currentUserReference)
-                        .orderBy('del_location')
-                        .startAfter([_lastDelLoc]).limit(_pageSize)
-
-                    // .where('acceptorID', isNull: true)
-                    // the above doesn't work, but if you ctrl-f 'dc tp',
-                    //you will find the condition that does
-                    );
-                return query.snapshots();
-              }(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(
-                    child: CircularProgressIndicator(
-                      color: FlutterFlowTheme.of(context).primaryColor,
-                    ),
-                  );
-                }
-
-                if (snapshot.hasError) {
-                  return Center(
-                    child: Text('Error fetching data'),
-                  );
-                }
-
-                final jobDocs = snapshot.data!.docs;
-
-                if (jobDocs.isNotEmpty) {
-                  final lastJobData = jobDocs[jobDocs.length - 1].data();
-                  _lastDelLoc = lastJobData['del_location'] as String;
-                }
-
-                final jobSnapshot = snapshot.data;
-                if (jobSnapshot == null || jobSnapshot.docs.isEmpty) {
-                  return NoJobsIllustration();
-                }
-
-                return ListView.builder(
-                  // controller: _scrollController,
-                  shrinkWrap: true,
-                  scrollDirection: Axis.vertical,
-                  itemCount: jobSnapshot.docs.length + 1,
-                  itemBuilder: (context, index) {
-                    // final jobData = jobSnapshot.docs[index].data();
-                    if (index < jobSnapshot.docs.length &&
-                        _pagingQuery != null) {
-                      // final jobData = jobSnapshot.docs[index].data();
-                      final jobRef = jobSnapshot.docs[index].reference;
-                      return JobCard(jobRef: jobRef);
-                    } else {
-                      return Container();
-                      // return Center(child: CircularProgressIndicator());
-                    }
-                  },
-                );
+            child: RefreshIndicator(
+              onRefresh: () async {
+                _fetchedJobs.clear();
+                _lastVisible = null;
+                await CacheHandler.clearJobsCache();
+                await loadData();
+                print('REFRESHED THIS SHIT');
               },
-            ),
-          )
+              child: ListView.builder(
+                controller: controller,
+                shrinkWrap: true,
+                scrollDirection: Axis.vertical,
+                itemCount: _fetchedJobs.length,
+                itemBuilder: (_, index) {
+                  final jobRef = _fetchedJobs[index].reference;
+                  final jobKey =
+                      Key('job_${jobRef.id}'); // Unique key for each job
+
+                  // Calculate the gradient color based on index
+                  final double t =
+                      index / (_fetchedJobs.length - 1); // t ranges from 0 to 1
+
+                  if (index == _fetchedJobs.length - 1) {
+                    return Container(
+                      // color: gradientColor,
+                      margin: EdgeInsets.only(bottom: 85),
+                      child: JobCard(
+                        key: jobKey, // Assign the unique key to the JobCard
+                        jobRef: jobRef,
+                      ),
+                    );
+                  } else if ((index + 1) % _pageSize == 0) {
+                    return Container(
+                      // color: gradientColor,
+                      child: JobCard(
+                        key: jobKey, // Assign the unique key to the JobCard
+                        jobRef: jobRef,
+                      ),
+                    );
+                  } else {
+                    return Container(
+                      // color: gradientColor,
+                      child: JobCard(
+                        key: jobKey, // Assign the unique key to the JobCard
+                        jobRef: jobRef,
+                      ),
+                    );
+                  }
+                },
+              ),
+            ))
         : SearchResults(simpleSearchResults: simpleSearchResults);
   }
 
@@ -279,61 +278,43 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
       decoration: BoxDecoration(
         color: FlutterFlowTheme.of(context).primaryBackground,
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Expanded(
-            child: Stack(
-              children: [
-                Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(10, 0, 8, 0),
-                  child: TextFormField(
-                    controller: searchFieldController,
-                    onChanged: (_) {
-                      EasyDebounce.debounce(
-                          'searchFieldController',
-                          Duration(milliseconds: 100),
-                          () async => await searchInQuery());
-                    },
-                    obscureText: false,
-                    decoration: InputDecoration(
-                        hintText: 'Search Jobs',
-                        hintStyle: FlutterFlowTheme.of(context).bodyText2,
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Color(0x00000000),
-                            width: 1,
-                          ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color:
-                                FlutterFlowTheme.of(context).primaryColorLight,
-                            width: 1,
-                          ),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        filled: true,
-                        fillColor:
-                            FlutterFlowTheme.of(context).secondaryBackground,
-                        contentPadding:
-                            EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
-                        prefixIcon: Icon(
-                          Icons.search_rounded,
-                          color: FlutterFlowTheme.of(context).primaryColorLight,
-                          size: 25,
-                        ),
-                        suffixIcon: ClearSearchTextButton(context)),
-                    style: FlutterFlowTheme.of(context).bodyText1,
-                  ),
+      child: Padding(
+        padding: EdgeInsetsDirectional.fromSTEB(10, 0, 8, 0),
+        child: TextFormField(
+          controller: searchFieldController,
+          onChanged: (_) {
+            EasyDebounce.debounce('searchFieldController',
+                Duration(milliseconds: 100), () => searchInQuery());
+          },
+          obscureText: false,
+          decoration: InputDecoration(
+              hintText: 'Search Jobs',
+              hintStyle: FlutterFlowTheme.of(context).bodyText2,
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Color(0x00000000),
+                  width: 1,
                 ),
-                // ClearSearchTextButton(context),
-              ],
-            ),
-          ),
-          SearchButton(context),
-        ],
+                borderRadius: BorderRadius.circular(10),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: FlutterFlowTheme.of(context).primaryColorLight,
+                  width: 1,
+                ),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              filled: true,
+              fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+              contentPadding: EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
+              prefixIcon: Icon(
+                Icons.search_rounded,
+                color: FlutterFlowTheme.of(context).primaryColorLight,
+                size: 25,
+              ),
+              suffixIcon: ClearSearchTextButton(context)),
+          style: FlutterFlowTheme.of(context).bodyText1,
+        ),
       ),
     );
   }
@@ -369,28 +350,98 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
           size: 24,
         ),
         onPressed: searchFieldController!.text.isNotEmpty
-            ? () async => await searchInQuery()
+            ? () => searchInQuery()
             : () {},
       ),
     );
   }
 
-  Future<void> searchInQuery() async {
-    await queryJobRecordOnce()
-        .then(
-          (records) => simpleSearchResults = TextSearch(
-            records
-                .map(
-                  (record) => TextSearchItem(
-                      record, [record.store!, record.delLocation!]),
-                )
-                .toList(),
-          ).search(searchFieldController!.text).map((r) => r.object).toList(),
-        )
-        .onError((_, __) => simpleSearchResults = [])
-        .whenComplete(() => setState(() {}));
+  void searchInQuery() async {
+    String query = searchFieldController!.text
+        .toLowerCase(); // assuming searchFieldController is defined
 
-    setState(() => FFAppState().showFullList = false);
+    // Filter _fetchedJobs based on the search query
+    List<JobRecord> results = _fetchedJobs.where((jobRecord) {
+      return jobRecord.store!.toLowerCase().contains(query) ||
+          jobRecord.delLocation!.toLowerCase().contains(query);
+    }).toList();
+
+    // Update the state with the search results
+    setState(() {
+      // If you have a separate variable for search results, update it here
+      simpleSearchResults = results;
+
+      FFAppState().showFullList = false; // Update any other necessary state
+    });
+  }
+
+  void searchJobs() {
+    // Converting your _fetchedJobs list into a list of TextSearchItem
+    List<TextSearchItem> searchItems = _fetchedJobs
+        .map(
+          (record) =>
+              TextSearchItem(record, [record.store!, record.delLocation!]),
+        )
+        .toList();
+
+    // Creating a TextSearch object with your search items
+    TextSearch textSearch = TextSearch(searchItems);
+
+    // Performing the search with the text from your searchFieldController
+    List<TextSearchItem> searchResults =
+        textSearch.search(searchFieldController!.text).cast<TextSearchItem>();
+
+    // If you need the results as a list of JobRecord objects again
+    List<JobRecord> resultRecords =
+        searchResults.map((r) => r.object as JobRecord).toList();
+
+    // Now resultRecords contains the search results, you can use setState or other methods to update your UI
+    setState(() {
+      simpleSearchResults = resultRecords;
+      FFAppState().showFullList = false;
+    });
+  }
+}
+
+class VerifyAccountButton extends StatelessWidget {
+  const VerifyAccountButton({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment(0, 0.65),
+      child: ElevatedButton(
+        onPressed: () async {
+          try {
+            print(currentUserStripeAcc);
+            final response = await http.post(
+                Uri.parse(
+                    'https://us-central1-ugrab-17ad6.cloudfunctions.net/generateAccountLink'),
+                body: {'stripeAccId': currentUserStripeAcc});
+
+            final jsonResponse = jsonDecode(response.body);
+            print(jsonResponse);
+            jsonResponse['success']
+                ? launchURL(jsonResponse['accountUrl'])
+                : showAlertDialog(context, 'Error', jsonResponse['error']);
+            //TODO - upon deeplinking, based on a some flag, show the below alert
+            showAlertDialog(context, 'Success!',
+                'You have been verified by Stripe and are now eligible to post/accept jobs');
+          } catch (e) {
+            showAlertDialog(context, 'Error', '$e');
+          }
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            'Verify to Receive Payouts',
+            style: FlutterFlowTheme.of(context).bodyText1,
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -443,7 +494,7 @@ class SearchResults extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(simpleSearchResults);
+    print('Simple search results: $simpleSearchResults');
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0, 10, 0, 12),
       child: Builder(
@@ -468,7 +519,7 @@ class SearchResults extends StatelessWidget {
                           color:
                               FlutterFlowTheme.of(context).secondaryBackground,
                           borderRadius: BorderRadius.circular(20)),
-                      padding: EdgeInsets.all(10),
+                      padding: EdgeInsets.only(left: 10, bottom: 10, right: 10),
                       child: Text(
                         "No jobs found",
                         textAlign: TextAlign.center,
@@ -506,19 +557,19 @@ class JobBoardHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 100,
+      // height: 100,
       decoration: BoxDecoration(
         color: FlutterFlowTheme.of(context).primaryBackground,
       ),
       child: Padding(
-        padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 20),
+        padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 10),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Spacer(),
             Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(0, 26, 0, 12),
+              padding: EdgeInsetsDirectional.fromSTEB(0, 26, 0, 0),
               child: Text(
                 'Job Board.',
                 textAlign: TextAlign.start,
@@ -587,18 +638,18 @@ class JobCard extends StatelessWidget {
         final location = jobData['del_location'].toString();
         final delTime = jobData['del_time'] as DateTime;
         final store = jobData['store'].toString();
+        final price = jobData['price'].toString();
+        // if (jobData['acceptorID'] != "null" ||
+        //     jobData['posterID'] == currentUserReference) {
+        //   // condition for filtering
 
-        if (jobData['acceptorID'] != "null" ||
-            jobData['posterID'] == currentUserReference) {
-          // condition for filtering
-
-          // print("posterID:");
-          // print(jobData['posterID']);
-          // print(jobData['del_location']);
-          // print("userref:");
-          // print(currentUserReference);
-          return Center();
-        } // dc tp
+        //   // print("posterID:");
+        //   // print(jobData['posterID']);
+        //   // print(jobData['del_location']);
+        //   // print("userref:");
+        //   // print(currentUserReference);
+        //   return Center();
+        // } // dc tp
 
         return Padding(
           padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
@@ -622,14 +673,17 @@ class JobCard extends StatelessWidget {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   JobCardImage(),
-                  Column(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      JobCardStore(store: store),
-                      JobCardDelTime(delTime: delTime),
-                      JobCardMoney(location: location),
-                    ],
+                  Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        JobCardStore(store: store),
+                        JobCardDelTime(delTime: delTime),
+                        JobCardMoney(amount: price),
+                        JobCardLocation(location: location)
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -637,6 +691,43 @@ class JobCard extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class JobCardLocation extends StatelessWidget {
+  const JobCardLocation({
+    Key? key,
+    required this.location,
+  }) : super(key: key);
+
+  final String location;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsetsDirectional.fromSTEB(3, 0, 10, 0),
+            child: FaIcon(
+              FontAwesomeIcons.locationPin,
+              color: FlutterFlowTheme.of(context).secondaryBackground,
+              size: 24,
+            ),
+          ),
+          Expanded(
+            child: Text(
+              location,
+              style: FlutterFlowTheme.of(context).bodyText1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -649,13 +740,13 @@ class JobCardImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(7, 7, 7, 7),
+      padding: EdgeInsetsDirectional.fromSTEB(7, 5, 5, 5),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
         child: Image.asset(
           'assets/images/app_launcher_icon.png', //TODO - change
           width: 100,
-          height: 100,
+          height: 120,
           fit: BoxFit.cover,
         ),
       ),
@@ -666,10 +757,10 @@ class JobCardImage extends StatelessWidget {
 class JobCardMoney extends StatelessWidget {
   const JobCardMoney({
     Key? key,
-    required this.location,
+    required this.amount,
   }) : super(key: key);
 
-  final String location;
+  final String amount;
 
   @override
   Widget build(BuildContext context) {
@@ -688,7 +779,7 @@ class JobCardMoney extends StatelessWidget {
             ),
           ),
           Text(
-            location,
+            amount,
             style: FlutterFlowTheme.of(context).bodyText1,
           ),
         ],
@@ -746,7 +837,7 @@ class JobCardStore extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
+      padding: EdgeInsetsDirectional.fromSTEB(5, 10, 5, 5),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         children: [

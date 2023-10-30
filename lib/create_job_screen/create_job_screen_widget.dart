@@ -203,29 +203,30 @@ class _CreateJobScreenWidgetState extends State<CreateJobScreenWidget> {
           }
           if (_items.isEmpty) {
             showAlertDialog(context, 'No Items Added!',
-                'You must add atleast 1 item to create the task');
+                'You must add atleast 1 item to create the job');
           } else {
             final jobCreateData = createJobRecordData(
-              type: type,
-              note: noteController!.text,
-              store: storeValue,
-              delLocation: delLocationController!.text,
-              price: valueOrDefault<double>(
-                double.parse(priceController!.text),
-                3.00,
-              ),
-              items: _items,
-              status: 'open',
-              delTime: datePicked,
-              posterID: currentUserReference,
-            );
+                type: type,
+                note: noteController!.text,
+                store: storeValue,
+                delLocation: delLocationController!.text,
+                price: valueOrDefault<double>(
+                  double.parse(priceController!.text),
+                  3.00,
+                ),
+                items: _items,
+                status: 'open',
+                delTime: datePicked,
+                posterID: currentUserReference,
+                verificationImages: [],
+                verifiedByPoster: false);
             final newJobRef = JobRecord.collection.doc();
             await newJobRef.set(jobCreateData);
             UsersRecord.addCurrJobsPosted(currentUserReference!.id, newJobRef);
             context.pushNamed('JobBoardScreen');
           }
         },
-        text: 'Create Task',
+        text: 'Create Job',
         options: FFButtonOptions(
           width: 270,
           height: 50,
@@ -509,16 +510,26 @@ class Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 8),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
+      padding: const EdgeInsets.all(8.0),
+      child: Stack(
+        // mainAxisSize: MainAxisSize.max,
+        // crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(12, 0, 0, 0),
+          Container(
+            // color: Colors.amber,
+            child: Center(
+              child: Text(
+                'Create Job.',
+                style: FlutterFlowTheme.of(context).title1.override(
+                      fontFamily: 'Poppins',
+                      fontSize: 36,
+                    ),
+              ),
+            ),
+          ),
+          Container(
+            // color: Colors.blue,
             child: FlutterFlowIconButton(
-              borderColor: Colors.transparent,
-              borderRadius: 30,
-              borderWidth: 1,
               buttonSize: 50,
               icon: Icon(
                 Icons.arrow_back_rounded,
@@ -528,16 +539,6 @@ class Header extends StatelessWidget {
               onPressed: () async {
                 context.pop();
               },
-            ),
-          ),
-          Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(18, 26, 30, 12),
-            child: Text(
-              'Create Job.',
-              style: FlutterFlowTheme.of(context).title1.override(
-                    fontFamily: 'Poppins',
-                    fontSize: 36,
-                  ),
             ),
           ),
         ],

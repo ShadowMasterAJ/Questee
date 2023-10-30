@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+=======
+// import * as functions from 'firebase-functions';
+// import * as admin from 'firebase-admin';
+
+>>>>>>> f2deaf01610e9b150a22ee1cf338ba5a39cf3b41
 const admin = require('firebase-admin')
 const functions = require("firebase-functions");
 admin.initializeApp();
@@ -5,7 +11,7 @@ admin.initializeApp();
 const stripe = require('stripe')('sk_test_51Ls8gLASsoBJK28ld8JRnCzqnHBLS0aRHphrAOtkzKTVZJNItQNFxDN3DojFzFX7m8b9C4bEnBPqp5pBNkaEeZ3A00jBgNxw2r');
 
 
-export const scheduleDocumentDeletion = functions.https.onCall(async (data, context) => {
+exports.scheduleDocumentDeletion = functions.https.onCall(async (data, context) => {
   const documentPath = data.documentPath; // Extract the document path from the data parameter
 
   try {
@@ -147,41 +153,74 @@ exports.StripePayEndpointMethodId = functions.https.onRequest(async (req, res) =
       return res.send(generateResponse(intent));
     }
     return res.sendStatus(400);
+<<<<<<< HEAD
   }catch(e){
     return res.send({error: e.message})
+=======
+  } catch (e) {
+    return res.send({ error: e.message })
+>>>>>>> f2deaf01610e9b150a22ee1cf338ba5a39cf3b41
   }
 })
 
 exports.StripePayEndpointIntentId = functions.https.onRequest(async (req, res) => {
+<<<<<<< HEAD
   const {paymentIntentId} = req.body;
   try{
     if(paymentIntentId){
+=======
+  const { paymentIntentId } = req.body;
+  try {
+    if (paymentIntentId) {
+>>>>>>> f2deaf01610e9b150a22ee1cf338ba5a39cf3b41
       const intent = await stripe.paymentIntents.confirm(paymentIntentId);
       return res.send(generateResponse(intent));
     }
     return res.sendStatus(400)
+<<<<<<< HEAD
   }catch(e){
     return res.send({error: e.message})
+=======
+  } catch (e) {
+    return res.send({ error: e.message })
+>>>>>>> f2deaf01610e9b150a22ee1cf338ba5a39cf3b41
   }
 })
 
 const generateResponse = function (intent) {
+<<<<<<< HEAD
   switch(intent.status){
+=======
+  switch (intent.status) {
+>>>>>>> f2deaf01610e9b150a22ee1cf338ba5a39cf3b41
     case 'requires_action':
       return {
         clientSecret: intent.clientSecret,
         requiresAction: true,
         status: intent.status
       };
+<<<<<<< HEAD
     
     case 'requires_payment_method':
       return{
+=======
+
+    case 'requires_payment_method':
+      return {
+>>>>>>> f2deaf01610e9b150a22ee1cf338ba5a39cf3b41
         'error': 'Your card was denied, please provide a new payment method',
       };
 
     case 'succeeded':
+<<<<<<< HEAD
       return {clientSecret: intent.clientSecret, status: intent.status};
   }
 
   return {error: 'Failed'}
+=======
+      return { clientSecret: intent.clientSecret, status: intent.status };
+  }
+
+  return { error: 'Failed' }
+>>>>>>> f2deaf01610e9b150a22ee1cf338ba5a39cf3b41
 }

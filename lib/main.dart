@@ -9,6 +9,7 @@ import 'package:u_grabv1/providers/user_provider.dart';
 import 'auth/firebase_user_provider.dart';
 import 'auth/auth_util.dart';
 
+import 'backend/cache_handler.dart';
 import 'flutter_flow/flutter_flow_theme.dart';
 import 'flutter_flow/flutter_flow_util.dart';
 import 'flutter_flow/internationalization.dart';
@@ -21,6 +22,8 @@ void main() async {
       "pk_live_51Ls8gLASsoBJK28lQuK4TXl8U97PjoOBH98qPl6gOek1ySXVTvoqGl5P21P7zviEzREy6iIPp03aM1QymB9pIN2G00isOglLAo";
   await Stripe.instance.applySettings();
   FFAppState(); // Initialize FFAppState
+      CacheHandler.initializeHive();
+
   runApp(MyApp());
 }
 
