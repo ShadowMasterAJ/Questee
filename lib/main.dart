@@ -6,6 +6,7 @@ import 'package:u_grabv1/providers/user_provider.dart';
 import 'auth/firebase_user_provider.dart';
 import 'auth/auth_util.dart';
 
+import 'backend/cache_handler.dart';
 import 'flutter_flow/flutter_flow_theme.dart';
 import 'flutter_flow/flutter_flow_util.dart';
 import 'flutter_flow/internationalization.dart';
@@ -15,6 +16,8 @@ void main() async {
   await Firebase.initializeApp(); // Initialize Firebase.
   await FlutterFlowTheme.initialize(); // Initialize FlutterFlowTheme.
   FFAppState(); // Initialize FFAppState
+      CacheHandler.initializeHive();
+
   runApp(MyApp());
 }
 

@@ -613,14 +613,18 @@ class _UploadReceiptModalBottomSheetState
   /// If verification images are found, it sets the [alreadyUploadedBefore] flag to true and [filesUploaded] flag to false.
   /// This function is asynchronous and returns a [Future] with no return value.
   Future<void> CheckIfUploadedAlready() async {
-    final DocumentSnapshot snapshot = await widget.jobRef.get();
-    final currUrls = snapshot.data() as Map<String, dynamic>;
-    final List<dynamic> currUrlsList = currUrls['verificationImages'];
-    if (currUrlsList.length > 0)
-      setState(() {
-        alreadyUploadedBefore = true;
-        filesUploaded = false;
-      });
+    try {
+      final DocumentSnapshot snapshot = await widget.jobRef.get();
+      final currUrls = snapshot.data() as Map<String, dynamic>;
+      final List<String> currUrlsList = currUrls['verificationImages'];
+      if (currUrlsList.length > 0)
+        setState(() {
+          alreadyUploadedBefore = true;
+          filesUploaded = false;
+        });
+    } catch (e) {
+      print(e);
+    }
   }
 
   /// Opens the device's image picker and allows the user to select multiple images. Returns a list of [XFile] objects representing the chosen images.
