@@ -1,6 +1,7 @@
 // ignore_for_file: unused_local_variable, non_constant_identifier_names
 
 import 'package:flutter/material.dart';
+import 'package:u_grabv1/components/CardForm.dart';
 
 import '../auth/auth_util.dart';
 import '../backend/backend.dart';
@@ -235,6 +236,8 @@ class _JobDetailScreenAcceptorWidgetState
               currentUserReference!.id, columnJobRecord);
           await columnJobRecord.update(jobUpdateData);
           setState(() {});
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (context) => CardForm()));
         },
         child: Text(
           'Accept This Job',

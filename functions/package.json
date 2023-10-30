@@ -15,10 +15,13 @@
   "dependencies": {
     "firebase-admin": "^10.0.2",
     "firebase-functions": "^4.4.1",
+    "firebase-tools": "^12.5.2",
     "stripe": "^12.13.0"
   },
   "devDependencies": {
     "firebase-functions-test": "^0.2.0"
   },
-  "private": true
+  "private": true,
+  "version": "1.0.0",
+  "license": "MIT"
 }

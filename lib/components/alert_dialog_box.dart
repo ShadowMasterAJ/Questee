@@ -13,7 +13,7 @@ import '../flutter_flow/flutter_flow_widgets.dart';
 ///
 /// Usage:
 /// ```dart
-/// showAlertDialog(context, 'Alert', 'This is an important message.');
+/// showAlertDialog(context, 'Alert', 'This is an important message');
 /// ```
 Future<void> showAlertDialog(
     BuildContext context, String title, String content) async {
@@ -57,4 +57,3 @@ Future<void> showAlertDialog(
     },
   );
 }
-

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:provider/provider.dart';
+import 'package:u_grabv1/blocs/bloc.dart';
 import 'package:u_grabv1/providers/user_provider.dart';
 import 'auth/firebase_user_provider.dart';
 import 'auth/auth_util.dart';
@@ -14,6 +17,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(); // Initialize Firebase.
   await FlutterFlowTheme.initialize(); // Initialize FlutterFlowTheme.
+  Stripe.publishableKey =
+      "pk_live_51Ls8gLASsoBJK28lQuK4TXl8U97PjoOBH98qPl6gOek1ySXVTvoqGl5P21P7zviEzREy6iIPp03aM1QymB9pIN2G00isOglLAo";
+  await Stripe.instance.applySettings();
   FFAppState(); // Initialize FFAppState
   runApp(MyApp());
 }
@@ -79,6 +85,7 @@ class _MyAppState extends State<MyApp> {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => UserProvider()),
+        BlocProvider(create: (context) => PaymentBloc()),
       ],
       child: MaterialApp.router(
         title: 'Questee',
