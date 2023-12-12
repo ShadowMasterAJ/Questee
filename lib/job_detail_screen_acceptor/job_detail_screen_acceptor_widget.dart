@@ -121,6 +121,7 @@ class _JobDetailScreenAcceptorWidgetState
                             scrollDirection: Axis.vertical,
                             children: [
                               DelStore(store: store),
+                              DelLocation(location: location),
                               DelTiming(delTime: delTime),
                               PosterNote(note: note),
                             ],
@@ -186,41 +187,53 @@ class _JobDetailScreenAcceptorWidgetState
     );
   }
 
-  Align DelItems(List<String> items, BuildContext context) {
-    return Align(
-      alignment: AlignmentDirectional(-0.1, 0.05),
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(20, 20, 0, 20),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  ListView(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.vertical,
-                    children: [
-                      FlutterFlowCheckboxGroup(
-                        options: items,
-                        onChanged: (val) =>
-                            setState(() => checkboxGroupValues = val),
-                        activeColor: FlutterFlowTheme.of(context).primaryColor,
-                        checkColor: Colors.white,
-                        checkboxBorderColor: Color(0xFF95A1AC),
-                        textStyle: FlutterFlowTheme.of(context).bodyText1,
-                        initialized: checkboxGroupValues != null,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+  Widget DelItems(List<String> items, BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsetsDirectional.fromSTEB(15, 20, 0, 0),
+          child: Text("Items to buy",
+              style: FlutterFlowTheme.of(context).title3.copyWith(
+                    decoration: TextDecoration.underline,
+                    decorationThickness: 2.0,
+                  )),
+        ),
+        Container(
+          padding: EdgeInsetsDirectional.fromSTEB(15, 0, 0, 20),
+          constraints: BoxConstraints(
+            maxHeight: 200,
+          ),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: items.length > 5
+                  ? [
+                      Colors.transparent,
+                      FlutterFlowTheme.of(context).primaryColor.withOpacity(0.3)
+                    ]
+                  : [Colors.transparent, Colors.transparent],
+              stops: [0.75, 1],
             ),
           ),
-        ],
-      ),
+          child: SingleChildScrollView(
+            child: Column(
+              children: List.generate(items.length, (index) {
+                return Container(
+                  height: 35,
+                  child: ListTile(
+                    title: Text(
+                      '${index + 1}.\t\t${items[index]}',
+                      style: FlutterFlowTheme.of(context).bodyText1,
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -230,14 +243,17 @@ class _JobDetailScreenAcceptorWidgetState
       padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 20),
       child: ElevatedButton(
         onPressed: () async {
-          final jobUpdateData =
-              createJobRecordData(acceptorID: currentUserReference);
+          final Map<String, dynamic> jobUpdateData = {};
+
+          jobUpdateData['acceptorID'] = currentUserReference;
+
           UsersRecord.addCurrJobsAccepted(
               currentUserReference!.id, columnJobRecord);
+
           await columnJobRecord.update(jobUpdateData);
           setState(() {});
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => CardForm()));
+          // Navigator.of(context)
+          //     .push(MaterialPageRoute(builder: (context) => CardForm()));
         },
         child: Text(
           'Accept This Job',
@@ -367,6 +383,39 @@ class DelStore extends StatelessWidget {
   }
 }
 
+class DelLocation extends StatelessWidget {
+  const DelLocation({
+    Key? key,
+    required this.location,
+  }) : super(key: key);
+
+  final String location;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(25, 20, 0, 0),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Padding(
+            padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
+            child: Icon(
+              Icons.pin_drop_rounded,
+              color: FlutterFlowTheme.of(context).gray200,
+              size: 24,
+            ),
+          ),
+          Text(
+            location,
+            style: FlutterFlowTheme.of(context).bodyText1,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class DelTiming extends StatelessWidget {
   const DelTiming({
     Key? key,
@@ -385,7 +434,7 @@ class DelTiming extends StatelessWidget {
           Padding(
             padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
             child: Icon(
-              Icons.timer,
+              Icons.access_time,
               color: FlutterFlowTheme.of(context).gray200,
               size: 24,
             ),
@@ -510,7 +559,7 @@ class ChatButton extends StatelessWidget {
                 },
               );
             },
-            text: 'Chat with Job Poster',
+            text: 'Chat with ReQuester',
             options: FFButtonOptions(
               width: 340,
               height: 50,

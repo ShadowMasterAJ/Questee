@@ -332,8 +332,15 @@ class _VerificationModalBottomSheetState
 
   Row AmountExplainers(BuildContext context, String desc, String price) {
     return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-      Text(desc, style: FlutterFlowTheme.of(context).subtitle2),
-      Spacer(),
+      Expanded(
+          child: Text(
+        desc,
+        style: FlutterFlowTheme.of(context).subtitle2,
+        maxLines: 1,
+      )),
+      SizedBox(
+        width: 5,
+      ),
       Container(
         padding: EdgeInsets.symmetric(horizontal: 5),
         decoration: BoxDecoration(

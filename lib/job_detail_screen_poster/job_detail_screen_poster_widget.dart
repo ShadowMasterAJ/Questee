@@ -106,17 +106,30 @@ class _JobDetailScreenPosterWidgetState
                         children: [
                           StoreTimeNoteEntries(
                             context,
+                            icon: Icons.money,
+                            entry: '\$' + price.toString(),
+                          ),
+                          StoreTimeNoteEntries(
+                            context,
                             icon: Icons.shopping_cart,
                             entry: store,
                           ),
+                          StoreTimeNoteEntries(
+                            context,
+                            icon: Icons.pin_drop_sharp,
+                            entry: location,
+                          ),
                           StoreTimeNoteEntries(context,
-                              icon: Icons.timer,
+                              icon: Icons.access_time,
                               entry: valueOrDefault<String>(
                                 dateTimeFormat('jm', delTime),
                                 'ASAP',
                               )),
                           StoreTimeNoteEntries(context,
                               icon: Icons.info, entry: note, lines: 2),
+                          SizedBox(
+                            height: 5,
+                          )
                         ],
                       ),
                     ],
@@ -158,7 +171,7 @@ class _JobDetailScreenPosterWidgetState
     int lines = 1,
   }) {
     return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(15, 20, 0, 0),
+      padding: EdgeInsetsDirectional.fromSTEB(10, 20, 0, 10),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -174,8 +187,7 @@ class _JobDetailScreenPosterWidgetState
             fit: FlexFit.loose,
             child: Text(
               entry,
-              style:
-                  FlutterFlowTheme.of(context).bodyText1.copyWith(fontSize: 16),
+              style: FlutterFlowTheme.of(context).bodyText1,
               maxLines: lines,
             ),
           ),
@@ -191,56 +203,49 @@ class _JobDetailScreenPosterWidgetState
     );
   }
 
-  Column DelItems(List<String> items, BuildContext context) {
+  Widget DelItems(List<String> items, BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsetsDirectional.fromSTEB(5, 20, 0, 0),
+          padding: EdgeInsetsDirectional.fromSTEB(15, 20, 0, 0),
+          child: Text("Items to buy",
+              style: FlutterFlowTheme.of(context).title3.copyWith(
+                    decoration: TextDecoration.underline,
+                    decorationThickness: 2.0,
+                  )),
+        ),
+        Container(
+          padding: EdgeInsetsDirectional.fromSTEB(15, 0, 0, 20),
+          constraints: BoxConstraints(
+            maxHeight: 200,
+          ),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: items.length > 5
+                  ? [
+                      Colors.transparent,
+                      FlutterFlowTheme.of(context).primaryColor.withOpacity(0.3)
+                    ]
+                  : [Colors.transparent, Colors.transparent],
+              stops: [0.75, 1],
+            ),
+          ),
           child: SingleChildScrollView(
             child: Column(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Items to buy",
-                  style: FlutterFlowTheme.of(context).title3.copyWith(
-                        decoration: TextDecoration.underline,
-                        decorationThickness: 2.0,
-                      ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.vertical,
-                    itemCount: items.length,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              '${index + 1}.   ',
-                              style: FlutterFlowTheme.of(context)
-                                  .bodyText1
-                                  .copyWith(fontSize: 18),
-                            ),
-                            Expanded(
-                              child: Text(
-                                items[index],
-                                style: FlutterFlowTheme.of(context)
-                                    .bodyText1
-                                    .copyWith(fontSize: 16),
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
+              children: List.generate(items.length, (index) {
+                return Container(
+                  height: 35,
+                  child: ListTile(
+                    title: Text(
+                      '${index + 1}.\t\t${items[index]}',
+                      style: FlutterFlowTheme.of(context).bodyText1,
+                    ),
                   ),
-                ),
-              ],
+                );
+              }),
             ),
           ),
         ),
@@ -392,7 +397,7 @@ class ChatButton extends StatelessWidget {
         GoToChat(context, jobRef);
       },
       child: Text(
-        'Chat with Job Acceptor',
+        'Chat with Quest Runner',
         style: FlutterFlowTheme.of(context).subtitle2.override(
               fontFamily: 'Poppins',
               color: Colors.white,

@@ -18,11 +18,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(); // Initialize Firebase.
   await FlutterFlowTheme.initialize(); // Initialize FlutterFlowTheme.
-  Stripe.publishableKey =
-      "pk_live_51Ls8gLASsoBJK28lQuK4TXl8U97PjoOBH98qPl6gOek1ySXVTvoqGl5P21P7zviEzREy6iIPp03aM1QymB9pIN2G00isOglLAo";
-  await Stripe.instance.applySettings();
+  // Stripe.publishableKey =
+  //     "pk_live_51Ls8gLASsoBJK28lQuK4TXl8U97PjoOBH98qPl6gOek1ySXVTvoqGl5P21P7zviEzREy6iIPp03aM1QymB9pIN2G00isOglLAo";
+  // await Stripe.instance.applySettings();
   FFAppState(); // Initialize FFAppState
-      CacheHandler.initializeHive();
+  CacheHandler.initializeHive();
 
   runApp(MyApp());
 }

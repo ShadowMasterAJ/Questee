@@ -65,7 +65,7 @@ class SignupButton extends StatelessWidget {
               final jsonResponse = jsonDecode(response.body);
               print(jsonResponse);
 
-              //TODO - Invstigate why the `makeCloudCall` method from lib/backend/cloud_functions.dart is erroneous
+              //TODO - Investigate why the `makeCloudCall` method from lib/backend/cloud_functions.dart is erroneous
               // final response = makeCloudCall('createOrRetrieveCustomer', {
               //   'email': userEmailController!.text,
               //   'first_name': firstNameController!.text,

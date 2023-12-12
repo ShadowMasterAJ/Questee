@@ -26,7 +26,8 @@ Future<void> showAlertDialog(
         title: Text(
           title,
           textAlign: TextAlign.center,
-          style: FlutterFlowTheme.of(context).subtitle1,
+          style: FlutterFlowTheme.of(context).subtitle1.copyWith(
+              color: FlutterFlowTheme.of(context).buttonRed.withRed(240)),
         ),
         content: Text(content,
             textAlign: TextAlign.center,

@@ -5,6 +5,7 @@ import 'package:u_grabv1/flutter_flow/index.dart';
 
 import '../flutter_flow/flutter_flow_icon_button.dart';
 import '../flutter_flow/flutter_flow_theme.dart';
+import 'alert_dialog_box.dart';
 
 class NavBarWithMiddleButtonWidget extends StatefulWidget {
   const NavBarWithMiddleButtonWidget({Key? key}) : super(key: key);
@@ -88,35 +89,35 @@ class _NavBarWithMiddleButtonWidgetState
                 },
               ),
               FlutterFlowIconButton(
-                borderColor: Colors.transparent,
-                borderRadius: 30,
-                borderWidth: 1,
-                buttonSize: 50,
-                icon: Icon(
-                  Icons.chat_bubble_rounded,
-                  color: FlutterFlowTheme.of(context).grayIcon,
-                  size: 24,
-                ),
-                onPressed: () async {
-                  context.pushNamed(
-                    'ChatScreen',
-                    queryParams: {
-                      'jobRef': serializeParam(
-                        currentUserCurrJobsAccepted!.first,
-                        ParamType.DocumentReference,
-                      ),
-                    }.withoutNulls,
-                    extra: {
-                      kTransitionInfoKey: TransitionInfo(
-                        hasTransition: true,
-                        transitionType: PageTransitionType.fade,
-                        alignment: Alignment.bottomCenter,
-                        duration: Duration(milliseconds: 400),
-                      ),
-                    },
-                  );
-                },
-              ),
+                  borderColor: Colors.transparent,
+                  borderRadius: 30,
+                  borderWidth: 1,
+                  buttonSize: 50,
+                  icon: Icon(
+                    Icons.chat_bubble_rounded,
+                    color: FlutterFlowTheme.of(context).grayIcon,
+                    size: 24,
+                  ),
+                  onPressed: () async => currentUserCurrJobsAccepted!.isNotEmpty
+                      ? context.pushNamed(
+                          'ChatScreen',
+                          queryParams: {
+                            'jobRef': serializeParam(
+                              currentUserCurrJobsAccepted!.first,
+                              ParamType.DocumentReference,
+                            ),
+                          }.withoutNulls,
+                          extra: {
+                            kTransitionInfoKey: TransitionInfo(
+                              hasTransition: true,
+                              transitionType: PageTransitionType.fade,
+                              alignment: Alignment.bottomCenter,
+                              duration: Duration(milliseconds: 400),
+                            ),
+                          },
+                        )
+                      : showAlertDialog(context, 'No Chats Yet!',
+                          'You need to accept a job first to start a chat with the Quest Runner')),
               Align(
                 alignment: Alignment(0, -8),
                 child: FlutterFlowIconButton(

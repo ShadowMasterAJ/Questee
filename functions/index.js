@@ -1,9 +1,6 @@
-<<<<<<< HEAD
-=======
 // import * as functions from 'firebase-functions';
 // import * as admin from 'firebase-admin';
 
->>>>>>> f2deaf01610e9b150a22ee1cf338ba5a39cf3b41
 const admin = require('firebase-admin')
 const functions = require("firebase-functions");
 admin.initializeApp();
@@ -135,11 +132,11 @@ exports.createPaymentIntent = functions.https.onRequest(async (req, res) => {
 });
 
 exports.StripePayEndpointMethodId = functions.https.onRequest(async (req, res) => {
-  const {paymentMethodId, items, currency, useStripeSdk} = req.body;
+  const { paymentMethodId, items, currency, useStripeSdk } = req.body;
   const orderAmount = 1;
 
-  try{
-    if(paymentMethodId){
+  try {
+    if (paymentMethodId) {
       const params = {
         amount: orderAmount,
         confirm: true,
@@ -153,74 +150,41 @@ exports.StripePayEndpointMethodId = functions.https.onRequest(async (req, res) =
       return res.send(generateResponse(intent));
     }
     return res.sendStatus(400);
-<<<<<<< HEAD
-  }catch(e){
-    return res.send({error: e.message})
-=======
   } catch (e) {
     return res.send({ error: e.message })
->>>>>>> f2deaf01610e9b150a22ee1cf338ba5a39cf3b41
   }
 })
 
 exports.StripePayEndpointIntentId = functions.https.onRequest(async (req, res) => {
-<<<<<<< HEAD
-  const {paymentIntentId} = req.body;
-  try{
-    if(paymentIntentId){
-=======
   const { paymentIntentId } = req.body;
   try {
     if (paymentIntentId) {
->>>>>>> f2deaf01610e9b150a22ee1cf338ba5a39cf3b41
       const intent = await stripe.paymentIntents.confirm(paymentIntentId);
       return res.send(generateResponse(intent));
     }
     return res.sendStatus(400)
-<<<<<<< HEAD
-  }catch(e){
-    return res.send({error: e.message})
-=======
   } catch (e) {
     return res.send({ error: e.message })
->>>>>>> f2deaf01610e9b150a22ee1cf338ba5a39cf3b41
   }
 })
 
 const generateResponse = function (intent) {
-<<<<<<< HEAD
-  switch(intent.status){
-=======
   switch (intent.status) {
->>>>>>> f2deaf01610e9b150a22ee1cf338ba5a39cf3b41
     case 'requires_action':
       return {
         clientSecret: intent.clientSecret,
         requiresAction: true,
         status: intent.status
       };
-<<<<<<< HEAD
-    
-    case 'requires_payment_method':
-      return{
-=======
 
     case 'requires_payment_method':
       return {
->>>>>>> f2deaf01610e9b150a22ee1cf338ba5a39cf3b41
         'error': 'Your card was denied, please provide a new payment method',
       };
 
     case 'succeeded':
-<<<<<<< HEAD
-      return {clientSecret: intent.clientSecret, status: intent.status};
-  }
-
-  return {error: 'Failed'}
-=======
       return { clientSecret: intent.clientSecret, status: intent.status };
   }
 
   return { error: 'Failed' }
->>>>>>> f2deaf01610e9b150a22ee1cf338ba5a39cf3b41
 }

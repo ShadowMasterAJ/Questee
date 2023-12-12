@@ -210,10 +210,7 @@ class _CreateJobScreenWidgetState extends State<CreateJobScreenWidget> {
                 note: noteController!.text,
                 store: storeValue,
                 delLocation: delLocationController!.text,
-                price: valueOrDefault<double>(
-                  double.parse(priceController!.text),
-                  3.00,
-                ),
+                price: double.parse(priceController!.text),
                 items: _items,
                 status: 'open',
                 delTime: datePicked,
@@ -327,7 +324,7 @@ class _CreateJobScreenWidgetState extends State<CreateJobScreenWidget> {
             Padding(
               padding: EdgeInsetsDirectional.fromSTEB(10, 0, 10, 0),
               child: FlutterFlowDropDown(
-                options: ["Buying", "Queueing"],
+                options: ["Buy Groceries"],
                 onChanged: (val) => setState(() {
                   type = val;
                   typeIsNull = false;
@@ -370,7 +367,7 @@ class _CreateJobScreenWidgetState extends State<CreateJobScreenWidget> {
             Padding(
               padding: EdgeInsetsDirectional.fromSTEB(10, 0, 10, 0),
               child: FlutterFlowDropDown(
-                options: ['Prime Supermarket', 'Booklink', 'Cheers'],
+                options: ['Prime Supermarket', 'Booklink', 'Cheers', '7/11'],
                 onChanged: (val) => setState(() {
                   storeValue = val;
                   storeIsNull = false;

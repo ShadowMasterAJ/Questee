@@ -379,7 +379,7 @@ class FFRoute {
                   color: FlutterFlowTheme.of(context).primaryBackground,
                   child: Center(
                     child: Image.asset(
-                      'assets/images/Screenshot_2022-09-29_at_23.11.14.png',
+                      'assets/images/questee.png',
                       width: 150,
                       height: 300,
                       fit: BoxFit.contain,

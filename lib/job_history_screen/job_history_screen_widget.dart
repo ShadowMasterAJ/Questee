@@ -166,11 +166,11 @@ class PostedJobsTab extends StatelessWidget {
         children: [
           JobListWidget(
             title: "Current Jobs",
-            jobList: currentUserCurrJobsPosted!,
+            jobList: currentUserCurrJobsPosted!.reversed.toList(),
           ),
           JobListWidget(
             title: "Past Jobs",
-            jobList: currentUserPastJobsPosted!,
+            jobList: currentUserPastJobsPosted!.reversed.toList(),
           ),
         ],
       ),
@@ -191,11 +191,11 @@ class AcceptedJobsTab extends StatelessWidget {
         children: [
           JobListWidget(
             title: "Current Jobs",
-            jobList: currentUserCurrJobsAccepted!,
+            jobList: currentUserCurrJobsAccepted!.reversed.toList(),
           ),
           JobListWidget(
             title: "Past Jobs",
-            jobList: currentUserPastJobsAccepted!,
+            jobList: currentUserPastJobsAccepted!.reversed.toList(),
           ),
         ],
       ),
@@ -221,7 +221,12 @@ class JobListWidget extends StatelessWidget {
         JobDesc(desc: title),
         if (ModalRoute.of(context)?.isCurrent ?? true)
           jobList.isEmpty
-              ? NoJobPlaceholder()
+              ? Column(
+                  children: [
+                    NoJobPlaceholder(),
+                    title.contains('Past') ? SizedBox(height: 60) : Container()
+                  ],
+                )
               : Padding(
                   padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
                   child: ListView.builder(

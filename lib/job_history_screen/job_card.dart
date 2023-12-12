@@ -60,6 +60,7 @@ class JobCard extends StatelessWidget {
         final delTime = jobData['del_time'] as DateTime;
         final posterID = jobData['posterID'] as DocumentReference;
         final store = jobData['store'].toString();
+        final price = jobData['price'].toString();
 
         return Padding(
           padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
@@ -98,9 +99,15 @@ class JobCard extends StatelessWidget {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(10),
                       child: Image.asset(
-                        'assets/images/app_launcher_icon.png', //TODO - change
+                        store == 'Prime Supermarket'
+                            ? 'assets/images/Prime_Supermarket.jpg'
+                            : store == 'Cheers'
+                                ? 'assets/images/cheers.jpg'
+                                : store == 'Booklink'
+                                    ? 'assets/images/booklink.jpg'
+                                    : 'assets/images/711.png',
                         width: 100,
-                        height: 100,
+                        height: 120,
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -109,78 +116,10 @@ class JobCard extends StatelessWidget {
                     mainAxisSize: MainAxisSize.max,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Padding(
-                              padding:
-                                  EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
-                              child: Icon(
-                                Icons.shopping_cart,
-                                color: FlutterFlowTheme.of(context)
-                                    .secondaryBackground,
-                                size: 24,
-                              ),
-                            ),
-                            Text(
-                              store,
-                              style: FlutterFlowTheme.of(context).bodyText1,
-                            ),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding:
-                                  EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
-                              child: Icon(
-                                Icons.access_time,
-                                color: FlutterFlowTheme.of(context)
-                                    .secondaryBackground,
-                                size: 24,
-                              ),
-                            ),
-                            Text(
-                              valueOrDefault<String>(
-                                dateTimeFormat('jm', delTime),
-                                'ASAP',
-                              ),
-                              style: FlutterFlowTheme.of(context).bodyText1,
-                            ),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding:
-                                  EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
-                              child: FaIcon(
-                                FontAwesomeIcons.moneyBill,
-                                color: FlutterFlowTheme.of(context)
-                                    .secondaryBackground,
-                                size: 22,
-                              ),
-                            ),
-                            Text(
-                              location,
-                              style: FlutterFlowTheme.of(context).bodyText1,
-                            ),
-                          ],
-                        ),
-                      ),
+                      DelStore(store: store),
+                      DelLocation(location: location),
+                      DelTiming(delTime: delTime),
+                      DelPrice(price: price),
                     ],
                   ),
                 ],
@@ -189,6 +128,147 @@ class JobCard extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class DelStore extends StatelessWidget {
+  const DelStore({
+    Key? key,
+    required this.store,
+  }) : super(key: key);
+
+  final String store;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
+            child: Icon(
+              Icons.shopping_cart,
+              color: FlutterFlowTheme.of(context).secondaryBackground,
+              size: 24,
+            ),
+          ),
+          Text(
+            store,
+            style: FlutterFlowTheme.of(context).bodyText1,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class DelLocation extends StatelessWidget {
+  const DelLocation({
+    Key? key,
+    required this.location,
+  }) : super(key: key);
+
+  final String location;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(8, 5, 5, 5),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
+            child: FaIcon(
+              FontAwesomeIcons.locationPin,
+              color: FlutterFlowTheme.of(context).secondaryBackground,
+              size: 22,
+            ),
+          ),
+          SizedBox(width: 5),
+          Text(
+            location,
+            style: FlutterFlowTheme.of(context).bodyText1,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class DelPrice extends StatelessWidget {
+  const DelPrice({
+    Key? key,
+    required this.price,
+  }) : super(key: key);
+
+  final String price;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
+            child: FaIcon(
+              FontAwesomeIcons.moneyBill,
+              color: FlutterFlowTheme.of(context).secondaryBackground,
+              size: 22,
+            ),
+          ),
+          Text(
+            price,
+            style: FlutterFlowTheme.of(context).bodyText1,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class DelTiming extends StatelessWidget {
+  const DelTiming({
+    Key? key,
+    required this.delTime,
+  }) : super(key: key);
+
+  final DateTime delTime;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Padding(
+            padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
+            child: Icon(
+              Icons.access_time,
+              color: FlutterFlowTheme.of(context).secondaryBackground,
+              size: 24,
+            ),
+          ),
+          Text(
+            valueOrDefault<String>(
+              dateTimeFormat('jm', delTime),
+              'ASAP',
+            ),
+            style: FlutterFlowTheme.of(context).bodyText1,
+          ),
+        ],
+      ),
     );
   }
 }

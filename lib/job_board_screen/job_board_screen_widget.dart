@@ -32,14 +32,15 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
   List<StreamSubscription?> _streamSubscriptions = [];
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
-  static const _pageSize = 4;
+  static const _pageSize = 30;
   late ScrollController controller;
 
   bool _isLoading = false;
   List<JobRecord> _fetchedJobs = [];
   DocumentSnapshot? _lastVisible;
   int totalCount = 0;
-  bool jobsFetchedFromCache = false;
+
+  bool loadAgain = false;
 
   @override
   void initState() {
@@ -54,11 +55,8 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
 
   Future<Null> getTotalItemCount() async {
     print('Current user id: $currentUserUid');
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('job')
-        .where('posterID', isNotEqualTo: currentUserUid)
-        .where('acceptorID', isNull: true)
-        .get();
+    QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection('job').get();
     totalCount = querySnapshot.size;
   }
 
@@ -66,61 +64,78 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
     // Try to get cached jobs first
     if (_lastVisible == null) {
       List<JobRecord>? cachedJobs = await CacheHandler.getCachedJobs();
-      print("\nCached Jobs:\n-------------------");
+      print("\nCached Jobs:\n");
       if (cachedJobs != null)
         for (JobRecord rec in cachedJobs) print(rec.reference);
-
+      print('--------------------------------');
       if (cachedJobs != null && cachedJobs.length >= 4) {
         print("\n|---LOADED JOBS FROM CACHE---|\n");
+
         setState(() {
           _fetchedJobs = cachedJobs;
           _isLoading = false;
         });
         if (totalCount > cachedJobs.length) return;
       }
-    }
+    } else
+      print("\n|---LOADED JOBS FROM SERVER---|\n");
 
     QuerySnapshot? data;
+    bool fromServer = false;
+
     if (_lastVisible == null) {
-      print("\n|---LOADED JOBS FROM CACHE---|\n");
-      jobsFetchedFromCache = true;
       data = await FirebaseFirestore.instance
           .collection('job')
           .orderBy('del_time', descending: true)
           .limit(_pageSize)
           .get();
     } else {
-      print("\n|---LOADED JOBS FROM SERVER---|\n");
-
       data = await FirebaseFirestore.instance
           .collection('job')
           .orderBy('del_time', descending: true)
           .startAfter([_lastVisible!['del_time']])
           .limit(_pageSize)
           .get();
+      fromServer = true;
     }
 
     List<JobRecord> jobsToCache = [];
+    print('JOBS FETCHED:');
+    int counter = 0;
+    int fetchedBatchSize = fromServer ? data.size : 2;
+    print('Fetched Batch Size: $fetchedBatchSize');
     for (var doc in data.docs) {
       JobRecord jobRecord = JobRecord.getDocumentFromData(
           doc.data() as Map<String, dynamic>, doc.reference);
+      print(
+          '\t id: ${jobRecord.reference.id} | Poster: ${jobRecord.posterID!.id} | Acceptor: ${jobRecord.acceptorID}}');
+
       if (jobRecord.posterID!.id == currentUserUid ||
-          jobRecord.status != 'open') continue;
+          jobRecord.acceptorID != null) continue;
+
+      counter++;
       jobsToCache.add(jobRecord);
     }
+    print('counter: $counter');
+    if (counter < fetchedBatchSize) loadAgain = true;
+
     if (data.docs.length > 0) {
       _lastVisible = data.docs[data.docs.length - 1];
 
       if (mounted) {
         setState(() {
           _isLoading = false;
-          _fetchedJobs.addAll(jobsToCache);
+          if (!_fetchedJobs.contains(jobsToCache))
+            _fetchedJobs.addAll(jobsToCache);
         });
       }
     }
 
-    if (!jobsFetchedFromCache) await CacheHandler.cacheJobs(jobsToCache);
-
+    if (fromServer) await CacheHandler.cacheJobs(jobsToCache);
+    if (loadAgain) {
+      loadData();
+      loadAgain = false;
+    }
     return;
   }
 
@@ -129,8 +144,8 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
       if (controller.position.pixels >= controller.position.maxScrollExtent) {
         print(
             'Scroll reached max (${controller.position.pixels}==${controller.position.maxScrollExtent})');
-        setState(() => _isLoading = true);
-        loadData();
+        // setState(() => _isLoading = true);
+        // loadData();
       }
     }
   }
@@ -205,19 +220,19 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
 
   Widget JobList(BuildContext context) {
     print("--------------------------------");
-    print("JOBS FETCHED: ${_fetchedJobs.length}");
+    print("JOBS SHOWN: ${_fetchedJobs.length}");
     for (int i = 0; i < _fetchedJobs.length; i++)
-      print('JOB ${i + 1}:\t${_fetchedJobs[i].reference}');
+      print('JOB ${i + 1}:\t${_fetchedJobs[i].reference.id}');
 
     _lastVisible != null
         ? print('LAST VISIBLE:${_lastVisible!.id}')
         : print('LAST VISIBLE: NULL');
     print("--------------------------------");
-
     return FFAppState().showFullList
         ? Padding(
             padding: EdgeInsetsDirectional.fromSTEB(0, 10, 0, 12),
             child: RefreshIndicator(
+              edgeOffset: 10,
               onRefresh: () async {
                 _fetchedJobs.clear();
                 _lastVisible = null;
@@ -228,6 +243,7 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
               child: ListView.builder(
                 controller: controller,
                 shrinkWrap: true,
+                physics: AlwaysScrollableScrollPhysics(),
                 scrollDirection: Axis.vertical,
                 itemCount: _fetchedJobs.length,
                 itemBuilder: (_, index) {
@@ -239,7 +255,8 @@ class _JobBoardScreenWidgetState extends State<JobBoardScreenWidget> {
                   final double t =
                       index / (_fetchedJobs.length - 1); // t ranges from 0 to 1
 
-                  if (index == _fetchedJobs.length - 1) {
+                  if (_fetchedJobs.length > 3 &&
+                      index == _fetchedJobs.length - 1) {
                     return Container(
                       // color: gradientColor,
                       margin: EdgeInsets.only(bottom: 85),
@@ -415,7 +432,7 @@ class VerifyAccountButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: () async {
           try {
-            print(currentUserStripeAcc);
+            print('currentUserStripeAcc: $currentUserStripeAcc');
             final response = await http.post(
                 Uri.parse(
                     'https://us-central1-ugrab-17ad6.cloudfunctions.net/generateAccountLink'),
@@ -639,17 +656,6 @@ class JobCard extends StatelessWidget {
         final delTime = jobData['del_time'] as DateTime;
         final store = jobData['store'].toString();
         final price = jobData['price'].toString();
-        // if (jobData['acceptorID'] != "null" ||
-        //     jobData['posterID'] == currentUserReference) {
-        //   // condition for filtering
-
-        //   // print("posterID:");
-        //   // print(jobData['posterID']);
-        //   // print(jobData['del_location']);
-        //   // print("userref:");
-        //   // print(currentUserReference);
-        //   return Center();
-        // } // dc tp
 
         return Padding(
           padding: EdgeInsetsDirectional.fromSTEB(5, 5, 5, 5),
@@ -672,7 +678,9 @@ class JobCard extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  JobCardImage(),
+                  JobCardImage(
+                    store: store,
+                  ),
                   Expanded(
                     child: Column(
                       mainAxisSize: MainAxisSize.max,
@@ -733,9 +741,9 @@ class JobCardLocation extends StatelessWidget {
 }
 
 class JobCardImage extends StatelessWidget {
-  const JobCardImage({
-    Key? key,
-  }) : super(key: key);
+  JobCardImage({Key? key, required this.store}) : super(key: key);
+
+  final String store;
 
   @override
   Widget build(BuildContext context) {
@@ -744,7 +752,13 @@ class JobCardImage extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
         child: Image.asset(
-          'assets/images/app_launcher_icon.png', //TODO - change
+          store == 'Prime Supermarket'
+              ? 'assets/images/Prime_Supermarket.jpg'
+              : store == 'Cheers'
+                  ? 'assets/images/cheers.jpg'
+                  : store == 'Booklink'
+                      ? 'assets/images/booklink.jpg'
+                      : 'assets/images/711.png',
           width: 100,
           height: 120,
           fit: BoxFit.cover,

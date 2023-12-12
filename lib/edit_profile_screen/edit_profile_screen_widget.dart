@@ -93,7 +93,7 @@ class _EditProfileScreenWidgetState extends State<EditProfileScreenWidget> {
                                   shape: BoxShape.circle,
                                 ),
                                 child: Image.asset(
-                                  "assets/images/app_launcher_icon.png",
+                                  "assets/images/questee.png",
                                   fit: BoxFit.fitWidth,
                                 ),
                               ),
@@ -211,69 +211,12 @@ class _EditProfileScreenWidgetState extends State<EditProfileScreenWidget> {
                           ),
                         ),
                       ),
-                      Center(
-                        child: Padding(
-                          padding: EdgeInsetsDirectional.only(top: 10),
-                          child: FFButtonWidget(
-                            onPressed: () async {
-                              final usersUpdateData = createUsersRecordData(
-                                displayName: yourNameController!.text,
-                                email: useEmailController!.text,
-                                photoUrl: uploadedFileUrl,
-                                gender: genderController!.text,
-                              );
-                              await currentUserReference!
-                                  .update(usersUpdateData);
-                            },
-                            text: 'Save Changes',
-                            options: FFButtonOptions(
-                              width: 340,
-                              height: 45,
-                              color: FlutterFlowTheme.of(context).buttonGreen,
-                              textStyle: FlutterFlowTheme.of(context)
-                                  .subtitle2
-                                  .override(
-                                    fontFamily: 'Lexend Deca',
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.normal,
-                                  ),
-                              elevation: 2,
-                              borderSide: BorderSide(
-                                color: Colors.transparent,
-                                width: 1,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
-                        child: FFButtonWidget(
-                          onPressed: () async {
-                            GoRouter.of(context).prepareAuthEvent();
-                            await signOut();
-
-                            context.goNamedAuth('AuthScreen', mounted);
-                          },
-                          text: 'Logout',
-                          options: FFButtonOptions(
-                            width: 130,
-                            height: 45,
-                            color: FlutterFlowTheme.of(context).buttonRed,
-                            textStyle:
-                                FlutterFlowTheme.of(context).subtitle2.override(
-                                      fontFamily: 'Poppins',
-                                      color: Colors.white,
-                                    ),
-                            borderSide: BorderSide(
-                              color: Colors.transparent,
-                              width: 1,
-                            ),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                      ),
+                      SaveChangesButton(
+                          yourNameController: yourNameController,
+                          useEmailController: useEmailController,
+                          uploadedFileUrl: uploadedFileUrl,
+                          genderController: genderController),
+                      LogoutButton(mounted: mounted),
                     ],
                   ),
                 ),
@@ -322,6 +265,105 @@ class _EditProfileScreenWidgetState extends State<EditProfileScreenWidget> {
       filled: true,
       fillColor: FlutterFlowTheme.of(context).secondaryBackground,
       contentPadding: EdgeInsetsDirectional.fromSTEB(20, 24, 0, 24),
+    );
+  }
+}
+
+class LogoutButton extends StatelessWidget {
+  const LogoutButton({
+    Key? key,
+    required this.mounted,
+  }) : super(key: key);
+
+  final bool mounted;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
+      child: FFButtonWidget(
+        onPressed: () async {
+          GoRouter.of(context).prepareAuthEvent();
+          await signOut();
+
+          context.goNamedAuth('AuthScreen', mounted);
+        },
+        text: 'Logout',
+        options: FFButtonOptions(
+          width: 150,
+          height: 45,
+          color: FlutterFlowTheme.of(context).buttonRed,
+          textStyle: FlutterFlowTheme.of(context).subtitle2.override(
+                fontFamily: 'Poppins',
+                color: Colors.white,
+              ),
+          borderSide: BorderSide(
+            color: Colors.transparent,
+            width: 1,
+          ),
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+    );
+  }
+}
+
+class SaveChangesButton extends StatelessWidget {
+  const SaveChangesButton({
+    Key? key,
+    required this.yourNameController,
+    required this.useEmailController,
+    required this.uploadedFileUrl,
+    required this.genderController,
+  }) : super(key: key);
+
+  final TextEditingController? yourNameController;
+  final TextEditingController? useEmailController;
+  final String? uploadedFileUrl;
+  final TextEditingController? genderController;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: EdgeInsetsDirectional.only(top: 10),
+        child: FFButtonWidget(
+          onPressed: () async {
+            final Map<String, dynamic> usersUpdateData = {};
+
+            if (yourNameController?.text != null)
+              usersUpdateData['displayName'] = yourNameController!.text;
+
+            if (useEmailController?.text != null)
+              usersUpdateData['email'] = useEmailController!.text;
+
+            if (uploadedFileUrl != null)
+              usersUpdateData['photoUrl'] = uploadedFileUrl;
+
+            if (genderController?.text != null)
+              usersUpdateData['gender'] = genderController!.text;
+
+            await currentUserReference!.update(usersUpdateData);
+          },
+          text: 'Save Changes',
+          options: FFButtonOptions(
+            width: 150,
+            height: 45,
+            color: FlutterFlowTheme.of(context).buttonGreen,
+            textStyle: FlutterFlowTheme.of(context).subtitle2.override(
+                  fontFamily: 'Lexend Deca',
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.normal,
+                ),
+            elevation: 2,
+            borderSide: BorderSide(
+              color: Colors.transparent,
+              width: 1,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

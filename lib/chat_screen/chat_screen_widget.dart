@@ -29,7 +29,7 @@ class _ChatScreenWidgetState extends State<ChatScreenWidget> {
   void initState() {
     super.initState();
     _chatDocRef = _chatRef.doc(widget.jobRef.id);
-    
+
     _messageRef = _chatDocRef.collection('messages');
     print("Message ref: $_messageRef");
     createChatDocument();
@@ -112,8 +112,8 @@ class Header extends StatelessWidget {
             padding: EdgeInsetsDirectional.fromSTEB(20, 0, 0, 0),
             child: Text(
               _userType == 'acceptor'
-                  ? 'Chat with the \nposter.'
-                  : 'Chat with the \nacceptor.',
+                  ? 'Chat with the \nReQuester.'
+                  : 'Chat with the \nQuest Runner.',
               textAlign: TextAlign.center,
               style: FlutterFlowTheme.of(context).title1.override(
                     fontFamily: 'Poppins',
@@ -181,8 +181,8 @@ class MessagesArea extends StatelessWidget {
                   padding: EdgeInsets.all(10),
                   child: Text(
                     userType == 'acceptor'
-                        ? "Start chatting with the job poster. Clarify doubts, confirm items and more!"
-                        : "Start chatting with the job acceptor. Clarify doubts, confirm items and more!",
+                        ? "Start chatting with the ReQuester. Clarify doubts, confirm items and more!"
+                        : "Start chatting with the Quest Runner. Clarify doubts, confirm items and more!",
                     textAlign: TextAlign.center,
                     style: FlutterFlowTheme.of(context).bodyText1.override(
                           fontFamily: 'Poppins',
@@ -224,8 +224,8 @@ class MessagesArea extends StatelessWidget {
                         padding: EdgeInsets.all(10),
                         child: Text(
                           userType == 'acceptor'
-                              ? "Start chatting with the job poster. Clarify doubts, confirm items and more!"
-                              : "Start chatting with the job acceptor. Clarify doubts, confirm items and more!",
+                              ? "Start chatting with the ReQuester. Clarify doubts, confirm items and more!"
+                              : "Start chatting with the Quest Runner. Clarify doubts, confirm items and more!",
                           textAlign: TextAlign.center,
                           style:
                               FlutterFlowTheme.of(context).bodyText1.override(
