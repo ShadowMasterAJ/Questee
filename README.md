@@ -6,7 +6,7 @@ Are you tired of spending precious time commuting, waiting in line, and then com
 
 Introducing Questee, a delivery service mobile app designed specifically for NTU students. Our platform enables you to post item purchase and delivery requests or accept such tasks from your fellow students.
 
-Questee's mission is to address the challenges faced by students who need to buy something urgently but cannot do so themselves due to time constraints, inconvenience, or other reasons. By connecting students with one another, we make it easy for you to get the items you need while empowering others to help you out. Experience the convenience of uGrab and revolutionize the way you shop on campus!
+Questee's mission is to address the challenges faced by students who need to buy something urgently but cannot do so themselves due to time constraints, inconvenience, or other reasons. By connecting students with one another, we make it easy for you to get the items you need while empowering others to help you out. Experience the convenience of Questee and revolutionize the way you shop on campus!
 
 ![Various pages of the app](assets/images/uGrab.png)
 
